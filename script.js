@@ -17,10 +17,7 @@ const products = {
   ]
 };
 
-/* ================= WISHLIST ================= */
 let wishlist = [];
-
-/* ================= CART ================= */
 let cart = [];
 let currentProduct = null;
 
@@ -46,7 +43,7 @@ function renderProducts(category) {
   toggleMenu();
 }
 
-/* ================= PRODUCT MODAL ================= */
+/* ================= PRODUCT ================= */
 function openProduct(product) {
   currentProduct = product;
   document.getElementById('modal-title').textContent = product.title;
@@ -59,7 +56,7 @@ function closeProduct() {
   document.getElementById('product-modal').style.display = 'none';
 }
 
-/* ================= CART LOGIC ================= */
+/* ================= CART ================= */
 function addToCart() {
   cart.push(currentProduct);
   document.getElementById('cart-count').textContent = cart.length;
@@ -86,8 +83,8 @@ function openCart() {
   document.getElementById('cart-modal').style.display = 'flex';
 }
 
-function removeFromCart(index) {
-  cart.splice(index, 1);
+function removeFromCart(i) {
+  cart.splice(i, 1);
   document.getElementById('cart-count').textContent = cart.length;
   openCart();
 }
@@ -96,14 +93,35 @@ function closeCart() {
   document.getElementById('cart-modal').style.display = 'none';
 }
 
-function checkout() {
-  alert('Telegram checkout will be connected here');
+/* ================= DELIVERY ================= */
+function openDelivery() {
+  document.getElementById('cart-modal').style.display = 'none';
+  document.getElementById('shop-page').style.display = 'none';
+  document.getElementById('delivery-page').classList.remove('hidden');
+}
+
+function backToShop() {
+  document.getElementById('delivery-page').classList.add('hidden');
+  document.getElementById('shop-page').style.display = 'block';
+}
+
+function confirmOrder() {
+  const order = {
+    name: d-name.value,
+    phone: d-phone.value,
+    address: d-address.value,
+    apartment: d-apartment.value,
+    note: d-note.value,
+    items: cart
+  };
+
+  console.log('ORDER:', order);
+  alert('Order ready for Telegram checkout');
 }
 
 /* ================= WISHLIST ================= */
 function toggleWishlist(title, price, img, btn) {
   const index = wishlist.findIndex(i => i.title === title);
-
   if (index === -1) {
     wishlist.push({ title, price, img });
     btn.classList.add('active');
@@ -111,14 +129,12 @@ function toggleWishlist(title, price, img, btn) {
     wishlist.splice(index, 1);
     btn.classList.remove('active');
   }
-
   document.getElementById('wish-count').textContent = wishlist.length;
 }
 
 function openWishlist() {
   const box = document.getElementById('wishlist-items');
   box.innerHTML = '';
-
   wishlist.forEach(p => {
     box.innerHTML += `
       <div class="wish-item">
@@ -130,7 +146,6 @@ function openWishlist() {
       </div>
     `;
   });
-
   document.getElementById('wishlist-modal').style.display = 'flex';
 }
 
@@ -138,5 +153,5 @@ function closeWishlist() {
   document.getElementById('wishlist-modal').style.display = 'none';
 }
 
-/* ================= AUTO LOAD ================= */
+/* ================= AUTO ================= */
 renderProducts('christmas');
