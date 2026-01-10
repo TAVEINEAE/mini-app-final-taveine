@@ -11,7 +11,11 @@
 <header class="top-bar">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
   <span class="brand">TAVEINE</span>
-  <button class="wish-btn" onclick="openWishlist()">♥ <span id="wish-count">0</span></button>
+
+  <div class="top-actions">
+    <button onclick="openWishlist()">♥ <span id="wish-count">0</span></button>
+    <button onclick="openCart()">🛒 <span id="cart-count">0</span></button>
+  </div>
 </header>
 
 <!-- SIDE MENU -->
@@ -35,6 +39,7 @@
     <img id="modal-img">
     <h3 id="modal-title"></h3>
     <p id="modal-price"></p>
+    <button class="main-btn" onclick="addToCart()">Add to Cart</button>
   </div>
 </div>
 
@@ -44,6 +49,17 @@
     <button class="close-btn" onclick="closeWishlist()">×</button>
     <h3>Wishlist</h3>
     <div id="wishlist-items"></div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div id="cart-modal" class="modal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeCart()">×</button>
+    <h3>Your Cart</h3>
+    <div id="cart-items"></div>
+    <h4>Total: <span id="cart-total">0 AED</span></h4>
+    <button class="main-btn" onclick="checkout()">Checkout</button>
   </div>
 </div>
 
