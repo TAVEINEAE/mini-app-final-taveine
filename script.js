@@ -1,4 +1,4 @@
-/* ====== CONFIG ====== */
+/**************** CONFIG ****************/
 const WC = {
   url: 'https://taveine.com/wp-json/wc/v3',
   key: 'ck_3f0d0db9590f9a5e4172c40d2be4e08d3578b710',
