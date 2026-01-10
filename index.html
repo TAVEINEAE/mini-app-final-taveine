@@ -8,23 +8,21 @@
 </head>
 <body>
 
-<!-- TOP BAR -->
 <header class="top-bar">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
   <span class="brand">TAVEINE</span>
+  <button class="wish-btn" onclick="openWishlist()">♥ <span id="wish-count">0</span></button>
 </header>
 
 <!-- SIDE MENU -->
 <div id="side-menu" class="side-menu">
   <button class="close-btn" onclick="toggleMenu()">×</button>
-
   <h3>Collections</h3>
   <a onclick="renderProducts('christmas')">Christmas</a>
   <a onclick="renderProducts('luxury')">Luxury</a>
   <a onclick="renderProducts('spring')">Spring</a>
 </div>
 
-<!-- MAIN CONTENT -->
 <main>
   <h2 id="page-title">Christmas Collection</h2>
   <div id="products" class="products"></div>
@@ -37,6 +35,15 @@
     <img id="modal-img">
     <h3 id="modal-title"></h3>
     <p id="modal-price"></p>
+  </div>
+</div>
+
+<!-- WISHLIST MODAL -->
+<div id="wishlist-modal" class="modal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeWishlist()">×</button>
+    <h3>Wishlist</h3>
+    <div id="wishlist-items"></div>
   </div>
 </div>
 
