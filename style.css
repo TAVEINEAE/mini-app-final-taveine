@@ -1,94 +1,160 @@
-* { box-sizing: border-box; }
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #777;
+  --gold: #c9a24d;
+  --border: #eaeaea;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+}
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
-/* TOP BAR */
+/* ===== TOP BAR ===== */
 .top-bar {
   display: flex;
   align-items: center;
-  padding: 10px;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
 }
 
 .menu-btn {
-  font-size: 22px;
   background: none;
   border: none;
+  font-size: 22px;
   cursor: pointer;
 }
 
 .brand {
-  margin-left: 10px;
-  font-weight: bold;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
-/* SIDE MENU */
+.top-actions button {
+  background: none;
+  border: none;
+  margin-left: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ===== SIDE MENU ===== */
 .side-menu {
   position: fixed;
   top: 0;
-  left: -260px;
-  width: 260px;
+  left: -280px;
+  width: 280px;
   height: 100%;
   background: #fff;
   padding: 20px;
-  box-shadow: 2px 0 10px rgba(0,0,0,.1);
-  transition: 0.3s;
+  transition: .3s;
+  border-right: 1px solid var(--border);
+  z-index: 10;
 }
 
 .side-menu.open {
   left: 0;
 }
 
+.side-menu h3 {
+  margin-top: 0;
+  font-weight: 500;
+}
+
 .side-menu a {
   display: block;
-  margin: 10px 0;
+  padding: 10px 0;
+  color: var(--text);
   cursor: pointer;
+  text-decoration: none;
 }
 
-/* MAIN */
+/* ===== MAIN ===== */
 main {
-  padding: 15px;
+  padding: 24px 16px 100px;
 }
 
+#page-title {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+/* ===== PRODUCTS ===== */
 .products {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
 }
 
 .card {
-  width: 150px;
-  cursor: pointer;
+  position: relative;
 }
 
 .card img {
   width: 100%;
   border-radius: 6px;
+  background: #f5f5f5;
 }
 
-/* MODAL */
+.card h4 {
+  margin: 8px 0 2px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.card span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ♥ */
+.heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.heart.active {
+  color: var(--gold);
+}
+
+/* ===== MODALS ===== */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,.4);
   justify-content: center;
   align-items: center;
+  z-index: 20;
 }
 
 .modal-box {
   background: #fff;
-  padding: 20px;
   width: 90%;
-  max-width: 300px;
+  max-width: 360px;
+  padding: 20px;
+  border-radius: 8px;
 }
 
 .modal-box img {
   width: 100%;
+  border-radius: 6px;
 }
 
 .close-btn {
@@ -99,88 +165,34 @@ main {
   cursor: pointer;
 }
 
-.wish-btn {
-  background:none;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.heart {
-  position:absolute;
-  background:none;
-  border:none;
-  font-size:18px;
-  cursor:pointer;
-}
-
-.heart.active {
-  color:red;
-}
-
-.card {
-  position:relative;
-}
-
-.wish-item {
-  display:flex;
-  gap:10px;
-  margin-bottom:10px;
-}
-
-.wish-item img {
-  width:50px;
-  border-radius:4px;
-}
-
-.top-actions button {
-  background:none;
-  border:none;
-  margin-left:8px;
-  font-size:16px;
-  cursor:pointer;
-}
-
+/* ===== BUTTONS ===== */
 .main-btn {
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.cart-item {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:8px;
-}
-
-.cart-item button {
-  background:none;
-  border:none;
-  font-size:18px;
-  cursor:pointer;
-}
-
-.delivery {
-  padding: 20px;
-}
-
-.delivery input,
-.delivery textarea {
   width: 100%;
-  margin-bottom: 10px;
-  padding: 10px;
-}
-
-.hidden {
-  display: none;
+  padding: 12px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  margin-top: 14px;
+  cursor: pointer;
 }
 
 .link-btn {
   background: none;
   border: none;
   margin-top: 10px;
+  color: var(--muted);
   cursor: pointer;
-  color: #555;
+}
+
+/* ===== DELIVERY ===== */
+.delivery input,
+.delivery textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+
+.hidden {
+  display: none;
 }
