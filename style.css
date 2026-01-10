@@ -1,9 +1,8 @@
 :root {
-  --bg: #ffffff;
-  --text: #111111;
+  --green: #1f3f38;
+  --text: #111;
   --muted: #777;
-  --gold: #c9a24d;
-  --border: #eaeaea;
+  --border: #eee;
 }
 
 * {
@@ -13,11 +12,11 @@
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: #fff;
   color: var(--text);
 }
 
-/* ===== TOP BAR ===== */
+/* TOP BAR */
 .top-bar {
   display: flex;
   align-items: center;
@@ -27,10 +26,9 @@ body {
 }
 
 .menu-btn {
+  font-size: 22px;
   background: none;
   border: none;
-  font-size: 22px;
-  cursor: pointer;
 }
 
 .brand {
@@ -41,12 +39,10 @@ body {
 .top-actions button {
   background: none;
   border: none;
-  margin-left: 10px;
-  font-size: 14px;
-  cursor: pointer;
+  margin-left: 8px;
 }
 
-/* ===== SIDE MENU ===== */
+/* SIDE MENU */
 .side-menu {
   position: fixed;
   top: 0;
@@ -56,59 +52,37 @@ body {
   background: #fff;
   padding: 20px;
   transition: .3s;
-  border-right: 1px solid var(--border);
   z-index: 10;
+  border-right: 1px solid var(--border);
 }
 
-.side-menu.open {
-  left: 0;
-}
-
-.side-menu h3 {
-  margin-top: 0;
-  font-weight: 500;
-}
+.side-menu.open { left: 0; }
 
 .side-menu a {
   display: block;
   padding: 10px 0;
-  color: var(--text);
   cursor: pointer;
-  text-decoration: none;
 }
 
-/* ===== MAIN ===== */
+/* PRODUCTS */
 main {
-  padding: 24px 16px 100px;
+  padding: 20px 16px 120px;
 }
 
-#page-title {
-  font-size: 22px;
-  font-weight: 500;
-  margin-bottom: 20px;
-}
-
-/* ===== PRODUCTS ===== */
 .products {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 18px;
 }
 
-.card {
-  position: relative;
-}
-
 .card img {
   width: 100%;
-  border-radius: 6px;
   background: #f5f5f5;
 }
 
 .card h4 {
-  margin: 8px 0 2px;
   font-size: 14px;
-  font-weight: 500;
+  margin: 8px 0 2px;
 }
 
 .card span {
@@ -116,24 +90,16 @@ main {
   color: var(--muted);
 }
 
-/* ♥ */
-.heart {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255,255,255,.9);
+.main-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: var(--green);
+  color: #fff;
   border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
 }
 
-.heart.active {
-  color: var(--gold);
-}
-
-/* ===== MODALS ===== */
+/* MODALS */
 .modal {
   display: none;
   position: fixed;
@@ -141,50 +107,14 @@ main {
   background: rgba(0,0,0,.4);
   justify-content: center;
   align-items: center;
-  z-index: 20;
 }
 
 .modal-box {
   background: #fff;
-  width: 90%;
-  max-width: 360px;
   padding: 20px;
-  border-radius: 8px;
+  width: 90%;
 }
 
-.modal-box img {
-  width: 100%;
-  border-radius: 6px;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  float: right;
-  cursor: pointer;
-}
-
-/* ===== BUTTONS ===== */
-.main-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--text);
-  color: #fff;
-  border: none;
-  margin-top: 14px;
-  cursor: pointer;
-}
-
-.link-btn {
-  background: none;
-  border: none;
-  margin-top: 10px;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-/* ===== DELIVERY ===== */
 .delivery input,
 .delivery textarea {
   width: 100%;
@@ -193,6 +123,4 @@ main {
   border: 1px solid var(--border);
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
