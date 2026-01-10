@@ -27,7 +27,8 @@
   <a onclick="renderProducts('spring')">Spring</a>
 </div>
 
-<main>
+<!-- SHOP PAGE -->
+<main id="shop-page">
   <h2 id="page-title">Christmas Collection</h2>
   <div id="products" class="products"></div>
 </main>
@@ -59,9 +60,23 @@
     <h3>Your Cart</h3>
     <div id="cart-items"></div>
     <h4>Total: <span id="cart-total">0 AED</span></h4>
-    <button class="main-btn" onclick="checkout()">Checkout</button>
+    <button class="main-btn" onclick="openDelivery()">Proceed to Delivery</button>
   </div>
 </div>
+
+<!-- DELIVERY PAGE -->
+<section id="delivery-page" class="delivery hidden">
+  <h2>Delivery Details</h2>
+
+  <input id="d-name" placeholder="Recipient Name">
+  <input id="d-phone" placeholder="Phone Number">
+  <input id="d-address" placeholder="Street / Building">
+  <input id="d-apartment" placeholder="Apartment / Villa">
+  <textarea id="d-note" placeholder="Delivery notes (optional)"></textarea>
+
+  <button class="main-btn" onclick="confirmOrder()">Confirm Order</button>
+  <button class="link-btn" onclick="backToShop()">← Back to Shop</button>
+</section>
 
 <script src="script.js"></script>
 </body>
