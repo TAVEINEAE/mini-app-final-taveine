@@ -1,9 +1,9 @@
-/* ========== MENU ========== */
+/* MENU */
 function toggleMenu() {
   document.getElementById('side-menu').classList.toggle('open');
 }
 
-/* ========== DATA ========== */
+/* DATA */
 const products = {
   christmas: [
     { title: 'Snowfall Serenity', price: '620 AED', img: 'p1.jpg' },
@@ -17,22 +17,22 @@ const products = {
   ]
 };
 
-/* ========== RENDER PRODUCTS ========== */
-function renderProducts(category) {
-  const title =
-    category.charAt(0).toUpperCase() +
-    category.slice(1) +
-    ' Collection';
+/* WISHLIST */
+let wishlist = [];
 
-  document.getElementById('page-title').textContent = title;
+/* RENDER PRODUCTS */
+function renderProducts(category) {
+  document.getElementById('page-title').textContent =
+    category.charAt(0).toUpperCase() + category.slice(1) + ' Collection';
 
   const container = document.getElementById('products');
   container.innerHTML = '';
 
   products[category].forEach(p => {
     container.innerHTML += `
-      <div class="card" onclick="openProduct('${p.title}','${p.price}','${p.img}')">
-        <img src="${p.img}">
+      <div class="card">
+        <img src="${p.img}" onclick="openProduct('${p.title}','${p.price}','${p.img}')">
+        <button class="heart" onclick="toggleWishlist('${p.title}','${p.price}','${p.img}', this)">♥</button>
         <h4>${p.title}</h4>
         <span>${p.price}</span>
       </div>
@@ -42,7 +42,45 @@ function renderProducts(category) {
   toggleMenu();
 }
 
-/* ========== MODAL ========== */
+/* WISHLIST LOGIC */
+function toggleWishlist(title, price, img, btn) {
+  const index = wishlist.findIndex(i => i.title === title);
+
+  if (index === -1) {
+    wishlist.push({ title, price, img });
+    btn.classList.add('active');
+  } else {
+    wishlist.splice(index, 1);
+    btn.classList.remove('active');
+  }
+
+  document.getElementById('wish-count').textContent = wishlist.length;
+}
+
+function openWishlist() {
+  const box = document.getElementById('wishlist-items');
+  box.innerHTML = '';
+
+  wishlist.forEach(p => {
+    box.innerHTML += `
+      <div class="wish-item">
+        <img src="${p.img}">
+        <div>
+          <h4>${p.title}</h4>
+          <span>${p.price}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('wishlist-modal').style.display = 'flex';
+}
+
+function closeWishlist() {
+  document.getElementById('wishlist-modal').style.display = 'none';
+}
+
+/* MODAL */
 function openProduct(title, price, img) {
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-price').textContent = price;
@@ -54,5 +92,5 @@ function closeProduct() {
   document.getElementById('product-modal').style.display = 'none';
 }
 
-/* ========== AUTO LOAD ========== */
+/* AUTO LOAD */
 renderProducts('christmas');
