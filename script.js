@@ -1,3 +1,7 @@
+if (window.Telegram && Telegram.WebApp) {
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+}
 /**************** CONFIG ****************/
 const WC = {
   url: 'https://taveine.com/wp-json/wc/v3',
