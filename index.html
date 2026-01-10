@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAVEINE Mini App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="top-bar">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <span class="brand">TAVEINE</span>
+</header>
+
+<!-- SIDE MENU -->
+<div id="side-menu" class="side-menu">
+  <button class="close-btn" onclick="toggleMenu()">×</button>
+
+  <h3>Collections</h3>
+  <a onclick="renderProducts('christmas')">Christmas</a>
+  <a onclick="renderProducts('luxury')">Luxury</a>
+  <a onclick="renderProducts('spring')">Spring</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<main>
+  <h2 id="page-title">Christmas Collection</h2>
+  <div id="products" class="products"></div>
+</main>
+
+<!-- PRODUCT MODAL -->
+<div id="product-modal" class="modal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeProduct()">×</button>
+    <img id="modal-img">
+    <h3 id="modal-title"></h3>
+    <p id="modal-price"></p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
