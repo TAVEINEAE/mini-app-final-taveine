@@ -8,12 +8,13 @@
 </head>
 <body>
 
+<!-- TOP BAR -->
 <header class="top-bar">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
   <span class="brand">TAVEINE</span>
 
   <div class="top-actions">
-    <button onclick="openWishlist()">♥ <span id="wish-count">0</span></button>
+    <button onclick="openWishlist()">♡ <span id="wish-count">0</span></button>
     <button onclick="openCart()">🛒 <span id="cart-count">0</span></button>
   </div>
 </header>
@@ -21,39 +22,27 @@
 <!-- SIDE MENU -->
 <div id="side-menu" class="side-menu">
   <button class="close-btn" onclick="toggleMenu()">×</button>
-  <h3>Collections</h3>
-  <a onclick="renderProducts('christmas')">Christmas</a>
-  <a onclick="renderProducts('luxury')">Luxury</a>
-  <a onclick="renderProducts('spring')">Spring</a>
+
+  <h3>Collection</h3>
+  <a onclick="loadProducts()">Shop All</a>
+  <a onclick="loadProducts('christmas-collection')">Christmas Collection</a>
+  <a onclick="loadProducts('best-sellers')">Best Sellers</a>
+  <a onclick="loadProducts('luxury')">Luxury</a>
+  <a onclick="loadProducts('vases')">Vases</a>
+  <a onclick="loadProducts('box')">Box</a>
+
+  <h3>Occasions</h3>
+  <a onclick="loadProducts('anniversary')">Anniversary</a>
+  <a onclick="loadProducts('birthday')">Birthday</a>
 </div>
 
-<!-- SHOP PAGE -->
+<!-- SHOP -->
 <main id="shop-page">
-  <h2 id="page-title">Christmas Collection</h2>
+  <h2 id="page-title">Shop All</h2>
   <div id="products" class="products"></div>
 </main>
 
-<!-- PRODUCT MODAL -->
-<div id="product-modal" class="modal">
-  <div class="modal-box">
-    <button class="close-btn" onclick="closeProduct()">×</button>
-    <img id="modal-img">
-    <h3 id="modal-title"></h3>
-    <p id="modal-price"></p>
-    <button class="main-btn" onclick="addToCart()">Add to Cart</button>
-  </div>
-</div>
-
-<!-- WISHLIST MODAL -->
-<div id="wishlist-modal" class="modal">
-  <div class="modal-box">
-    <button class="close-btn" onclick="closeWishlist()">×</button>
-    <h3>Wishlist</h3>
-    <div id="wishlist-items"></div>
-  </div>
-</div>
-
-<!-- CART MODAL -->
+<!-- CART -->
 <div id="cart-modal" class="modal">
   <div class="modal-box">
     <button class="close-btn" onclick="closeCart()">×</button>
@@ -64,7 +53,7 @@
   </div>
 </div>
 
-<!-- DELIVERY PAGE -->
+<!-- DELIVERY -->
 <section id="delivery-page" class="delivery hidden">
   <h2>Delivery Details</h2>
 
