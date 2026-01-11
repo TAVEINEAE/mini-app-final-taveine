@@ -1,16 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TAVEINE Mini App</title>
+
+  <!-- Telegram Mini App -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <link rel="stylesheet" href="style.css">
 </head>
-<!-- FOOTER -->
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <img src="./img/hero.jpg" class="hero-img" alt="TAVEINE Flowers">
+  <img src="./img/logo.png" class="hero-logo" alt="TAVEINE">
+</section>
+
+<!-- ================= TOP BAR ================= -->
+<header class="top-bar">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <span class="brand">TAVEINE</span>
+
+  <div class="top-actions">
+    <button onclick="openWishlist()">♡ <span id="wish-count">0</span></button>
+    <button onclick="openCart()">🛒 <span id="cart-count">0</span></button>
+  </div>
+</header>
+
+<!-- ================= SIDE MENU ================= -->
+<div id="side-menu" class="side-menu">
+  <button class="close-btn" onclick="toggleMenu()">×</button>
+
+  <h3>Collection</h3>
+  <a onclick="loadProducts()">Shop All</a>
+  <a onclick="loadProducts('christmas-collection')">Christmas Collection</a>
+  <a onclick="loadProducts('best-sellers')">Best Sellers</a>
+  <a onclick="loadProducts('luxury')">Luxury</a>
+  <a onclick="loadProducts('vases')">Vases</a>
+  <a onclick="loadProducts('box')">Box</a>
+
+  <h3>Occasions</h3>
+  <a onclick="loadProducts('anniversary')">Anniversary</a>
+  <a onclick="loadProducts('birthday')">Birthday</a>
+</div>
+
+<!-- ================= SHOP ================= -->
+<main id="shop-page">
+  <h2 id="page-title">Shop All</h2>
+  <div id="products" class="products"></div>
+</main>
+
+<!-- ================= CART ================= -->
+<div id="cart-modal" class="modal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeCart()">×</button>
+    <h3>Your Cart</h3>
+    <div id="cart-items"></div>
+    <h4>Total: <span id="cart-total">0 AED</span></h4>
+    <button class="main-btn" onclick="openDelivery()">Proceed to Delivery</button>
+  </div>
+</div>
+
+<!-- ================= DELIVERY ================= -->
+<section id="delivery-page" class="delivery hidden">
+  <h2>Delivery Details</h2>
+
+  <input id="d-name" placeholder="Recipient Name">
+  <input id="d-phone" placeholder="Phone Number">
+  <input id="d-address" placeholder="Street / Building">
+  <input id="d-apartment" placeholder="Apartment / Villa">
+  <textarea id="d-note" placeholder="Delivery notes (optional)"></textarea>
+
+  <button class="main-btn" onclick="confirmOrder()">Confirm Order</button>
+  <button class="link-btn" onclick="backToShop()">← Back to Shop</button>
+</section>
+
+<!-- ================= FOOTER (САМЫЙ НИЗ) ================= -->
 <footer class="footer">
   <div class="footer-logo">
-    <img src="logo.png" alt="TAVEINE">
+    <img src="./img/logo.png" alt="TAVEINE">
   </div>
 
   <div class="footer-info">
@@ -32,66 +102,6 @@
     © TAVEINE Flower Shop. All Rights Reserved.
   </div>
 </footer>
-<body>
-
-<!-- TOP BAR -->
-<header class="top-bar">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  <span class="brand">TAVEINE</span>
-
-  <div class="top-actions">
-    <button onclick="openWishlist()">♡ <span id="wish-count">0</span></button>
-    <button onclick="openCart()">🛒 <span id="cart-count">0</span></button>
-  </div>
-</header>
-
-<!-- SIDE MENU -->
-<div id="side-menu" class="side-menu">
-  <button class="close-btn" onclick="toggleMenu()">×</button>
-
-  <h3>Collection</h3>
-  <a onclick="loadProducts()">Shop All</a>
-  <a onclick="loadProducts('christmas-collection')">Christmas Collection</a>
-  <a onclick="loadProducts('best-sellers')">Best Sellers</a>
-  <a onclick="loadProducts('luxury')">Luxury</a>
-  <a onclick="loadProducts('vases')">Vases</a>
-  <a onclick="loadProducts('box')">Box</a>
-
-  <h3>Occasions</h3>
-  <a onclick="loadProducts('anniversary')">Anniversary</a>
-  <a onclick="loadProducts('birthday')">Birthday</a>
-</div>
-
-<!-- SHOP -->
-<main id="shop-page">
-  <h2 id="page-title">Shop All</h2>
-  <div id="products" class="products"></div>
-</main>
-
-<!-- CART -->
-<div id="cart-modal" class="modal">
-  <div class="modal-box">
-    <button class="close-btn" onclick="closeCart()">×</button>
-    <h3>Your Cart</h3>
-    <div id="cart-items"></div>
-    <h4>Total: <span id="cart-total">0 AED</span></h4>
-    <button class="main-btn" onclick="openDelivery()">Proceed to Delivery</button>
-  </div>
-</div>
-
-<!-- DELIVERY -->
-<section id="delivery-page" class="delivery hidden">
-  <h2>Delivery Details</h2>
-
-  <input id="d-name" placeholder="Recipient Name">
-  <input id="d-phone" placeholder="Phone Number">
-  <input id="d-address" placeholder="Street / Building">
-  <input id="d-apartment" placeholder="Apartment / Villa">
-  <textarea id="d-note" placeholder="Delivery notes (optional)"></textarea>
-
-  <button class="main-btn" onclick="confirmOrder()">Confirm Order</button>
-  <button class="link-btn" onclick="backToShop()">← Back to Shop</button>
-</section>
 
 <script src="script.js"></script>
 </body>
