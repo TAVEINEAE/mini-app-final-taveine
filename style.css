@@ -20,17 +20,27 @@ body {
   background: var(--green);
   color: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
+  justify-content: space-between;
+  padding: 12px 16px;
 }
 
-.top-strip button {
+.top-strip .menu-btn {
   background: none;
   border: none;
   color: #fff;
   font-size: 22px;
   cursor: pointer;
+}
+
+.top-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.top-right {
+  width: 22px; /* балансирует центр */
 }
 
 /* ================= SIDE MENU ================= */
