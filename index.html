@@ -7,6 +7,31 @@
 
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    .card { position: relative; }
+
+    .wishlist-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 42px;
+      height: 42px;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+      z-index: 3;
+    }
+
+    .wishlist-btn.active {
+      color: #c0392b;
+    }
+  </style>
 </head>
 
 <body>
@@ -30,6 +55,7 @@
   <div class="grid">
 
     <div class="card" data-cat="box">
+      <div class="wishlist-btn">♡</div>
       <img src="box1.jpg">
       <h3>Rose Box Classic</h3>
       <span>620 AED</span>
@@ -37,6 +63,7 @@
     </div>
 
     <div class="card" data-cat="box">
+      <div class="wishlist-btn">♡</div>
       <img src="box2.jpg">
       <h3>Rose Box Deluxe</h3>
       <span>720 AED</span>
@@ -44,6 +71,7 @@
     </div>
 
     <div class="card" data-cat="luxury">
+      <div class="wishlist-btn">♡</div>
       <img src="lux1.jpg">
       <h3>Luxury Red Roses</h3>
       <span>950 AED</span>
@@ -51,6 +79,7 @@
     </div>
 
     <div class="card" data-cat="luxury">
+      <div class="wishlist-btn">♡</div>
       <img src="lux2.jpg">
       <h3>Golden Luxury Roses</h3>
       <span>1100 AED</span>
@@ -58,6 +87,7 @@
     </div>
 
     <div class="card" data-cat="vases">
+      <div class="wishlist-btn">♡</div>
       <img src="vase1.jpg">
       <h3>White Vase Bouquet</h3>
       <span>480 AED</span>
@@ -65,6 +95,7 @@
     </div>
 
     <div class="card" data-cat="vases">
+      <div class="wishlist-btn">♡</div>
       <img src="vase2.jpg">
       <h3>Green Garden Vase</h3>
       <span>520 AED</span>
@@ -72,6 +103,7 @@
     </div>
 
     <div class="card" data-cat="christmas">
+      <div class="wishlist-btn">♡</div>
       <img src="xmas1.jpg">
       <h3>Christmas Bloom</h3>
       <span>780 AED</span>
@@ -79,6 +111,7 @@
     </div>
 
     <div class="card" data-cat="christmas">
+      <div class="wishlist-btn">♡</div>
       <img src="xmas2.jpg">
       <h3>Winter Red Box</h3>
       <span>860 AED</span>
@@ -86,6 +119,7 @@
     </div>
 
     <div class="card" data-cat="birthday">
+      <div class="wishlist-btn">♡</div>
       <img src="bday1.jpg">
       <h3>Birthday Pink</h3>
       <span>690 AED</span>
@@ -93,6 +127,7 @@
     </div>
 
     <div class="card" data-cat="anniversary">
+      <div class="wishlist-btn">♡</div>
       <img src="anni1.jpg">
       <h3>Anniversary Roses</h3>
       <span>890 AED</span>
@@ -104,27 +139,10 @@
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="active">
-    <span class="icon">▦</span>
-    <small>Shop</small>
-  </button>
-
-  <button>
-    <span class="icon">🔍</span>
-    <small>Search</small>
-  </button>
-
-  <button class="badge">
-    <span class="icon">♡</span>
-    <small>Wishlist</small>
-    <em>0</em>
-  </button>
-
-  <button class="badge">
-    <span class="icon">🛒</span>
-    <small>Cart</small>
-    <em>0</em>
-  </button>
+  <button class="active"><span class="icon">▦</span><small>Shop</small></button>
+  <button><span class="icon">🔍</span><small>Search</small></button>
+  <button class="badge"><span class="icon">♡</span><small>Wishlist</small><em>0</em></button>
+  <button class="badge"><span class="icon">🛒</span><small>Cart</small><em>0</em></button>
 </nav>
 
 <!-- SIDE MENU -->
@@ -142,21 +160,17 @@
 </div>
 
 <script>
-/******** TELEGRAM ********/
 if (window.Telegram && Telegram.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
 }
 
-/******** MENU ********/
 function toggleMenu() {
   document.getElementById('side-menu').classList.toggle('open');
 }
 
-/******** FILTER ********/
 function filterProducts(cat) {
   toggleMenu();
-
   document.getElementById('section-title').innerText =
     cat === 'all' ? 'Best Sellers' : cat.toUpperCase();
 
@@ -175,7 +189,6 @@ function updateBadges() {
   document.querySelectorAll('.bottom-nav .badge').forEach(btn => {
     const icon = btn.querySelector('.icon').textContent;
     const counter = btn.querySelector('em');
-
     if (icon === '🛒') counter.textContent = cart.length;
     if (icon === '♡') counter.textContent = wishlist.length;
   });
@@ -183,25 +196,36 @@ function updateBadges() {
 
 /******** ADD TO CART ********/
 document.querySelectorAll('.card button').forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.onclick = () => {
     const card = btn.closest('.card');
     cart.push({
       name: card.querySelector('h3').innerText,
       price: card.querySelector('span').innerText
     });
     updateBadges();
-  });
+  };
 });
 
-/******** WISHLIST (DOUBLE TAP) ********/
-document.querySelectorAll('.card').forEach(card => {
-  card.addEventListener('dblclick', () => {
+/******** WISHLIST HEART ********/
+document.querySelectorAll('.wishlist-btn').forEach(btn => {
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    const card = btn.closest('.card');
     const name = card.querySelector('h3').innerText;
-    if (!wishlist.includes(name)) {
+
+    if (wishlist.includes(name)) {
+      wishlist = wishlist.filter(i => i !== name);
+      btn.textContent = '♡';
+      btn.classList.remove('active');
+    } else {
       wishlist.push(name);
-      updateBadges();
+      btn.textContent = '♥';
+      btn.classList.add('active');
     }
-  });
+
+    updateBadges();
+    Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');
+  };
 });
 
 /******** BOTTOM NAV ********/
@@ -212,13 +236,11 @@ btns[0].onclick = () => filterProducts('all');
 btns[1].onclick = () => {
   const q = prompt('Search product');
   if (!q) return;
-
   document.getElementById('section-title').innerText = 'Search results';
   document.querySelectorAll('.card').forEach(card => {
     card.style.display =
       card.querySelector('h3').innerText.toLowerCase().includes(q.toLowerCase())
-        ? 'block'
-        : 'none';
+        ? 'block' : 'none';
   });
 };
 
