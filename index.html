@@ -7,24 +7,100 @@
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* === FIX CORE ISSUES === */
+
+    body {
+      margin: 0;
+      padding-bottom: 80px;
+    }
+
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 40px 16px 20px;
+      z-index: 1;
+    }
+
+    .hero img {
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto 0;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 600;
+      text-align: center;
+      margin: 30px 0 10px;
+    }
+
+    /* PRODUCTS */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 0 16px;
+    }
+
+    .product {
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+    }
+
+    /* SIDE MENU */
+    .side-menu {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 280px;
+      background: #fff;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: .3s;
+    }
+
+    .side-menu.open {
+      transform: translateX(0);
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #fff;
+      border-top: 1px solid #eee;
+      z-index: 2000;
+    }
+
+    .bottom-nav button {
+      background: none;
+      border: none;
+      text-align: center;
+      font-size: 12px;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- ===== TOP STRIP ===== -->
-<div class="top-strip">
-  <span class="back">‹</span>
-  <span class="close">×</span>
-</div>
-
-<!-- ===== HEADER ===== -->
+<!-- HEADER -->
 <header class="header">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
-
   <img src="hero-logo.png" class="logo" alt="TAVEINE">
 </header>
 
-<!-- ===== SIDE MENU ===== -->
+<!-- SIDE MENU -->
 <div id="side-menu" class="side-menu">
   <div class="side-header">
     <span>Menu</span>
@@ -32,75 +108,33 @@
   </div>
 
   <div class="accordion">
-    <div class="acc-title" onclick="toggleAcc(this)">
-      Collection <span>+</span>
-    </div>
+    <div class="acc-title" onclick="toggleAcc(this)">Collection <span>+</span></div>
     <div class="acc-body">
+      <a onclick="loadProducts()">Shop All</a>
       <a>Christmas Collection</a>
-      <a>Spring</a>
-      <a>New Arrivals</a>
-      <a>Best Sellers</a>
       <a>Luxury</a>
-      <a>Vases</a>
-      <a>Box</a>
-    </div>
-
-    <div class="acc-title" onclick="toggleAcc(this)">
-      Occasions <span>+</span>
-    </div>
-    <div class="acc-body">
-      <a>Anniversary</a>
-      <a>Birthday</a>
-      <a>I’m Sorry</a>
-      <a>New Baby</a>
-      <a>Event Design</a>
-      <a>Forever Rose</a>
-      <a>Balloons</a>
-    </div>
-
-    <div class="acc-title" onclick="toggleAcc(this)">
-      Home <span>+</span>
-    </div>
-    <div class="acc-body">
-      <a>About Us</a>
-      <a>Privacy Policy</a>
     </div>
   </div>
 </div>
 
-<!-- ===== HERO ===== -->
+<!-- HERO -->
 <section class="hero">
-  <h1>
-    THE FRESHEST<br>
-    FLOWERS ARE HERE
-  </h1>
-
+  <h1>THE FRESHEST<br>FLOWERS ARE HERE</h1>
   <img src="hero.jpg" alt="Flowers">
 </section>
 
-<!-- ===== PLACEHOLDER ===== -->
-<section class="section-title">
-  Best Sellers
-</section>
+<!-- BEST SELLERS -->
+<div class="section-title">Best Sellers</div>
 
-<!-- ===== BOTTOM NAV ===== -->
+<!-- PRODUCTS -->
+<div id="products" class="products"></div>
+
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="active">
-    <span>⌂</span>
-    <small>Shop</small>
-  </button>
-  <button>
-    <span>🔍</span>
-    <small>Search</small>
-  </button>
-  <button>
-    <span>♡</span>
-    <small>Wishlist</small>
-  </button>
-  <button>
-    <span>🛒</span>
-    <small>Cart</small>
-  </button>
+  <button onclick="scrollToTop()">⌂<br>Shop</button>
+  <button>🔍<br>Search</button>
+  <button>♡<br>Wishlist</button>
+  <button>🛒<br>Cart</button>
 </nav>
 
 <script>
@@ -110,11 +144,31 @@ function toggleMenu() {
 
 function toggleAcc(el) {
   const body = el.nextElementSibling;
-  const icon = el.querySelector('span');
-
   body.classList.toggle('open');
-  icon.textContent = body.classList.contains('open') ? '−' : '+';
 }
+
+/* TEMP PRODUCTS (пока WooCommerce) */
+function loadProducts() {
+  const box = document.getElementById('products');
+  box.innerHTML = `
+    <div class="product">
+      <img src="hero.jpg">
+      <p>Rose Box</p>
+      <strong>620 AED</strong>
+    </div>
+    <div class="product">
+      <img src="hero.jpg">
+      <p>Luxury Roses</p>
+      <strong>950 AED</strong>
+    </div>
+  `;
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+loadProducts();
 </script>
 
 </body>
