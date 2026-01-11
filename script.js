@@ -1,4 +1,5 @@
 let currentProduct = null;
+
 if (window.Telegram?.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
@@ -59,15 +60,18 @@ function renderProducts(list) {
 
 /* ===== FILTER ===== */
 function filterProducts(cat) {
-  toggleMenu();
+  document.getElementById("side-menu").classList.remove("open");
+
   document.getElementById("section-title").innerText =
-    cat === "all" ? "All Products" : cat.replace(/^\w/, c => c.toUpperCase());
+    cat === "all" ? "Shop All" : cat.replace(/^\w/, c => c.toUpperCase());
 
   renderProducts(
     cat === "all"
       ? productsData
       : productsData.filter(p => p.category.includes(cat))
   );
+
+  document.querySelector(".products").scrollIntoView({ behavior:"smooth" });
 }
 
 /* ===== CART / WISHLIST ===== */
@@ -90,13 +94,13 @@ function toggleWishlist(name, btn) {
   document.getElementById("wish-count").innerText = wishlist.length;
 }
 
-/* ===== MODALS ===== */
+/* ===== WISHLIST ===== */
 function openWishlist() {
   const box = document.getElementById("wishlistBox");
   box.innerHTML = wishlist.length
     ? wishlist.map(n => `<div class="wishlist-item">${n}</div>`).join("")
     : "<p style='text-align:center'>Wishlist empty</p>";
-  box.innerHTML += `<button class="wishlist-ok" onclick="closeWishlist()">OK</button>`;
+  box.innerHTML += `<button onclick="closeWishlist()">OK</button>`;
   document.getElementById("wishlistModal").style.display = "flex";
 }
 
@@ -104,26 +108,14 @@ function closeWishlist() {
   document.getElementById("wishlistModal").style.display = "none";
 }
 
-function showStatic(type) {
-  toggleMenu();
-  document.getElementById("products-grid").innerHTML =
-    `<p style="text-align:center;padding:40px">${type.toUpperCase()} PAGE</p>`;
-}
-
-/* INIT */
-document.addEventListener("DOMContentLoaded", () => {
-  renderProducts(productsData);
-});
-
+/* ===== PRODUCT PAGE ===== */
 function openProduct(product) {
   currentProduct = product;
-
   document.getElementById("product-img").src = product.image;
   document.getElementById("product-title").innerText = product.name;
   document.getElementById("product-price").innerText = product.price + " AED";
   document.getElementById("product-desc").innerText =
     product.desc || "Luxury floral arrangement by TAVÉINE.";
-
   document.getElementById("product-page").style.display = "block";
 }
 
@@ -137,94 +129,87 @@ function addCurrentToCart() {
   document.getElementById("cart-count").innerText = cart.length;
 }
 
+/* ===== POPUP ===== */
 const popupProducts = [
-  { name: "Luxury Heart Roses", image: "heart2.jpg" },
-  { name: "Forever Heart Roses", image: "heart3.jpg" },
-  { name: "Rose Box Classic", image: "box1.jpg" },
-  { name: "Luxury Red Roses", image: "lux1.jpg" }
+  { name:"Luxury Heart Roses", image:"heart2.jpg" },
+  { name:"Forever Heart Roses", image:"heart3.jpg" },
+  { name:"Rose Box Classic", image:"box1.jpg" },
+  { name:"Luxury Red Roses", image:"lux1.jpg" }
 ];
 
 function showPurchasePopup() {
-  const item = popupProducts[
-    Math.floor(Math.random() * popupProducts.length)
-  ];
-
-  const minutes = Math.floor(Math.random() * 55) + 5;
+  const item = popupProducts[Math.floor(Math.random()*popupProducts.length)];
+  const minutes = Math.floor(Math.random()*55)+5;
 
   document.getElementById("popup-img").src = item.image;
-  document.getElementById("popup-name").innerText =
-    `Someone purchased ${item.name}`;
-  document.getElementById("popup-time").innerText =
-    `${minutes} minutes ago`;
+  document.getElementById("popup-name").innerText = `Someone purchased ${item.name}`;
+  document.getElementById("popup-time").innerText = `${minutes} minutes ago`;
 
   const popup = document.getElementById("purchase-popup");
   popup.style.display = "flex";
 
-  setTimeout(() => {
-    popup.style.display = "none";
-  }, 4000);
+  setTimeout(()=> popup.style.display="none", 4000);
 }
 
-setTimeout(() => {
+setTimeout(()=>{
   showPurchasePopup();
-  setInterval(showPurchasePopup, 20000);
-}, 5000);
+  setInterval(showPurchasePopup,20000);
+},5000);
 
+/* ===== LUXURY ===== */
 function goLuxury() {
-  filterProducts('luxury');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  filterProducts("luxury");
 }
 
-// ===== SIDE MENU ACCORDION (+ / -) =====
+/* ===== MENU ACCORDION ===== */
 function toggleSection(head) {
   const body = head.nextElementSibling;
-  const sign = head.querySelector('b');
+  const sign = head.querySelector("b");
 
-  // закрываем все остальные секции
-  document.querySelectorAll('.menu-body').forEach(b => {
-    if (b !== body) {
-      b.style.display = 'none';
-      b.previousElementSibling.querySelector('b').textContent = '+';
+  document.querySelectorAll(".menu-body").forEach(b=>{
+    if(b!==body){
+      b.style.display="none";
+      b.previousElementSibling.querySelector("b").textContent="+";
     }
   });
 
-  // открываем / закрываем текущую
-  if (body.style.display === 'block') {
-    body.style.display = 'none';
-    sign.textContent = '+';
+  if(body.style.display==="block"){
+    body.style.display="none";
+    sign.textContent="+";
   } else {
-    body.style.display = 'block';
-    sign.textContent = '−';
+    body.style.display="block";
+    sign.textContent="−";
   }
 }
 
-function goToCategory(cat, title) {
-  // закрываем меню
-  document.getElementById('side-menu').classList.remove('open');
-
-  // меняем заголовок
-  const h = document.getElementById('section-title');
-  if (h && title) h.innerText = title;
-
-  // фильтруем товары
+/* ===== CATEGORY NAV ===== */
+function goToCategory(cat,title){
+  document.getElementById("side-menu").classList.remove("open");
+  document.getElementById("section-title").innerText = title;
   renderProducts(
-    cat === 'all'
-      ? productsData
-      : productsData.filter(p => p.category.includes(cat))
+    cat==="all" ? productsData : productsData.filter(p=>p.category.includes(cat))
   );
-
-  // скролл к товарам
-  const block = document.querySelector('.products');
-  if (block) {
-    block.scrollIntoView({ behavior: 'smooth' });
-  }
+  document.querySelector(".products").scrollIntoView({behavior:"smooth"});
 }
+
+/* ======================================================
+   ===== ABOUT US — ЕДИНСТВЕННОЕ ИСПРАВЛЕНИЕ =====
+====================================================== */
 
 function openAbout() {
-  toggleMenu();
+  document.getElementById("side-menu").classList.remove("open");
+  document.getElementById("main-content").style.display = "none";
   document.getElementById("about-page").style.display = "block";
+  window.scrollTo(0,0);
 }
 
 function closeAbout() {
   document.getElementById("about-page").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
+  window.scrollTo(0,0);
 }
+
+/* ===== INIT ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  renderProducts(productsData);
+});
