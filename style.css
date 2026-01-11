@@ -53,38 +53,56 @@ body {
   border-top:1px solid #ddd;
 }
 
-/* ================= BEST SELLERS SLIDER ================= */
-.best-slider {
+/* ================= BEST SELLERS (SMALL SLIDER) ================= */
+.best-sellers {
   padding: 30px 0 10px;
 }
 
-.best-slider h2 {
+.best-sellers h2 {
   text-align: center;
   margin-bottom: 20px;
 }
 
-.slider {
+.best-slider {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-.slider::-webkit-scrollbar {
+.best-slider::-webkit-scrollbar {
   display: none;
 }
 
-.slider-track {
+.best-track {
   display: flex;
-  gap: 16px;
-  padding: 0 16px 20px;
+  gap: 12px;
+  padding: 0 16px;
 }
 
-.slider .card {
-  min-width: calc(50% - 8px); /* 2 товара */
+.best-card {
+  min-width: calc(50% - 6px); /* 2 карточки */
   flex-shrink: 0;
-  text-align: center;
 }
 
-.slider .card img {
+.best-card img {
   width: 100%;
-  border-radius: 0;
+  display: block;
+}
+
+/* dots */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #ccc;
+  border-radius: 50%;
+}
+
+.dot.active {
+  background: var(--green);
 }
