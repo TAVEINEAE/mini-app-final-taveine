@@ -635,3 +635,69 @@ body {
 .menu-pill span:nth-child(3) {
   width: 12px;
 }
+
+/* ================= ABOUT PAGE ================= */
+
+#about-page {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 30000;
+  overflow-y: auto;
+}
+
+.about-content {
+  padding: 0 20px 140px;
+}
+
+.about-hero {
+  position: relative;
+  text-align: center;
+}
+
+.about-hero img {
+  width: 100%;
+  display: block;
+}
+
+.about-hero h1 {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 18px;
+  max-width: 90%;
+  line-height: 1.4;
+}
+
+.about-text,
+.about-section {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.about-text h2,
+.about-section h2 {
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+
+.about-text p,
+.about-section p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #2b3d36;
+}
+
+.about-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 30px 0;
+}
+
+.about-images img {
+  width: 100%;
+  border-radius: 6px;
+}
