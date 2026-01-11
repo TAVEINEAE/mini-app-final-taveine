@@ -382,3 +382,54 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,.15);
   font-size: 16px;
 }
+
+/* ================= LUXURY BLOCK ================= */
+
+.luxury-block {
+  padding: 40px 20px 20px;
+  background: #f6f7f5;
+}
+
+.load-more-btn {
+  display: block;
+  margin: 0 auto 30px;
+  padding: 12px 26px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+}
+
+.luxury-content {
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.luxury-content h2 {
+  font-size: 26px;
+  margin-bottom: 16px;
+}
+
+.luxury-content p {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 26px;
+}
+
+.shop-luxury-btn {
+  padding: 14px 28px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  font-size: 15px;
+}
+
+.luxury-image {
+  margin-top: 30px;
+}
+
+.luxury-image img {
+  width: 100%;
+  display: block;
+}
