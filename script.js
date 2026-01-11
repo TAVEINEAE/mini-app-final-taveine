@@ -1,5 +1,6 @@
 let currentProduct = null;
 
+/* ===== TELEGRAM INIT ===== */
 if (window.Telegram?.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
@@ -37,9 +38,10 @@ function toggleMenu() {
   document.getElementById("side-menu").classList.toggle("open");
 }
 
-/* ===== RENDER ===== */
+/* ===== RENDER HOME PRODUCTS ===== */
 function renderProducts(list) {
   const grid = document.getElementById("products-grid");
+  if (!grid) return;
   grid.innerHTML = "";
 
   list.forEach(p => {
@@ -58,7 +60,7 @@ function renderProducts(list) {
   });
 }
 
-/* ===== FILTER ===== */
+/* ===== HOME FILTER (НЕ КАТАЛОГ) ===== */
 function filterProducts(cat) {
   document.getElementById("side-menu").classList.remove("open");
 
@@ -71,7 +73,7 @@ function filterProducts(cat) {
       : productsData.filter(p => p.category.includes(cat))
   );
 
-  document.querySelector(".products").scrollIntoView({ behavior:"smooth" });
+  document.querySelector(".products")?.scrollIntoView({ behavior:"smooth" });
 }
 
 /* ===== CART / WISHLIST ===== */
@@ -94,7 +96,7 @@ function toggleWishlist(name, btn) {
   document.getElementById("wish-count").innerText = wishlist.length;
 }
 
-/* ===== WISHLIST ===== */
+/* ===== WISHLIST MODAL ===== */
 function openWishlist() {
   const box = document.getElementById("wishlistBox");
   box.innerHTML = wishlist.length
@@ -117,10 +119,12 @@ function openProduct(product) {
   document.getElementById("product-desc").innerText =
     product.desc || "Luxury floral arrangement by TAVÉINE.";
   document.getElementById("product-page").style.display = "block";
+  Telegram?.WebApp?.BackButton?.show();
 }
 
 function closeProduct() {
   document.getElementById("product-page").style.display = "none";
+  Telegram?.WebApp?.BackButton?.hide();
 }
 
 function addCurrentToCart() {
@@ -129,106 +133,18 @@ function addCurrentToCart() {
   document.getElementById("cart-count").innerText = cart.length;
 }
 
-/* ===== POPUP ===== */
-const popupProducts = [
-  { name:"Luxury Heart Roses", image:"heart2.jpg" },
-  { name:"Forever Heart Roses", image:"heart3.jpg" },
-  { name:"Rose Box Classic", image:"box1.jpg" },
-  { name:"Luxury Red Roses", image:"lux1.jpg" }
-];
-
-function showPurchasePopup() {
-  const item = popupProducts[Math.floor(Math.random()*popupProducts.length)];
-  const minutes = Math.floor(Math.random()*55)+5;
-
-  document.getElementById("popup-img").src = item.image;
-  document.getElementById("popup-name").innerText = `Someone purchased ${item.name}`;
-  document.getElementById("popup-time").innerText = `${minutes} minutes ago`;
-
-  const popup = document.getElementById("purchase-popup");
-  popup.style.display = "flex";
-
-  setTimeout(()=> popup.style.display="none", 4000);
-}
-
-setTimeout(()=>{
-  showPurchasePopup();
-  setInterval(showPurchasePopup,20000);
-},5000);
-
-/* ===== LUXURY ===== */
-function goLuxury() {
-  filterProducts("luxury");
-}
-
-/* ===== MENU ACCORDION ===== */
-function toggleSection(head) {
-  const body = head.nextElementSibling;
-  const sign = head.querySelector("b");
-
-  document.querySelectorAll(".menu-body").forEach(b=>{
-    if(b!==body){
-      b.style.display="none";
-      b.previousElementSibling.querySelector("b").textContent="+";
-    }
-  });
-
-  if(body.style.display==="block"){
-    body.style.display="none";
-    sign.textContent="+";
-  } else {
-    body.style.display="block";
-    sign.textContent="−";
-  }
-}
-
-/* ===== CATEGORY NAV ===== */
-function goToCategory(cat,title){
-  document.getElementById("side-menu").classList.remove("open");
-  document.getElementById("section-title").innerText = title;
-  renderProducts(
-    cat==="all" ? productsData : productsData.filter(p=>p.category.includes(cat))
-  );
-  document.querySelector(".products").scrollIntoView({behavior:"smooth"});
-}
-
-/* ======================================================
-   ===== ABOUT US — ЕДИНСТВЕННОЕ ИСПРАВЛЕНИЕ =====
-====================================================== */
-
-function openAbout() {
-  document.getElementById("side-menu").classList.remove("open");
-  document.getElementById("main-content").style.display = "none";
-  document.getElementById("about-page").style.display = "block";
-  window.scrollTo(0,0);
-}
-
-function closeAbout() {
-  document.getElementById("about-page").style.display = "none";
-  document.getElementById("main-content").style.display = "block";
-  window.scrollTo(0,0);
-}
-
-/* ===== INIT ===== */
-document.addEventListener("DOMContentLoaded", () => {
-  renderProducts(productsData);
-});
-
+/* ===== CATEGORY PAGE (ОТДЕЛЬНЫЙ ЭКРАН) ===== */
 function openCategory(cat, title) {
-  // закрываем меню
-  document.getElementById('side-menu').classList.remove('open');
+  document.getElementById("side-menu").classList.remove("open");
 
-  // скрываем главную страницу
-  document.querySelectorAll('body > section, footer, nav')
-    .forEach(el => el.style.display = 'none');
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "none");
 
-  // показываем страницу категории
-  document.getElementById('category-page').style.display = 'block';
-  document.getElementById('category-title').innerText = title;
+  document.getElementById("category-page").style.display = "block";
+  document.getElementById("category-title").innerText = title;
 
-  // товары категории
-  const grid = document.getElementById('category-grid');
-  grid.innerHTML = '';
+  const grid = document.getElementById("category-grid");
+  grid.innerHTML = "";
 
   productsData
     .filter(p => p.category.includes(cat))
@@ -239,40 +155,51 @@ function openCategory(cat, title) {
           <h3>${p.name}</h3>
           <span>${p.price} AED</span>
           <button onclick="addToCart('${p.name}')">Add to cart</button>
-        </div>
-      `;
+        </div>`;
     });
 
   window.scrollTo(0,0);
+  Telegram?.WebApp?.BackButton?.show();
 }
 
 function closeCategory() {
-  document.getElementById('category-page').style.display = 'none';
+  document.getElementById("category-page").style.display = "none";
 
-  // возвращаем главную страницу
-  document.querySelectorAll('body > section, footer, nav')
-    .forEach(el => el.style.display = '');
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "");
 
   window.scrollTo(0,0);
+  Telegram?.WebApp?.BackButton?.hide();
 }
 
-// ===== TELEGRAM BACK BUTTON =====
-if (window.Telegram?.WebApp?.BackButton) {
-
-  Telegram.WebApp.BackButton.onClick(() => {
-    // если открыта страница категории — закрываем её
-    const catPage = document.getElementById('category-page');
-    if (catPage && catPage.style.display === 'block') {
-      closeCategory();
-      Telegram.WebApp.BackButton.hide();
-    }
-
-    // если открыта страница About Us — закрываем её
-    const aboutPage = document.getElementById('about-page');
-    if (aboutPage && aboutPage.style.display === 'block') {
-      closeAbout();
-      Telegram.WebApp.BackButton.hide();
-    }
-  });
-
+/* ===== ABOUT US (ИСПРАВЛЕНО) ===== */
+function openAbout() {
+  document.getElementById("side-menu").classList.remove("open");
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("about-page").style.display = "block";
+  window.scrollTo(0,0);
+  Telegram?.WebApp?.BackButton?.show();
 }
+
+function closeAbout() {
+  document.getElementById("about-page").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
+  window.scrollTo(0,0);
+  Telegram?.WebApp?.BackButton?.hide();
+}
+
+/* ===== TELEGRAM BACK BUTTON ===== */
+Telegram?.WebApp?.BackButton?.onClick(() => {
+  if (document.getElementById("category-page")?.style.display === "block") {
+    closeCategory();
+  } else if (document.getElementById("about-page")?.style.display === "block") {
+    closeAbout();
+  } else if (document.getElementById("product-page")?.style.display === "block") {
+    closeProduct();
+  }
+});
+
+/* ===== INIT ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  renderProducts(productsData);
+});
