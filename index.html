@@ -24,26 +24,50 @@
   <img src="hero.jpg" alt="Taveine Flowers">
 </section>
 
-<!-- BEST SELLERS SLIDER -->
+<!-- BEST SELLERS -->
 <section class="best-sellers">
   <h2>Best Sellers</h2>
 
   <div class="best-slider">
     <div class="best-track">
 
-      <div class="best-card" data-cat="bestseller">
+      <div class="best-card" data-cat="bestseller"
+        onclick="openProduct({
+          name:'Heart Rose Arrangement',
+          price:1499,
+          image:'heart1.jpg',
+          desc:'Signature heart-shaped rose arrangement.'
+        })">
         <img src="heart1.jpg" alt="Heart Rose Arrangement">
       </div>
 
-      <div class="best-card" data-cat="bestseller">
+      <div class="best-card" data-cat="bestseller"
+        onclick="openProduct({
+          name:'Luxury Heart Roses',
+          price:1699,
+          image:'heart2.jpg',
+          desc:'Premium red roses arranged in a luxury heart shape.'
+        })">
         <img src="heart2.jpg" alt="Luxury Heart Roses">
       </div>
 
-      <div class="best-card" data-cat="bestseller">
+      <div class="best-card" data-cat="bestseller"
+        onclick="openProduct({
+          name:'Forever Heart Roses',
+          price:1299,
+          image:'heart3.jpg',
+          desc:'Long-lasting roses designed to last forever.'
+        })">
         <img src="heart3.jpg" alt="Forever Heart Roses">
       </div>
 
-      <div class="best-card" data-cat="bestseller">
+      <div class="best-card" data-cat="bestseller"
+        onclick="openProduct({
+          name:'Premium Heart Sculpture',
+          price:1899,
+          image:'heart4.jpg',
+          desc:'Luxury floral sculpture handcrafted by TAVÉINE.'
+        })">
         <img src="heart4.jpg" alt="Premium Heart Sculpture">
       </div>
 
@@ -56,7 +80,7 @@
   </div>
 </section>
 
-<!-- SHOP ALL PRODUCTS -->
+<!-- SHOP ALL -->
 <section class="products">
   <h2 id="section-title">Shop All</h2>
   <div class="grid" id="products-grid"></div>
@@ -131,7 +155,8 @@
 <div class="wishlist-modal" id="wishlistModal">
   <div class="wishlist-box" id="wishlistBox"></div>
 </div>
-<!-- PRODUCT PAGE (SCREEN) -->
+
+<!-- PRODUCT PAGE -->
 <section id="product-page" style="display:none">
 
   <div class="product-top">
@@ -139,7 +164,7 @@
   </div>
 
   <div class="product-content">
-    <img id="product-img">
+    <img id="product-img" alt="">
     <h2 id="product-title"></h2>
     <p id="product-price"></p>
     <p id="product-desc"></p>
