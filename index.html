@@ -29,7 +29,6 @@
 
   <div class="grid">
 
-    <!-- BOX -->
     <div class="card" data-cat="box">
       <img src="box1.jpg">
       <h3>Rose Box Classic</h3>
@@ -44,7 +43,6 @@
       <button>Add to cart</button>
     </div>
 
-    <!-- LUXURY -->
     <div class="card" data-cat="luxury">
       <img src="lux1.jpg">
       <h3>Luxury Red Roses</h3>
@@ -59,7 +57,6 @@
       <button>Add to cart</button>
     </div>
 
-    <!-- VASES -->
     <div class="card" data-cat="vases">
       <img src="vase1.jpg">
       <h3>White Vase Bouquet</h3>
@@ -74,7 +71,6 @@
       <button>Add to cart</button>
     </div>
 
-    <!-- CHRISTMAS -->
     <div class="card" data-cat="christmas">
       <img src="xmas1.jpg">
       <h3>Christmas Bloom</h3>
@@ -89,7 +85,6 @@
       <button>Add to cart</button>
     </div>
 
-    <!-- OCCASIONS -->
     <div class="card" data-cat="birthday">
       <img src="bday1.jpg">
       <h3>Birthday Pink</h3>
@@ -106,42 +101,6 @@
 
   </div>
 </section>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-top">
-    <img src="logo.png" class="footer-logo" alt="TAVEINE">
-
-    <p><strong>Address:</strong> International City, Dubai, UAE</p>
-    <p><strong>Email:</strong> <a href="mailto:support@taveine.com">support@taveine.com</a></p>
-    <p><strong>Phone:</strong> +971 58 574 37 06</p>
-
-    <a href="#" class="direction">Get direction ↗</a>
-
-    <div class="footer-social">
-      <span>f</span>
-      <span>i</span>
-      <span>p</span>
-    </div>
-  </div>
-
-  <div class="footer-accordion">
-    <div class="footer-row">Help <span>+</span></div>
-    <div class="footer-row">Useful Links <span>+</span></div>
-    <div class="footer-row">Sign Up for Email <span>+</span></div>
-  </div>
-
-  <div class="footer-bottom">
-    <small>© TAVÉINE Flower Shop. All Rights Reserved.</small>
-
-    <div class="payments">
-      <img src="visa.png">
-      <img src="paypal.png">
-      <img src="mastercard.png">
-      <img src="amex.png">
-    </div>
-  </div>
-</footer>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
@@ -183,15 +142,18 @@
 </div>
 
 <script>
+/******** TELEGRAM ********/
 if (window.Telegram && Telegram.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
 }
 
+/******** MENU ********/
 function toggleMenu() {
   document.getElementById('side-menu').classList.toggle('open');
 }
 
+/******** FILTER ********/
 function filterProducts(cat) {
   toggleMenu();
 
@@ -203,11 +165,12 @@ function filterProducts(cat) {
       (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
   });
 }
-/**************** STATE ****************/
+
+/******** STATE ********/
 let cart = [];
 let wishlist = [];
 
-/**************** HELPERS ****************/
+/******** BADGES ********/
 function updateBadges() {
   document.querySelectorAll('.bottom-nav .badge').forEach(btn => {
     const icon = btn.querySelector('.icon').textContent;
@@ -218,25 +181,22 @@ function updateBadges() {
   });
 }
 
-/**************** ADD TO CART ****************/
+/******** ADD TO CART ********/
 document.querySelectorAll('.card button').forEach(btn => {
   btn.addEventListener('click', () => {
     const card = btn.closest('.card');
-    const name = card.querySelector('h3').innerText;
-    const price = card.querySelector('span').innerText;
-
-    cart.push({ name, price });
+    cart.push({
+      name: card.querySelector('h3').innerText,
+      price: card.querySelector('span').innerText
+    });
     updateBadges();
-
-    Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');
   });
 });
 
-/**************** WISHLIST ****************/
+/******** WISHLIST (DOUBLE TAP) ********/
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('dblclick', () => {
     const name = card.querySelector('h3').innerText;
-
     if (!wishlist.includes(name)) {
       wishlist.push(name);
       updateBadges();
@@ -244,41 +204,32 @@ document.querySelectorAll('.card').forEach(card => {
   });
 });
 
-/**************** BOTTOM NAV ****************/
-const bottomButtons = document.querySelectorAll('.bottom-nav button');
+/******** BOTTOM NAV ********/
+const btns = document.querySelectorAll('.bottom-nav button');
 
-bottomButtons[0].onclick = () => filterProducts('all'); // Shop
+btns[0].onclick = () => filterProducts('all');
 
-bottomButtons[1].onclick = () => {
+btns[1].onclick = () => {
   const q = prompt('Search product');
   if (!q) return;
 
   document.getElementById('section-title').innerText = 'Search results';
-
   document.querySelectorAll('.card').forEach(card => {
-    const name = card.querySelector('h3').innerText.toLowerCase();
-    card.style.display = name.includes(q.toLowerCase()) ? 'block' : 'none';
+    card.style.display =
+      card.querySelector('h3').innerText.toLowerCase().includes(q.toLowerCase())
+        ? 'block'
+        : 'none';
   });
 };
 
-bottomButtons[2].onclick = () => {
-  alert('Wishlist:\n' + (wishlist.length ? wishlist.join('\n') : 'Empty'));
-};
+btns[2].onclick = () =>
+  alert(wishlist.length ? wishlist.join('\n') : 'Wishlist empty');
 
-bottomButtons[3].onclick = () => {
-  if (!cart.length) {
-    alert('Cart is empty');
-    return;
-  }
+btns[3].onclick = () =>
+  alert(cart.length ? cart.map(i => `${i.name} — ${i.price}`).join('\n') : 'Cart empty');
 
-  let msg = 'Your cart:\n\n';
-  cart.forEach(i => msg += `${i.name} — ${i.price}\n`);
-  alert(msg);
-};
-
-/**************** INIT ****************/
 updateBadges();
+</script>
 
 </body>
 </html>
-</script>
