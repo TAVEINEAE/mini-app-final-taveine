@@ -1,3 +1,4 @@
+let currentProduct = null;
 if (window.Telegram?.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
@@ -113,3 +114,25 @@ function showStatic(type) {
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts(productsData);
 });
+
+function openProduct(product) {
+  currentProduct = product;
+
+  document.getElementById("product-img").src = product.image;
+  document.getElementById("product-title").innerText = product.name;
+  document.getElementById("product-price").innerText = product.price + " AED";
+  document.getElementById("product-desc").innerText =
+    product.desc || "Luxury floral arrangement by TAVÉINE.";
+
+  document.getElementById("product-page").style.display = "block";
+}
+
+function closeProduct() {
+  document.getElementById("product-page").style.display = "none";
+}
+
+function addCurrentToCart() {
+  if (!currentProduct) return;
+  cart.push(currentProduct);
+  document.getElementById("cart-count").innerText = cart.length;
+}
