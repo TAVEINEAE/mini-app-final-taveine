@@ -140,7 +140,13 @@ function openCategory(cat, title) {
   document.querySelectorAll("body > section, footer, nav")
     .forEach(el => el.style.display = "none");
 
-  document.getElementById("category-page").style.display = "block";
+  const page = document.getElementById("category-page");
+page.style.display = "block";
+page.classList.add("page-slide");
+
+requestAnimationFrame(() => {
+  page.classList.add("active");
+});
   document.getElementById("category-title").innerText = title;
 
   const grid = document.getElementById("category-grid");
