@@ -1,8 +1,9 @@
 :root {
-  --green: #1f3f38;
+  --green: #163f35;
   --text: #111;
   --muted: #777;
   --border: #eee;
+  --bg-light: #f7f8f7;
 }
 
 * {
@@ -14,15 +15,20 @@ body {
   margin: 0;
   background: #fff;
   color: var(--text);
+  padding-bottom: 90px; /* 🔴 важно для bottom nav */
 }
 
-/* TOP BAR */
+/* ================= TOP BAR ================= */
 .top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
 .menu-btn {
@@ -42,7 +48,7 @@ body {
   margin-left: 8px;
 }
 
-/* SIDE MENU */
+/* ================= SIDE MENU ================= */
 .side-menu {
   position: fixed;
   top: 0;
@@ -50,25 +56,37 @@ body {
   width: 280px;
   height: 100%;
   background: #fff;
-  padding: 20px;
+  padding: 24px;
   transition: .3s;
-  z-index: 10;
+  z-index: 20;
   border-right: 1px solid var(--border);
+  overflow-y: auto;
 }
 
 .side-menu.open { left: 0; }
+
+.side-menu h3 {
+  margin: 20px 0 10px;
+  font-size: 14px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
 
 .side-menu a {
   display: block;
   padding: 10px 0;
   cursor: pointer;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 15px;
 }
 
-/* PRODUCTS */
+/* ================= CONTENT ================= */
 main {
-  padding: 20px 16px 120px;
+  padding: 20px 16px 40px;
 }
 
+/* ================= PRODUCTS ================= */
 .products {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -77,20 +95,21 @@ main {
 
 .card {
   background: #fff;
-  border-radius: 0;
-  padding: 15px;
+  padding: 10px;
   text-align: center;
 }
 
 .card img {
   width: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: contain;
 }
 
 .card h4 {
-  font-size: 16px;
-  margin: 10px 0 5px;
-  color: #163f35;
+  font-size: 15px;
+  margin: 10px 0 4px;
+  color: var(--green);
+  font-weight: 500;
 }
 
 .card span {
@@ -99,46 +118,51 @@ main {
 }
 
 .main-btn {
-  border: 1px solid #163f35;
+  border: 1px solid var(--green);
   background: transparent;
-  color: #163f35;
+  color: var(--green);
   padding: 12px;
   width: 100%;
   margin-top: 10px;
+  font-size: 14px;
 }
 
-/* MODALS */
+/* ================= MODALS ================= */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.4);
+  background: rgba(0,0,0,.45);
   justify-content: center;
   align-items: center;
+  z-index: 30;
 }
 
 .modal-box {
   background: #fff;
   padding: 20px;
   width: 90%;
+  max-width: 420px;
 }
 
+/* ================= DELIVERY ================= */
 .delivery input,
 .delivery textarea {
   width: 100%;
   padding: 12px;
   margin-bottom: 10px;
   border: 1px solid var(--border);
+  font-size: 14px;
 }
 
 .hidden { display: none; }
 
-/* ===== FOOTER ===== */
+/* ================= FOOTER ================= */
 .footer {
-  background: #f7f8f7;
-  padding: 60px 20px 120px;
+  background: var(--bg-light);
+  padding: 60px 20px 40px;
   text-align: center;
-  margin-top: 60px;
+  margin-top: 80px;
 }
 
 .footer-logo img {
@@ -148,7 +172,7 @@ main {
 
 .footer-info {
   font-size: 15px;
-  color: #163f35;
+  color: var(--green);
   line-height: 1.7;
 }
 
@@ -159,7 +183,7 @@ main {
 .footer-info a.direction {
   display: inline-block;
   margin-top: 14px;
-  color: #163f35;
+  color: var(--green);
   font-weight: 500;
   text-decoration: none;
 }
@@ -174,12 +198,12 @@ main {
 .footer-social a {
   width: 44px;
   height: 44px;
-  border: 1px solid #163f35;
+  border: 1px solid var(--green);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #163f35;
+  color: var(--green);
   text-decoration: none;
   font-weight: 600;
   font-size: 16px;
