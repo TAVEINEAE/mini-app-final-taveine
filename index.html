@@ -338,43 +338,53 @@
 <!-- SIDE MENU -->
 <div id="side-menu" class="side-menu">
 
+  <!-- MENU TOP -->
+  <div class="menu-top">
+    <button class="menu-close" onclick="toggleMenu()">✕</button>
+  </div>
+
+  <!-- COLLECTION -->
   <div class="menu-section">
     <div class="menu-head" onclick="toggleSection(this)">
       <span>Collection</span><b>+</b>
     </div>
     <div class="menu-body">
-      <a onclick="filterProducts('christmas')">Christmas Collection</a>
-      <a onclick="filterProducts('spring')">Spring</a>
-      <a onclick="filterProducts('new')">New Arrivals</a>
-      <a onclick="filterProducts('bestseller')">Best Sellers</a>
-      <a onclick="filterProducts('luxury')">Luxury</a>
-      <a onclick="filterProducts('vases')">Vases</a>
-      <a onclick="filterProducts('box')">Box</a>
+      <a onclick="filterProducts('christmas'); toggleMenu()">Christmas Collection</a>
+      <a onclick="filterProducts('spring'); toggleMenu()">Spring</a>
+      <a onclick="filterProducts('new'); toggleMenu()">New Arrivals</a>
+      <a onclick="filterProducts('bestseller'); toggleMenu()">Best Sellers</a>
+      <a onclick="filterProducts('luxury'); toggleMenu()">Luxury</a>
+      <a onclick="filterProducts('specialty'); toggleMenu()">Specialty</a>
+      <a onclick="filterProducts('jetaime'); toggleMenu()">Je t'aime Collection</a>
+      <a onclick="filterProducts('vases'); toggleMenu()">Vases</a>
+      <a onclick="filterProducts('box'); toggleMenu()">Box</a>
     </div>
   </div>
 
+  <!-- OCCASIONS -->
   <div class="menu-section">
     <div class="menu-head" onclick="toggleSection(this)">
       <span>Occasions</span><b>+</b>
     </div>
     <div class="menu-body">
-      <a onclick="filterProducts('anniversary')">Anniversary</a>
-      <a onclick="filterProducts('birthday')">Birthday</a>
-      <a onclick="filterProducts('sorry')">I'm Sorry</a>
-      <a onclick="filterProducts('baby')">New Baby</a>
-      <a onclick="filterProducts('event')">Event Design Services</a>
-      <a onclick="filterProducts('forever')">Forever Rose</a>
-      <a onclick="filterProducts('balloons')">Balloons</a>
+      <a onclick="filterProducts('anniversary'); toggleMenu()">Anniversary</a>
+      <a onclick="filterProducts('birthday'); toggleMenu()">Birthday</a>
+      <a onclick="filterProducts('sorry'); toggleMenu()">I'm Sorry</a>
+      <a onclick="filterProducts('baby'); toggleMenu()">New Baby</a>
+      <a onclick="showStatic('event'); toggleMenu()">Event Design Services</a>
+      <a onclick="filterProducts('forever'); toggleMenu()">Forever Rose</a>
+      <a onclick="filterProducts('balloons'); toggleMenu()">Balloons</a>
     </div>
   </div>
 
+  <!-- HOME -->
   <div class="menu-section">
     <div class="menu-head" onclick="toggleSection(this)">
       <span>Home</span><b>+</b>
     </div>
     <div class="menu-body">
-      <a onclick="showStatic('about')">About Us</a>
-      <a onclick="showStatic('privacy')">Privacy Policy</a>
+      <a onclick="showStatic('about'); toggleMenu()">About Us</a>
+      <a onclick="showStatic('privacy'); toggleMenu()">Privacy Policy</a>
     </div>
   </div>
 
