@@ -1,106 +1,115 @@
-/* ===== TELEGRAM ===== */
-if (window.Telegram && Telegram.WebApp) {
+if (window.Telegram?.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
 }
 
 /* ===== DATA ===== */
 const productsData = [
-  { name: "Rose Box Classic", price: 620, image: "box1.jpg", category: "box" },
-  { name: "Rose Box Deluxe", price: 720, image: "box2.jpg", category: "box" },
-  { name: "Velvet Rose Box", price: 790, image: "box3.jpg", category: "box" },
+  { name:"Rose Box Classic", price:620, image:"box1.jpg", category:"box bestseller" },
+  { name:"Velvet Rose Box", price:780, image:"box2.jpg", category:"box luxury" },
+  { name:"Luxury Red Roses", price:950, image:"lux1.jpg", category:"luxury bestseller" },
+  { name:"Golden Luxury Roses", price:1250, image:"lux2.jpg", category:"luxury" },
+  { name:"White Vase Bouquet", price:480, image:"vase1.jpg", category:"vases" },
+  { name:"Garden Vase Mix", price:520, image:"vase2.jpg", category:"vases" },
 
-  { name: "Luxury Red Roses", price: 950, image: "lux1.jpg", category: "luxury" },
-  { name: "Golden Luxury Roses", price: 1100, image: "lux2.jpg", category: "luxury" },
-  { name: "Royal Roses", price: 1250, image: "lux3.jpg", category: "luxury" },
+  { name:"Christmas Bloom", price:860, image:"xmas1.jpg", category:"christmas" },
+  { name:"Snowflake Roses", price:920, image:"xmas2.jpg", category:"christmas luxury" },
 
-  { name: "White Elegance Vase", price: 480, image: "vase1.jpg", category: "vases" },
-  { name: "Green Garden Vase", price: 520, image: "vase2.jpg", category: "vases" },
-  { name: "Classic Glass Vase", price: 560, image: "vase3.jpg", category: "vases" },
+  { name:"Forever Rose Dome", price:690, image:"forever1.jpg", category:"forever bestseller" },
+  { name:"Forever Rose Heart", price:890, image:"forever2.jpg", category:"forever" },
 
-  { name: "Christmas Bloom", price: 780, image: "xmas1.jpg", category: "christmas" },
-  { name: "Winter Red Box", price: 860, image: "xmas2.jpg", category: "christmas" },
-  { name: "Snowflake Roses", price: 920, image: "xmas3.jpg", category: "christmas" },
+  { name:"Birthday Surprise", price:650, image:"bday1.jpg", category:"birthday" },
+  { name:"Anniversary Love", price:880, image:"ann1.jpg", category:"anniversary" },
+  { name:"Sorry Bouquet", price:450, image:"sorry1.jpg", category:"sorry" },
+  { name:"New Baby Pink Box", price:720, image:"baby1.jpg", category:"baby" },
 
-  { name: "Birthday Surprise", price: 690, image: "bday1.jpg", category: "birthday" },
-  { name: "Anniversary Love", price: 890, image: "ann1.jpg", category: "anniversary" },
-  { name: "Sorry Bouquet", price: 480, image: "sorry1.jpg", category: "sorry" },
-  { name: "New Baby Pink Box", price: 720, image: "baby1.jpg", category: "baby" }
+  { name:"Heart Balloons Set", price:149, image:"balloon1.jpg", category:"balloons new" },
+  { name:"Red Helium Balloons", price:29, image:"balloon2.jpg", category:"balloons" }
 ];
 
-/* ===== STATE ===== */
-let cart = [];
 let wishlist = [];
+let cart = [];
 
 /* ===== MENU ===== */
-function toggleMenu(forceClose = false) {
-  const menu = document.getElementById("side-menu");
-  if (forceClose) menu.classList.remove("open");
-  else menu.classList.toggle("open");
+function toggleMenu() {
+  document.getElementById("side-menu").classList.toggle("open");
 }
 
-/* ===== RENDER PRODUCTS ===== */
+/* ===== RENDER ===== */
 function renderProducts(list) {
-  const box = document.getElementById("products-grid");
-  if (!box) return;
-
-  box.innerHTML = "";
+  const grid = document.getElementById("products-grid");
+  grid.innerHTML = "";
 
   list.forEach(p => {
     const liked = wishlist.includes(p.name);
-
-    box.innerHTML += `
+    grid.innerHTML += `
       <div class="card">
-        <div class="wishlist-btn ${liked ? 'active' : ''}" 
-             onclick="toggleWishlist('${p.name}', this)">
-          ${liked ? '♥' : '♡'}
+        <div class="wishlist-btn ${liked ? 'active':''}"
+          onclick="toggleWishlist('${p.name}', this)">
+          ${liked ? '♥':'♡'}
         </div>
-
-        <img src="${p.image}" alt="${p.name}">
+        <img src="${p.image}">
         <h3>${p.name}</h3>
         <span>${p.price} AED</span>
-        <button onclick="addToCart('${p.name}', ${p.price})">
-          Add to cart
-        </button>
-      </div>
-    `;
+        <button onclick="addToCart('${p.name}')">Add to cart</button>
+      </div>`;
   });
 }
 
 /* ===== FILTER ===== */
 function filterProducts(cat) {
-  toggleMenu(true);
+  toggleMenu();
+  document.getElementById("section-title").innerText =
+    cat === "all" ? "All Products" : cat.replace(/^\w/, c => c.toUpperCase());
 
-  if (cat === "all") {
-    renderProducts(productsData);
-  } else {
-    renderProducts(productsData.filter(p => p.category === cat));
-  }
+  renderProducts(
+    cat === "all"
+      ? productsData
+      : productsData.filter(p => p.category.includes(cat))
+  );
 }
 
-/* ===== CART ===== */
-function addToCart(name, price) {
-  cart.push({ name, price });
+/* ===== CART / WISHLIST ===== */
+function addToCart(name) {
+  cart.push(name);
+  document.getElementById("cart-count").innerText = cart.length;
   Telegram?.WebApp?.HapticFeedback?.impactOccurred("light");
-  alert(name + " added to cart");
 }
 
-/* ===== WISHLIST ===== */
 function toggleWishlist(name, btn) {
   if (wishlist.includes(name)) {
     wishlist = wishlist.filter(i => i !== name);
-    btn.textContent = "♡";
     btn.classList.remove("active");
+    btn.textContent = "♡";
   } else {
     wishlist.push(name);
-    btn.textContent = "♥";
     btn.classList.add("active");
+    btn.textContent = "♥";
   }
-
-  Telegram?.WebApp?.HapticFeedback?.impactOccurred("light");
+  document.getElementById("wish-count").innerText = wishlist.length;
 }
 
-/* ===== INIT ===== */
+/* ===== MODALS ===== */
+function openWishlist() {
+  const box = document.getElementById("wishlistBox");
+  box.innerHTML = wishlist.length
+    ? wishlist.map(n => `<div class="wishlist-item">${n}</div>`).join("")
+    : "<p style='text-align:center'>Wishlist empty</p>";
+  box.innerHTML += `<button class="wishlist-ok" onclick="closeWishlist()">OK</button>`;
+  document.getElementById("wishlistModal").style.display = "flex";
+}
+
+function closeWishlist() {
+  document.getElementById("wishlistModal").style.display = "none";
+}
+
+function showStatic(type) {
+  toggleMenu();
+  document.getElementById("products-grid").innerHTML =
+    `<p style="text-align:center;padding:40px">${type.toUpperCase()} PAGE</p>`;
+}
+
+/* INIT */
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts(productsData);
 });
