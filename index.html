@@ -13,7 +13,6 @@
 
 <!-- TOP STRIP -->
 <div class="top-strip">
-  <span>‹</span>
   <span>Free delivery</span>
   <span>×</span>
 </div>
@@ -21,7 +20,7 @@
 <!-- HEADER -->
 <header class="header">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  <img src="hero-logo.png" class="logo" alt="TAVEINE">
+  <img src="logo.png" class="logo" alt="TAVEINE">
 </header>
 
 <!-- SIDE MENU -->
@@ -31,24 +30,18 @@
     <button onclick="toggleMenu()">×</button>
   </div>
 
-  <div class="menu-group">
-    <p>Collection</p>
-    <a onclick="loadCollection('all')">Shop All</a>
-    <a onclick="loadCollection('christmas')">Christmas Collection</a>
-    <a onclick="loadCollection('luxury')">Luxury</a>
-    <a onclick="loadCollection('vases')">Vases</a>
-    <a onclick="loadCollection('box')">Box</a>
-  </div>
+  <h4>Collection</h4>
+  <a onclick="filterProducts('all')">Shop All</a>
+  <a onclick="filterProducts('christmas')">Christmas Collection</a>
+  <a onclick="filterProducts('luxury')">Luxury</a>
+  <a onclick="filterProducts('vases')">Vases</a>
+  <a onclick="filterProducts('box')">Box</a>
 
-  <div class="menu-group">
-    <p>Occasions</p>
-    <a onclick="loadCollection('birthday')">Birthday</a>
-    <a onclick="loadCollection('anniversary')">Anniversary</a>
-    <a onclick="loadCollection('sorry')">I’m Sorry</a>
-    <a onclick="loadCollection('baby')">New Baby</a>
-    <a onclick="loadCollection('baby')">Forever Rose</a>
-    <a onclick="loadCollection('baby')">Baloons</a>
-  </div>
+  <h4>Occasions</h4>
+  <a>Birthday</a>
+  <a>Anniversary</a>
+  <a>I’m Sorry</a>
+  <a>New Baby</a>
 </div>
 
 <!-- HERO -->
@@ -56,19 +49,76 @@
   <img src="hero.jpg" alt="Flowers">
 </section>
 
-<h2 class="section-title" id="sectionTitle">Best Sellers</h2>
-
 <!-- PRODUCTS -->
-<section class="products" id="products"></section>
+<section class="products" id="products">
+  <h2>Best Sellers</h2>
+
+  <div class="grid">
+    <div class="card" data-cat="box">
+      <img src="p1.jpg">
+      <h3>Rose Box Classic</h3>
+      <span>620 AED</span>
+    </div>
+
+    <div class="card" data-cat="luxury">
+      <img src="p2.jpg">
+      <h3>Luxury Red Roses</h3>
+      <span>950 AED</span>
+    </div>
+
+    <div class="card" data-cat="vases">
+      <img src="p3.jpg">
+      <h3>White Vase Bouquet</h3>
+      <span>480 AED</span>
+    </div>
+
+    <div class="card" data-cat="christmas">
+      <img src="p4.jpg">
+      <h3>Christmas Bloom</h3>
+      <span>780 AED</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img src="logo.png" class="footer-logo">
+
+  <p><strong>Address:</strong> International City, Dubai, UAE</p>
+  <p><strong>Email:</strong> support@taveine.com</p>
+  <p><strong>Phone:</strong> +971 58 574 37 06</p>
+
+  <div class="social">
+    <span>f</span>
+    <span>i</span>
+    <span>p</span>
+  </div>
+
+  <small>© TAVEINE Flower Shop</small>
+</footer>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="active" onclick="loadCollection('all')">🏠<small>Shop</small></button>
-  <button onclick="alert('Search')">🔍<small>Search</small></button>
-  <button onclick="alert('Wishlist')">♡<small>Wishlist</small></button>
-  <button onclick="alert('Cart')">🛒<small>Cart</small></button>
+  <button class="active">Shop</button>
+  <button>Search</button>
+  <button>Wishlist</button>
+  <button>Cart</button>
 </nav>
 
-<script src="script.js"></script>
+<script>
+function toggleMenu() {
+  document.getElementById('side-menu').classList.toggle('open');
+}
+
+function filterProducts(cat) {
+  toggleMenu();
+  document.querySelectorAll('.card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat)
+      ? 'block'
+      : 'none';
+  });
+}
+</script>
+
 </body>
 </html>
