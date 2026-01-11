@@ -273,25 +273,3 @@ function renderSearch(list) {
     `;
   });
 }
-
-.search-suggestions {
-  display: flex;
-  gap: 8px;
-  padding: 8px 16px 0;
-  flex-wrap: wrap;
-}
-
-.search-suggestions span {
-  padding: 8px 14px;
-  border: 1px solid #1f3f38;
-  border-radius: 20px;
-  font-size: 13px;
-  cursor: pointer;
-  background: #fff;
-  color: #1f3f38;
-}
-
-.search-suggestions span:hover {
-  background: #1f3f38;
-  color: #fff;
-}
