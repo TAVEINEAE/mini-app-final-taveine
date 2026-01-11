@@ -1,81 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TAVEINE Mini App</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAVEINE Mini App</title>
 
-  <link rel="stylesheet" href="style.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    .card { position: relative; }
-
-    .wishlist-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 42px;
-      height: 42px;
-      background: #fff;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,.15);
-      z-index: 5;
-    }
-
-    .wishlist-btn.active {
-      color: #c0392b;
-    }
-
-    .wishlist-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.4);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 99999;
-    }
-
-    .wishlist-box {
-      background: #fff;
-      width: 90%;
-      max-width: 360px;
-      border-radius: 20px;
-      padding: 16px;
-    }
-
-    .wishlist-item {
-      display: flex;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .wishlist-item img {
-      width: 44px;
-      height: 44px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-
-    .wishlist-ok {
-      margin-top: 14px;
-      width: 100%;
-      padding: 10px;
-      border-radius: 20px;
-      border: none;
-      background: #eee;
-      font-size: 16px;
-    }
-
-    .top-strip { position: relative; z-index: 100000; }
-  </style>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script defer src="script.js"></script>
 </head>
 
 <body>
@@ -89,41 +21,13 @@
 
 <!-- HERO -->
 <section class="hero">
-  <img src="hero.jpg" alt="Flowers">
+  <img src="hero.jpg" alt="Taveine Flowers">
 </section>
 
 <!-- PRODUCTS -->
 <section class="products">
   <h2 id="section-title">Best Sellers</h2>
-
-  <div class="grid">
-
-    <!-- PRODUCT CARD -->
-    <div class="card" data-cat="box">
-      <div class="wishlist-btn">♡</div>
-      <img src="box1.jpg">
-      <h3>Rose Box Classic</h3>
-      <span>620 AED</span>
-      <button>Add to cart</button>
-    </div>
-
-    <div class="card" data-cat="luxury">
-      <div class="wishlist-btn">♡</div>
-      <img src="lux1.jpg">
-      <h3>Luxury Red Roses</h3>
-      <span>950 AED</span>
-      <button>Add to cart</button>
-    </div>
-
-    <div class="card" data-cat="vases">
-      <div class="wishlist-btn">♡</div>
-      <img src="vase1.jpg">
-      <h3>White Vase Bouquet</h3>
-      <span>480 AED</span>
-      <button>Add to cart</button>
-    </div>
-
-  </div>
+  <div class="grid" id="products-grid"></div>
 </section>
 
 <!-- FOOTER -->
@@ -133,7 +37,6 @@
     <p><strong>Email:</strong> support@taveine.com</p>
     <p><strong>Phone:</strong> +971 58 574 37 06</p>
   </div>
-
   <div class="footer-bottom">
     <small>© TAVÉINE Flower Shop. All Rights Reserved.</small>
   </div>
@@ -141,107 +44,55 @@
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="active"><span class="icon">▦</span><small>Shop</small></button>
-  <button><span class="icon">🔍</span><small>Search</small></button>
-  <button class="badge"><span class="icon">♡</span><small>Wishlist</small><em>0</em></button>
-  <button class="badge"><span class="icon">🛒</span><small>Cart</small><em>0</em></button>
+  <button class="active" onclick="filterProducts('all')">
+    <span class="icon">▦</span><small>Shop</small>
+  </button>
+
+  <button onclick="openSearch()">
+    <span class="icon">🔍</span><small>Search</small>
+  </button>
+
+  <button class="badge" onclick="openWishlist()">
+    <span class="icon">♡</span><small>Wishlist</small><em id="wish-count">0</em>
+  </button>
+
+  <button class="badge">
+    <span class="icon">🛒</span><small>Cart</small><em id="cart-count">0</em>
+  </button>
 </nav>
 
 <!-- SIDE MENU -->
 <div id="side-menu" class="side-menu">
+  <h4>Menu</h4>
+  <a onclick="filterProducts('all')">Home</a>
+
   <h4>Collection</h4>
-  <a onclick="filterProducts('all')">Shop All</a>
-  <a onclick="filterProducts('box')">Box</a>
+  <a onclick="filterProducts('christmas')">Christmas Collection</a>
+  <a onclick="filterProducts('spring')">Spring</a>
+  <a onclick="filterProducts('new')">New Arrivals</a>
+  <a onclick="filterProducts('bestseller')">Best Sellers</a>
   <a onclick="filterProducts('luxury')">Luxury</a>
   <a onclick="filterProducts('vases')">Vases</a>
+  <a onclick="filterProducts('box')">Box</a>
+  <a onclick="filterProducts('forever')">Forever Rose</a>
+  <a onclick="filterProducts('balloons')">Balloons</a>
+
+  <h4>Occasions</h4>
+  <a onclick="filterProducts('anniversary')">Anniversary</a>
+  <a onclick="filterProducts('birthday')">Birthday</a>
+  <a onclick="filterProducts('sorry')">I'm Sorry</a>
+  <a onclick="filterProducts('baby')">New Baby</a>
+
+  <h4>Pages</h4>
+  <a onclick="showStatic('event')">Event Design</a>
+  <a onclick="showStatic('about')">About Us</a>
+  <a onclick="showStatic('privacy')">Privacy Policy</a>
 </div>
 
 <!-- WISHLIST MODAL -->
 <div class="wishlist-modal" id="wishlistModal">
   <div class="wishlist-box" id="wishlistBox"></div>
 </div>
-
-<script>
-if (window.Telegram && Telegram.WebApp) {
-  Telegram.WebApp.ready();
-  Telegram.WebApp.expand();
-}
-
-function toggleMenu() {
-  document.getElementById('side-menu').classList.toggle('open');
-}
-
-function filterProducts(cat) {
-  toggleMenu();
-  document.getElementById('section-title').innerText =
-    cat === 'all' ? 'Best Sellers' : cat.toUpperCase();
-
-  document.querySelectorAll('.card').forEach(card => {
-    card.style.display =
-      cat === 'all' || card.dataset.cat === cat ? 'block' : 'none';
-  });
-}
-
-let cart = [];
-let wishlist = [];
-
-function updateBadges() {
-  document.querySelectorAll('.bottom-nav .badge').forEach(btn => {
-    const icon = btn.querySelector('.icon').textContent;
-    const counter = btn.querySelector('em');
-    if (icon === '🛒') counter.textContent = cart.length;
-    if (icon === '♡') counter.textContent = wishlist.length;
-  });
-}
-
-document.querySelectorAll('.wishlist-btn').forEach(btn => {
-  btn.onclick = e => {
-    e.stopPropagation();
-    const card = btn.closest('.card');
-    const name = card.querySelector('h3').innerText;
-    const img = card.querySelector('img').src;
-    const price = card.querySelector('span').innerText;
-
-    const index = wishlist.findIndex(i => i.name === name);
-
-    if (index > -1) {
-      wishlist.splice(index, 1);
-      btn.textContent = '♡';
-      btn.classList.remove('active');
-    } else {
-      wishlist.push({ name, img, price });
-      btn.textContent = '♥';
-      btn.classList.add('active');
-    }
-    updateBadges();
-  };
-});
-
-const navBtns = document.querySelectorAll('.bottom-nav button');
-
-navBtns[0].onclick = () => filterProducts('all');
-
-navBtns[2].onclick = () => {
-  const box = document.getElementById('wishlistBox');
-  box.innerHTML = wishlist.length
-    ? wishlist.map(i => `
-      <div class="wishlist-item">
-        <img src="${i.img}">
-        <span>${i.name}<br><strong>${i.price}</strong></span>
-      </div>
-    `).join('')
-    : '<p style="text-align:center">Wishlist empty</p>';
-
-  box.innerHTML += `<button class="wishlist-ok" onclick="closeWishlist()">OK</button>`;
-  document.getElementById('wishlistModal').style.display = 'flex';
-};
-
-function closeWishlist() {
-  document.getElementById('wishlistModal').style.display = 'none';
-}
-
-updateBadges();
-</script>
 
 </body>
 </html>
