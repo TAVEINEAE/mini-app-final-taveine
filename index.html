@@ -1,124 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TAVEINE Mini App</title>
 
-  <!-- Telegram Mini App -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<!-- HERO -->
+<!-- ===== TOP STRIP ===== -->
+<div class="top-strip">
+  <span class="back">‹</span>
+  <span class="title">Free delivery</span>
+  <span class="close">×</span>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+  <img src="hero-logo.png" class="logo" alt="TAVEINE">
+</header>
+
+<!-- ===== SIDE MENU ===== -->
+<div id="side-menu" class="side-menu">
+  <div class="side-header">
+    <span>Menu</span>
+    <button onclick="toggleMenu()">×</button>
+  </div>
+
+  <div class="accordion">
+    <div class="acc-title" onclick="toggleAcc(this)">
+      Collection <span>+</span>
+    </div>
+    <div class="acc-body">
+      <a>Christmas Collection</a>
+      <a>Spring</a>
+      <a>New Arrivals</a>
+      <a>Best Sellers</a>
+      <a>Luxury</a>
+      <a>Vases</a>
+      <a>Box</a>
+    </div>
+
+    <div class="acc-title" onclick="toggleAcc(this)">
+      Occasions <span>+</span>
+    </div>
+    <div class="acc-body">
+      <a>Anniversary</a>
+      <a>Birthday</a>
+      <a>I’m Sorry</a>
+      <a>New Baby</a>
+      <a>Event Design</a>
+      <a>Forever Rose</a>
+      <a>Balloons</a>
+    </div>
+
+    <div class="acc-title" onclick="toggleAcc(this)">
+      Home <span>+</span>
+    </div>
+    <div class="acc-body">
+      <a>About Us</a>
+      <a>Privacy Policy</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
 <section class="hero">
-  <div class="hero-top">
-    <span class="hero-back">‹</span>
-    <span class="hero-title">Free delivery</span>
-    <span class="hero-close">×</span>
-  </div>
-
-  <div class="hero-logo">
-    <img src="./img/logo.png" alt="TAVEINE">
-  </div>
-
-  <h1 class="hero-text">
+  <h1>
     THE FRESHEST<br>
     FLOWERS ARE HERE
   </h1>
 
-  <div class="hero-image">
-    <img src="./img/hero.jpg" alt="TAVEINE Flowers">
-  </div>
+  <img src="hero.jpg" alt="Flowers">
 </section>
 
-<!-- ================= TOP BAR ================= -->
-<header class="top-bar">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  <span class="brand">TAVEINE</span>
-
-  <div class="top-actions">
-    <button onclick="openWishlist()">♡ <span id="wish-count">0</span></button>
-    <button onclick="openCart()">🛒 <span id="cart-count">0</span></button>
-  </div>
-</header>
-
-<!-- ================= SIDE MENU ================= -->
-<div id="side-menu" class="side-menu">
-  <button class="close-btn" onclick="toggleMenu()">×</button>
-
-  <h3>Collection</h3>
-  <a onclick="loadProducts()">Shop All</a>
-  <a onclick="loadProducts('christmas-collection')">Christmas Collection</a>
-  <a onclick="loadProducts('best-sellers')">Best Sellers</a>
-  <a onclick="loadProducts('luxury')">Luxury</a>
-  <a onclick="loadProducts('vases')">Vases</a>
-  <a onclick="loadProducts('box')">Box</a>
-
-  <h3>Occasions</h3>
-  <a onclick="loadProducts('anniversary')">Anniversary</a>
-  <a onclick="loadProducts('birthday')">Birthday</a>
-</div>
-
-<!-- ================= SHOP ================= -->
-<main id="shop-page">
-  <h2 id="page-title">Shop All</h2>
-  <div id="products" class="products"></div>
-</main>
-
-<!-- ================= CART ================= -->
-<div id="cart-modal" class="modal">
-  <div class="modal-box">
-    <button class="close-btn" onclick="closeCart()">×</button>
-    <h3>Your Cart</h3>
-    <div id="cart-items"></div>
-    <h4>Total: <span id="cart-total">0 AED</span></h4>
-    <button class="main-btn" onclick="openDelivery()">Proceed to Delivery</button>
-  </div>
-</div>
-
-<!-- ================= DELIVERY ================= -->
-<section id="delivery-page" class="delivery hidden">
-  <h2>Delivery Details</h2>
-
-  <input id="d-name" placeholder="Recipient Name">
-  <input id="d-phone" placeholder="Phone Number">
-  <input id="d-address" placeholder="Street / Building">
-  <input id="d-apartment" placeholder="Apartment / Villa">
-  <textarea id="d-note" placeholder="Delivery notes (optional)"></textarea>
-
-  <button class="main-btn" onclick="confirmOrder()">Confirm Order</button>
-  <button class="link-btn" onclick="backToShop()">← Back to Shop</button>
+<!-- ===== PLACEHOLDER ===== -->
+<section class="section-title">
+  Best Sellers
 </section>
 
-<!-- ================= FOOTER (САМЫЙ НИЗ) ================= -->
-<footer class="footer">
-  <div class="footer-logo">
-    <img src="./img/logo.png" alt="TAVEINE">
-  </div>
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+  <button class="active">
+    <span>⌂</span>
+    <small>Shop</small>
+  </button>
+  <button>
+    <span>🔍</span>
+    <small>Search</small>
+  </button>
+  <button>
+    <span>♡</span>
+    <small>Wishlist</small>
+  </button>
+  <button>
+    <span>🛒</span>
+    <small>Cart</small>
+  </button>
+</nav>
 
-  <div class="footer-info">
-    <p><strong>Address:</strong> International City, Dubai, UAE</p>
-    <p><strong>Email:</strong> support@taveine.com</p>
-    <p><strong>Phone:</strong> +971 58 574 37 06</p>
-    <a href="https://maps.google.com" target="_blank" class="direction">
-      Get direction ↗
-    </a>
-  </div>
+<script>
+function toggleMenu() {
+  document.getElementById('side-menu').classList.toggle('open');
+}
 
-  <div class="footer-social">
-    <a href="https://facebook.com/taveine" target="_blank">f</a>
-    <a href="https://instagram.com/taveine" target="_blank">i</a>
-    <a href="https://pinterest.com/taveine" target="_blank">p</a>
-  </div>
+function toggleAcc(el) {
+  const body = el.nextElementSibling;
+  const icon = el.querySelector('span');
 
-  <div class="footer-bottom">
-    © TAVEINE Flower Shop. All Rights Reserved.
-  </div>
-</footer>
+  body.classList.toggle('open');
+  icon.textContent = body.classList.contains('open') ? '−' : '+';
+}
+</script>
 
-<script src="script.js"></script>
 </body>
 </html>
