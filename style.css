@@ -294,3 +294,63 @@ body {
 .wishlist-btn.active {
   color: #c0392b; /* красное сердце */
 }
+
+/* ================= WISHLIST MODAL ================= */
+
+.wishlist-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.wishlist-box {
+  background: #fff;
+  width: 90%;
+  max-width: 360px;
+  border-radius: 22px;
+  padding: 14px 16px;
+}
+
+/* ОДИН ТОВАР В WISHLIST */
+.wishlist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.wishlist-item:last-child {
+  border-bottom: none;
+}
+
+/* МАЛЕНЬКОЕ ФОТО */
+.wishlist-item img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+/* ТЕКСТ */
+.wishlist-item span {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+/* КНОПКА OK */
+.wishlist-ok {
+  margin-top: 14px;
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 20px;
+  border: none;
+  background: #eee;
+  font-size: 16px;
+  cursor: pointer;
+}
