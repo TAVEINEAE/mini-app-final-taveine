@@ -131,6 +131,25 @@
 <div class="wishlist-modal" id="wishlistModal">
   <div class="wishlist-box" id="wishlistBox"></div>
 </div>
+<!-- PRODUCT PAGE (SCREEN) -->
+<section id="product-page" style="display:none">
+
+  <div class="product-top">
+    <button class="back-btn" onclick="closeProduct()">← Back</button>
+  </div>
+
+  <div class="product-content">
+    <img id="product-img">
+    <h2 id="product-title"></h2>
+    <p id="product-price"></p>
+    <p id="product-desc"></p>
+
+    <button class="add-cart-btn" onclick="addCurrentToCart()">
+      Add to cart
+    </button>
+  </div>
+
+</section>
 
 </body>
 </html>
