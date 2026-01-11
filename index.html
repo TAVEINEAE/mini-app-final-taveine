@@ -8,18 +8,16 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
 <!-- TOP STRIP -->
 <div class="top-strip">
   <span>Free delivery</span>
-  <span>×</span>
+  <span onclick="toggleMenu()">☰</span>
 </div>
 
 <!-- HEADER -->
 <header class="header">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
   <img src="logo.png" class="logo" alt="TAVEINE">
 </header>
 
@@ -38,10 +36,10 @@
   <a onclick="filterProducts('box')">Box</a>
 
   <h4>Occasions</h4>
-  <a>Birthday</a>
-  <a>Anniversary</a>
-  <a>I’m Sorry</a>
-  <a>New Baby</a>
+  <a onclick="filterProducts('birthday')">Birthday</a>
+  <a onclick="filterProducts('anniversary')">Anniversary</a>
+  <a onclick="filterProducts('sorry')">I’m Sorry</a>
+  <a onclick="filterProducts('baby')">New Baby</a>
 </div>
 
 <!-- HERO -->
@@ -50,33 +48,67 @@
 </section>
 
 <!-- PRODUCTS -->
-<section class="products" id="products">
+<section class="products">
   <h2>Best Sellers</h2>
 
-  <div class="grid">
+  <div class="grid" id="products-grid">
+
+    <!-- BOX -->
     <div class="card" data-cat="box">
-      <img src="p1.jpg">
+      <img src="box1.jpg">
       <h3>Rose Box Classic</h3>
       <span>620 AED</span>
+      <button>Add to cart</button>
+    </div>
+    <div class="card" data-cat="box">
+      <img src="box2.jpg">
+      <h3>Rose Box Deluxe</h3>
+      <span>720 AED</span>
+      <button>Add to cart</button>
     </div>
 
+    <!-- LUXURY -->
     <div class="card" data-cat="luxury">
-      <img src="p2.jpg">
+      <img src="lux1.jpg">
       <h3>Luxury Red Roses</h3>
       <span>950 AED</span>
+      <button>Add to cart</button>
+    </div>
+    <div class="card" data-cat="luxury">
+      <img src="lux2.jpg">
+      <h3>Golden Luxury Roses</h3>
+      <span>1100 AED</span>
+      <button>Add to cart</button>
     </div>
 
+    <!-- VASES -->
     <div class="card" data-cat="vases">
-      <img src="p3.jpg">
+      <img src="vase1.jpg">
       <h3>White Vase Bouquet</h3>
       <span>480 AED</span>
+      <button>Add to cart</button>
+    </div>
+    <div class="card" data-cat="vases">
+      <img src="vase2.jpg">
+      <h3>Green Garden Vase</h3>
+      <span>520 AED</span>
+      <button>Add to cart</button>
     </div>
 
+    <!-- CHRISTMAS -->
     <div class="card" data-cat="christmas">
-      <img src="p4.jpg">
+      <img src="xmas1.jpg">
       <h3>Christmas Bloom</h3>
       <span>780 AED</span>
+      <button>Add to cart</button>
     </div>
+    <div class="card" data-cat="christmas">
+      <img src="xmas2.jpg">
+      <h3>Winter Red Box</h3>
+      <span>860 AED</span>
+      <button>Add to cart</button>
+    </div>
+
   </div>
 </section>
 
@@ -88,13 +120,15 @@
   <p><strong>Email:</strong> support@taveine.com</p>
   <p><strong>Phone:</strong> +971 58 574 37 06</p>
 
+  <a class="direction">Get direction ↗</a>
+
   <div class="social">
     <span>f</span>
     <span>i</span>
     <span>p</span>
   </div>
 
-  <small>© TAVEINE Flower Shop</small>
+  <small>© TAVEINE Flower Shop. All Rights Reserved.</small>
 </footer>
 
 <!-- BOTTOM NAV -->
@@ -113,9 +147,8 @@ function toggleMenu() {
 function filterProducts(cat) {
   toggleMenu();
   document.querySelectorAll('.card').forEach(card => {
-    card.style.display = (cat === 'all' || card.dataset.cat === cat)
-      ? 'block'
-      : 'none';
+    card.style.display =
+      (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
   });
 }
 </script>
