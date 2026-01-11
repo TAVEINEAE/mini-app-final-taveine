@@ -349,15 +349,14 @@
       <span>Collection</span><b>+</b>
     </div>
     <div class="menu-body">
-      <a onclick="filterProducts('christmas'); toggleMenu()">Christmas Collection</a>
-      <a onclick="filterProducts('spring'); toggleMenu()">Spring</a>
-      <a onclick="filterProducts('new'); toggleMenu()">New Arrivals</a>
-      <a onclick="filterProducts('bestseller'); toggleMenu()">Best Sellers</a>
-      <a onclick="filterProducts('luxury'); toggleMenu()">Luxury</a>
-      <a onclick="filterProducts('specialty'); toggleMenu()">Specialty</a>
-      <a onclick="filterProducts('jetaime'); toggleMenu()">Je t'aime Collection</a>
-      <a onclick="filterProducts('vases'); toggleMenu()">Vases</a>
-      <a onclick="filterProducts('box'); toggleMenu()">Box</a>
+      <a onclick="goToCategory('christmas','Christmas Collection')">Christmas Collection</a>
+      <a onclick="goToCategory('spring','Spring')">Spring</a>
+      <a onclick="goToCategory('new','New Arrivals')">New Arrivals</a>
+      <a onclick="goToCategory('bestseller','Best Sellers')">Best Sellers</a>
+      <a onclick="goToCategory('luxury','Luxury')">Luxury</a>
+      <a onclick="goToCategory('specialty','Specialty')">Specialty</a>
+      <a onclick="goToCategory('vases','Vases')">Vases</a>
+      <a onclick="goToCategory('box','Box')">Box</a>
     </div>
   </div>
 
@@ -367,13 +366,13 @@
       <span>Occasions</span><b>+</b>
     </div>
     <div class="menu-body">
-      <a onclick="filterProducts('anniversary'); toggleMenu()">Anniversary</a>
-      <a onclick="filterProducts('birthday'); toggleMenu()">Birthday</a>
-      <a onclick="filterProducts('sorry'); toggleMenu()">I'm Sorry</a>
-      <a onclick="filterProducts('baby'); toggleMenu()">New Baby</a>
-      <a onclick="showStatic('event'); toggleMenu()">Event Design Services</a>
-      <a onclick="filterProducts('forever'); toggleMenu()">Forever Rose</a>
-      <a onclick="filterProducts('balloons'); toggleMenu()">Balloons</a>
+      <a onclick="goToCategory('anniversary','Anniversary')">Anniversary</a>
+      <a onclick="goToCategory('birthday','Birthday')">Birthday</a>
+      <a onclick="goToCategory('sorry','I\'m Sorry')">I'm Sorry</a>
+      <a onclick="goToCategory('baby','New Baby')">New Baby</a>
+      <a onclick="goToCategory('event','Event Design Services')">Event Design Services</a>
+      <a onclick="goToCategory('forever','Forever Rose')">Forever Rose</a>
+      <a onclick="goToCategory('balloons','Balloons')">Balloons</a>
     </div>
   </div>
 
@@ -383,8 +382,9 @@
       <span>Home</span><b>+</b>
     </div>
     <div class="menu-body">
-      <a onclick="showStatic('about'); toggleMenu()">About Us</a>
-      <a onclick="showStatic('privacy'); toggleMenu()">Privacy Policy</a>
+      <<a onclick="goToCategory('all','Shop All')">Home</a>
+      <a onclick="showStatic('about')">About Us</a>
+      <a onclick="showStatic('privacy')">Privacy Policy</a>
     </div>
   </div>
 
