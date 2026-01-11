@@ -159,14 +159,13 @@ main {
 
 /* ================= FOOTER ================= */
 .footer {
-  background: var(--bg-light);
-  padding: 60px 20px 40px;
+  background: #f7f8f7;
+  padding: 80px 20px 40px;
   text-align: center;
-  margin-top: 80px;
 }
 
 .footer-logo img {
-  width: 160px;
+  width: 150px;
   margin-bottom: 25px;
 }
 
@@ -174,18 +173,6 @@ main {
   font-size: 15px;
   color: var(--green);
   line-height: 1.7;
-}
-
-.footer-info p {
-  margin: 6px 0;
-}
-
-.footer-info a.direction {
-  display: inline-block;
-  margin-top: 14px;
-  color: var(--green);
-  font-weight: 500;
-  text-decoration: none;
 }
 
 .footer-social {
@@ -205,8 +192,6 @@ main {
   justify-content: center;
   color: var(--green);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
 }
 
 .footer-bottom {
