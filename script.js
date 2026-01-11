@@ -273,3 +273,41 @@ function renderSearch(list) {
     `;
   });
 }
+
+/* ===== SEARCH SUGGESTIONS ===== */
+
+const searchTags = [
+  "rose",
+  "box",
+  "luxury",
+  "heart",
+  "forever",
+  "vase",
+  "balloon",
+  "birthday",
+  "anniversary",
+  "christmas"
+];
+
+function updateSuggestions(value) {
+  const box = document.getElementById("search-suggestions");
+  box.innerHTML = "";
+
+  if (!value) return;
+
+  const v = value.toLowerCase();
+
+  searchTags
+    .filter(tag => tag.includes(v))
+    .slice(0, 6)
+    .forEach(tag => {
+      const el = document.createElement("span");
+      el.textContent = tag;
+      el.onclick = () => {
+        document.getElementById("search-input").value = tag;
+        searchAll(tag);
+        box.innerHTML = "";
+      };
+      box.appendChild(el);
+    });
+}
