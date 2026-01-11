@@ -174,3 +174,26 @@ function goLuxury() {
   filterProducts('luxury');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ===== SIDE MENU ACCORDION (+ / -) =====
+function toggleSection(head) {
+  const body = head.nextElementSibling;
+  const sign = head.querySelector('b');
+
+  // закрываем все остальные секции
+  document.querySelectorAll('.menu-body').forEach(b => {
+    if (b !== body) {
+      b.style.display = 'none';
+      b.previousElementSibling.querySelector('b').textContent = '+';
+    }
+  });
+
+  // открываем / закрываем текущую
+  if (body.style.display === 'block') {
+    body.style.display = 'none';
+    sign.textContent = '+';
+  } else {
+    body.style.display = 'block';
+    sign.textContent = '−';
+  }
+}
