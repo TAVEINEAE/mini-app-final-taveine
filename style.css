@@ -574,3 +574,25 @@ body {
   line-height: 1.7;
   color: #2b3d36;
 }
+
+/* ===== MENU PILL ICON ===== */
+
+.menu-pill {
+  width: 42px;
+  height: 64px;
+  background: var(--green);
+  border-radius: 24px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.menu-pill span {
+  width: 16px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+}
