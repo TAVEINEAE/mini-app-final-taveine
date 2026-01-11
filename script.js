@@ -213,3 +213,45 @@ function closeAbout() {
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts(productsData);
 });
+
+function openCategory(cat, title) {
+  // закрываем меню
+  document.getElementById('side-menu').classList.remove('open');
+
+  // скрываем главную страницу
+  document.querySelectorAll('body > section, footer, nav')
+    .forEach(el => el.style.display = 'none');
+
+  // показываем страницу категории
+  document.getElementById('category-page').style.display = 'block';
+  document.getElementById('category-title').innerText = title;
+
+  // товары категории
+  const grid = document.getElementById('category-grid');
+  grid.innerHTML = '';
+
+  productsData
+    .filter(p => p.category.includes(cat))
+    .forEach(p => {
+      grid.innerHTML += `
+        <div class="card">
+          <img src="${p.image}">
+          <h3>${p.name}</h3>
+          <span>${p.price} AED</span>
+          <button onclick="addToCart('${p.name}')">Add to cart</button>
+        </div>
+      `;
+    });
+
+  window.scrollTo(0,0);
+}
+
+function closeCategory() {
+  document.getElementById('category-page').style.display = 'none';
+
+  // возвращаем главную страницу
+  document.querySelectorAll('body > section, footer, nav')
+    .forEach(el => el.style.display = '');
+
+  window.scrollTo(0,0);
+}
