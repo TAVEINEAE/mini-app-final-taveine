@@ -354,3 +354,9 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
+
+/* FIX TOP BAR CLICK */
+.top-strip {
+  position: relative;
+  z-index: 10001;
+}
