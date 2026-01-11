@@ -1,203 +1,87 @@
+/* ===== TELEGRAM ===== */
 if (window.Telegram && Telegram.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
 }
-/**************** CONFIG ****************/
-const WC = {
-  url: 'https://taveine.com/wp-json/wc/v3',
-  key: 'ck_3f0d0db9590f9a5e4172c40d2be4e08d3578b710',
-  secret: 'cs_3ccf49b7b11568d11c7ac49180d9321ac3c4c4ea'
-};
 
-/* slug → Woo category ID */
-const CATEGORY_MAP = {
-  'christmas-collection': 21,
-  'best-sellers': 34,
-  'luxury': 18,
-  'vases': 25,
-  'box': 26,
-  'anniversary': 41,
-  'birthday': 42
-};
+/* ===== DATA ===== */
+const productsData = [
+  // BOX
+  { name: "Rose Box Classic", price: 620, image: "box1.jpg", category: "box" },
+  { name: "Rose Box Deluxe", price: 720, image: "box2.jpg", category: "box" },
+  { name: "Velvet Rose Box", price: 790, image: "box3.jpg", category: "box" },
 
+  // LUXURY
+  { name: "Luxury Red Roses", price: 950, image: "lux1.jpg", category: "luxury" },
+  { name: "Golden Luxury Roses", price: 1100, image: "lux2.jpg", category: "luxury" },
+  { name: "Royal Roses", price: 1250, image: "lux3.jpg", category: "luxury" },
+
+  // VASES
+  { name: "White Elegance Vase", price: 480, image: "vase1.jpg", category: "vases" },
+  { name: "Green Garden Vase", price: 520, image: "vase2.jpg", category: "vases" },
+  { name: "Classic Glass Vase", price: 560, image: "vase3.jpg", category: "vases" },
+
+  // CHRISTMAS
+  { name: "Christmas Bloom", price: 780, image: "xmas1.jpg", category: "christmas" },
+  { name: "Winter Red Box", price: 860, image: "xmas2.jpg", category: "christmas" },
+  { name: "Snowflake Roses", price: 920, image: "xmas3.jpg", category: "christmas" },
+
+  // OCCASIONS
+  { name: "Birthday Surprise", price: 690, image: "bday1.jpg", category: "birthday" },
+  { name: "Anniversary Love", price: 890, image: "ann1.jpg", category: "anniversary" },
+  { name: "Sorry Bouquet", price: 480, image: "sorry1.jpg", category: "sorry" },
+  { name: "New Baby Pink Box", price: 720, image: "baby1.jpg", category: "baby" }
+];
+
+/* ===== STATE ===== */
 let cart = [];
 
-/**************** MENU ****************/
-function toggleMenu() {
-  document.getElementById('side-menu').classList.toggle('open');
+/* ===== MENU ===== */
+function toggleMenu(forceClose = false) {
+  const menu = document.getElementById("side-menu");
+  if (forceClose) menu.classList.remove("open");
+  else menu.classList.toggle("open");
 }
 
-/**************** LOAD PRODUCTS ****************/
-async function loadProducts(categorySlug = '') {
-  const box = document.getElementById('products');
-  box.innerHTML = 'Loading…';
+/* ===== RENDER PRODUCTS ===== */
+function renderProducts(list) {
+  const box = document.getElementById("products-grid");
+  if (!box) return;
 
-  let endpoint = `${WC.url}/products?per_page=20`;
+  box.innerHTML = "";
 
-  if (categorySlug && CATEGORY_MAP[categorySlug]) {
-    endpoint += `&category=${CATEGORY_MAP[categorySlug]}`;
-    document.getElementById('page-title').innerText =
-      categorySlug.replace(/-/g, ' ');
-  } else {
-    document.getElementById('page-title').innerText = 'Shop All';
-  }
-
-  try {
-    const res = await fetch(endpoint, {
-      headers: {
-        Authorization: 'Basic ' + btoa(WC.key + ':' + WC.secret)
-      }
-    });
-
-    const products = await res.json();
-    renderProducts(products);
-    toggleMenu();
-  } catch (e) {
-    box.innerHTML = 'Failed to load products';
-  }
-}
-
-/**************** RENDER ****************/
-function renderProducts(products) {
-  const box = document.getElementById('products');
-  box.innerHTML = '';
-
-  products.forEach(p => {
-    const price = Number(p.price || 0);
-
+  list.forEach(p => {
     box.innerHTML += `
       <div class="card">
-        <img src="${p.images?.[0]?.src || ''}">
-        <h4>${p.name}</h4>
-        <span>${price} AED</span>
-        <button class="main-btn"
-          onclick="addToCart('${p.name}', ${price})">
-          ADD TO CART
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <span>${p.price} AED</span>
+        <button onclick="addToCart('${p.name}', ${p.price})">
+          Add to cart
         </button>
       </div>
     `;
   });
 }
 
-/**************** CART ****************/
-function addToCart(name, price) {
-  cart.push({ name, price });
-  document.getElementById('cart-count').innerText = cart.length;
-}
-
-function openCart() {
-  let total = 0;
-  const box = document.getElementById('cart-items');
-  box.innerHTML = '';
-
-  cart.forEach((i, idx) => {
-    total += i.price;
-    box.innerHTML += `
-      <div>
-        ${i.name} — ${i.price} AED
-        <button onclick="removeFromCart(${idx})">×</button>
-      </div>
-    `;
-  });
-
-  document.getElementById('cart-total').innerText = total + ' AED';
-  document.getElementById('cart-modal').style.display = 'flex';
-}
-
-function removeFromCart(i) {
-  cart.splice(i, 1);
-  document.getElementById('cart-count').innerText = cart.length;
-  openCart();
-}
-
-function closeCart() {
-  document.getElementById('cart-modal').style.display = 'none';
-}
-
-/**************** DELIVERY ****************/
-function openDelivery() {
-  closeCart();
-  document.getElementById('shop-page').style.display = 'none';
-  document.getElementById('delivery-page').classList.remove('hidden');
-}
-
-function backToShop() {
-  document.getElementById('delivery-page').classList.add('hidden');
-  document.getElementById('shop-page').style.display = 'block';
-}
-
-/**************** CONFIRM ORDER (FIXED 100%) ****************/
-function confirmOrder() {
-  if (!window.Telegram || !Telegram.WebApp) {
-    alert('Open this inside Telegram');
-    return;
-  }
-
-  const order = {
-    customer: {
-      name: document.getElementById('d-name').value,
-      phone: document.getElementById('d-phone').value,
-      address: document.getElementById('d-address').value,
-      apartment: document.getElementById('d-apartment').value,
-      note: document.getElementById('d-note').value
-    },
-    items: cart,
-    total: cart.reduce((s, i) => s + i.price, 0)
-  };
-
-  Telegram.WebApp.sendData(JSON.stringify(order));
-  Telegram.WebApp.close();
-}
-
-/**************** INIT ****************/
-document.addEventListener('DOMContentLoaded', () => {
-  loadProducts();
-});
-
-/* AUTO LOAD */
-loadProducts();
-const productsData = [
-  { name: "Rose Box", price: 620, image: "p1.jpg", category: "box" },
-  { name: "Luxury Roses", price: 950, image: "p2.jpg", category: "luxury" },
-  { name: "White Elegance", price: 780, image: "p3.jpg", category: "christmas" },
-  { name: "Golden Bloom", price: 1100, image: "p4.jpg", category: "luxury" },
-  { name: "Glass Vase Flowers", price: 520, image: "p5.jpg", category: "vases" },
-  { name: "Baby Pink Box", price: 690, image: "p6.jpg", category: "baby" },
-  { name: "Sorry Bouquet", price: 480, image: "p7.jpg", category: "sorry" },
-  { name: "Anniversary Roses", price: 890, image: "p8.jpg", category: "anniversary" }
-];
-
-function renderProducts(list) {
-  const box = document.getElementById("products");
-  box.innerHTML = "";
-
-  list.forEach(p => {
-    box.innerHTML += `
-      <div class="product">
-        <img src="${p.image}">
-        <p>${p.name}</p>
-        <strong>${p.price} AED</strong>
-      </div>
-    `;
-  });
-}
-
-function loadCollection(cat) {
-  toggleMenu(false);
+/* ===== FILTER ===== */
+function filterProducts(cat) {
+  toggleMenu(true);
 
   if (cat === "all") {
     renderProducts(productsData);
-    sectionTitle.textContent = "Shop All";
   } else {
     renderProducts(productsData.filter(p => p.category === cat));
-    sectionTitle.textContent = cat.toUpperCase();
   }
 }
 
-function toggleMenu(forceClose = null) {
-  const menu = document.getElementById("side-menu");
-  if (forceClose === false) menu.classList.remove("open");
-  else menu.classList.toggle("open");
+/* ===== CART ===== */
+function addToCart(name, price) {
+  cart.push({ name, price });
+  alert(name + " added to cart");
 }
 
-loadCollection("all");
+/* ===== INIT ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  renderProducts(productsData);
+});
