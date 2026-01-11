@@ -502,7 +502,7 @@
       id="search-input"
       type="text"
       placeholder="Search products"
-      oninput="searchAll(this.value)"
+      oninput="searchAll(this.value); updateSuggestions(this.value)"
       <div id="search-suggestions" class="search-suggestions"></div>
       style="
         width:100%;
