@@ -9,31 +9,31 @@
 
 body {
   margin: 0;
-  padding-bottom: 80px;
+  padding-bottom: 90px; /* ВАЖНО: место под bottom nav */
+  min-height: 100vh;
   color: var(--green);
+  background: #fff;
 }
 
-/* TOP */
+/* ================= TOP ================= */
 .top-strip {
   background: var(--green);
   color: #fff;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 16px;
 }
 
-/* HEADER */
-.header {
-  display: flex;
-  justify-content: center;
-  padding: 16px;
+.top-strip button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
 }
 
-.logo {
-  height: 42px;
-}
-
-/* SIDE MENU */
+/* ================= SIDE MENU ================= */
 .side-menu {
   position: fixed;
   top: 0;
@@ -41,34 +41,55 @@ body {
   width: 80%;
   height: 100%;
   background: #fff;
-  z-index: 1000;
+  z-index: 1200;
   padding: 20px;
-  transition: .3s;
+  transition: left .3s ease;
+  overflow-y: auto;
 }
 
 .side-menu.open {
   left: 0;
 }
 
-.side-menu a {
-  display: block;
-  padding: 10px 0;
+.side-menu h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-/* HERO */
+.side-menu a {
+  display: block;
+  padding: 12px 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ================= HERO ================= */
 .hero {
   text-align: center;
-  padding: 40px 20px;
+  padding: 40px 20px 20px;
+}
+
+.hero h1 {
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
 }
 
 .hero img {
   width: 100%;
   max-width: 360px;
+  display: block;
+  margin: 0 auto;
 }
 
-/* PRODUCTS */
+/* ================= PRODUCTS ================= */
 .products {
   padding: 20px;
+}
+
+.products h2 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .grid {
@@ -77,41 +98,89 @@ body {
   gap: 16px;
 }
 
+.card {
+  text-align: center;
+}
+
 .card img {
   width: 100%;
+  display: block;
+}
+
+.card h3 {
+  font-size: 14px;
+  margin: 10px 0 4px;
+}
+
+.card span {
+  font-weight: 600;
 }
 
 .card button {
   width: 100%;
   padding: 10px;
+  margin-top: 8px;
   border: 1px solid var(--green);
   background: none;
-  margin-top: 8px;
+  color: var(--green);
+  cursor: pointer;
 }
 
-/* FOOTER */
+.card button:active {
+  background: var(--green);
+  color: #fff;
+}
+
+/* ================= FOOTER ================= */
 .footer {
   background: #f7f7f7;
-  padding: 40px 20px;
+  padding: 40px 20px 20px;
   text-align: center;
 }
 
 .footer-logo {
   width: 140px;
+  margin-bottom: 20px;
+}
+
+.footer p {
+  margin: 6px 0;
+}
+
+.social {
+  margin: 12px 0;
 }
 
 .social span {
-  margin: 0 8px;
+  margin: 0 10px;
+  font-size: 18px;
+  cursor: pointer;
 }
 
-/* BOTTOM NAV */
+/* ================= BOTTOM NAV ================= */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  height: 70px;
   display: flex;
   justify-content: space-around;
+  align-items: center;
   background: #fff;
   border-top: 1px solid #eee;
+  z-index: 1100;
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  color: #777;
+}
+
+.bottom-nav button.active {
+  color: var(--green);
+  font-weight: 600;
 }
