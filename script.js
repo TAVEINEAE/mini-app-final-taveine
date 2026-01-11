@@ -255,3 +255,24 @@ function closeCategory() {
 
   window.scrollTo(0,0);
 }
+
+// ===== TELEGRAM BACK BUTTON =====
+if (window.Telegram?.WebApp?.BackButton) {
+
+  Telegram.WebApp.BackButton.onClick(() => {
+    // если открыта страница категории — закрываем её
+    const catPage = document.getElementById('category-page');
+    if (catPage && catPage.style.display === 'block') {
+      closeCategory();
+      Telegram.WebApp.BackButton.hide();
+    }
+
+    // если открыта страница About Us — закрываем её
+    const aboutPage = document.getElementById('about-page');
+    if (aboutPage && aboutPage.style.display === 'block') {
+      closeAbout();
+      Telegram.WebApp.BackButton.hide();
+    }
+  });
+
+}
