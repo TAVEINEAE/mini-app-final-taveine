@@ -1,233 +1,54 @@
-:root {
-  --green: #1f3f38;
-}
-
-* {
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, Roboto;
-}
+:root { --green:#1f3f38; }
 
 body {
-  margin: 0;
-  padding-bottom: 180px; /* FIX: место под footer + bottom nav */
-  min-height: 100vh;
-  color: var(--green);
-  background: #fff;
+  margin:0;
+  padding-bottom:180px;
+  font-family:-apple-system,BlinkMacSystemFont,Roboto;
+  background:#fff;
+  color:var(--green);
 }
 
-/* ================= TOP ================= */
 .top-strip {
-  background: var(--green);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  position: relative;
-  z-index: 20000; /* FIX: кнопка меню всегда кликабельна */
+  background:var(--green);
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  padding:12px 16px;
 }
 
-.top-strip .menu-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.top-title {
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.top-right {
-  width: 22px;
-}
-
-/* ================= SIDE MENU ================= */
 .side-menu {
-  position: fixed;
-  top: 0;
-  left: -100%;
-  width: 80%;
-  height: 100%;
-  background: #fff;
-  z-index: 15000;
-  padding: 20px;
-  transition: left .3s ease;
-  overflow-y: auto;
+  position:fixed;
+  inset:0 auto 0 -100%;
+  width:80%;
+  background:#fff;
+  padding:20px;
+  transition:.3s;
+  z-index:15000;
 }
-
-.side-menu.open {
-  left: 0;
-}
-
-.side-menu h4 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-.side-menu a {
-  display: block;
-  padding: 12px 0;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-/* ================= HERO ================= */
-.hero {
-  text-align: center;
-  padding: 40px 20px 20px;
-}
-
-.hero img {
-  width: 100%;
-  max-width: 360px;
-  display: block;
-  margin: 0 auto;
-}
-
-/* ================= PRODUCTS ================= */
-.products {
-  padding: 20px;
-}
-
-.products h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
+.side-menu.open { left:0; }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
 }
 
-.card {
-  text-align: center;
-  position: relative;
-}
-
-.card img {
-  width: 100%;
-  display: block;
-}
-
-.card h3 {
-  font-size: 14px;
-  margin: 10px 0 4px;
-}
-
-.card span {
-  font-weight: 600;
-}
-
+.card { text-align:center; position:relative; }
+.card img { width:100%; }
 .card button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  border: 1px solid var(--green);
-  background: none;
-  color: var(--green);
-  cursor: pointer;
+  width:100%;
+  border:1px solid var(--green);
+  background:none;
+  padding:10px;
 }
 
-.card button:active {
-  background: var(--green);
-  color: #fff;
-}
-
-/* ================= FOOTER ================= */
-.footer {
-  background: #f6f6f6;
-  padding: 32px 20px 120px; /* FIX: футер выше bottom nav */
-  color: var(--green);
-}
-
-.footer-top p {
-  margin: 6px 0;
-  font-size: 14px;
-}
-
-.footer-bottom {
-  text-align: center;
-  margin-top: 30px;
-}
-
-/* ================= BOTTOM NAV ================= */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  z-index: 9999;
-}
-
-.bottom-nav button {
-  background: none;
-  border: none;
-  text-align: center;
-  font-size: 11px;
-  color: #777;
-  position: relative;
-}
-
-.bottom-nav .icon {
-  display: block;
-  font-size: 18px;
-  margin-bottom: 4px;
-}
-
-.bottom-nav .active {
-  color: var(--green);
-}
-
-.bottom-nav .badge em {
-  position: absolute;
-  top: 0;
-  right: 10px;
-  background: red;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 5px;
-  border-radius: 10px;
-}
-
-/* ================= WISHLIST HEART ================= */
-.wishlist-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 42px;
-  height: 42px;
-  background: #fff;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,.15);
-  z-index: 5;
-}
-
-.wishlist-btn.active {
-  color: #c0392b;
-}
-
-/* ================= WISHLIST MODAL ================= */
-.wishlist-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 14000;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  display:flex;
+  justify-content:space-around;
+  border-top:1px solid #ddd;
 }
