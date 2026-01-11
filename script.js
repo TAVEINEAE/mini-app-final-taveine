@@ -136,3 +136,31 @@ function addCurrentToCart() {
   cart.push(currentProduct);
   document.getElementById("cart-count").innerText = cart.length;
 }
+
+const popupProducts = [
+  { name: "Luxury Heart Roses", image: "heart2.jpg" },
+  { name: "Forever Heart Roses", image: "heart3.jpg" },
+  { name: "Rose Box Classic", image: "box1.jpg" },
+  { name: "Luxury Red Roses", image: "lux1.jpg" }
+];
+
+function showPurchasePopup() {
+  const item = popupProducts[
+    Math.floor(Math.random() * popupProducts.length)
+  ];
+
+  const minutes = Math.floor(Math.random() * 55) + 5;
+
+  document.getElementById("popup-img").src = item.image;
+  document.getElementById("popup-name").innerText =
+    `Someone purchased ${item.name}`;
+  document.getElementById("popup-time").innerText =
+    `${minutes} minutes ago`;
+
+  const popup = document.getElementById("purchase-popup");
+  popup.style.display = "flex";
+
+  setTimeout(() => {
+    popup.style.display = "none";
+  }, 4000);
+}
