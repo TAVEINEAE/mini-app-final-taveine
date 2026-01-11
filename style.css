@@ -55,16 +55,20 @@ body {
 
 /* ================= BEST SELLERS (SMALL SLIDER) ================= */
 .best-sellers {
-  padding: 30px 0 10px;
+  padding: 20px 0 10px;
 }
 
 .best-sellers h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
+  font-size: 18px;
+  font-weight: 500;
 }
 
+/* контейнер скролла */
 .best-slider {
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -72,33 +76,39 @@ body {
   display: none;
 }
 
+/* трек */
 .best-track {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   padding: 0 16px;
 }
 
+/* карточка */
 .best-card {
-  min-width: calc(50% - 6px); /* 2 карточки */
-  flex-shrink: 0;
+  flex: 0 0 48%;          /* строго 2 на экран */
+  max-width: 48%;
 }
 
+/* изображение */
 .best-card img {
   width: 100%;
+  height: 150px;         /* КЛЮЧЕВО: маленький размер */
+  object-fit: cover;    /* как на сайте */
+  border-radius: 0;
   display: block;
 }
 
-/* dots */
+/* точки */
 .dots {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: #ccc;
   border-radius: 50%;
 }
