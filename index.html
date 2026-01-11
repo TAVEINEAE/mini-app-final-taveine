@@ -7,92 +7,16 @@
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="style.css" />
-
-  <style>
-    /* === FIX CORE ISSUES === */
-
-    body {
-      margin: 0;
-      padding-bottom: 80px;
-    }
-
-    .hero {
-      position: relative;
-      text-align: center;
-      padding: 40px 16px 20px;
-      z-index: 1;
-    }
-
-    .hero img {
-      width: 100%;
-      max-width: 420px;
-      margin: 20px auto 0;
-      display: block;
-    }
-
-    .section-title {
-      font-size: 22px;
-      font-weight: 600;
-      text-align: center;
-      margin: 30px 0 10px;
-    }
-
-    /* PRODUCTS */
-    .products {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      padding: 0 16px;
-    }
-
-    .product {
-      text-align: center;
-    }
-
-    .product img {
-      width: 100%;
-    }
-
-    /* SIDE MENU */
-    .side-menu {
-      position: fixed;
-      inset: 0 auto 0 0;
-      width: 280px;
-      background: #fff;
-      z-index: 1000;
-      transform: translateX(-100%);
-      transition: .3s;
-    }
-
-    .side-menu.open {
-      transform: translateX(0);
-    }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      background: #fff;
-      border-top: 1px solid #eee;
-      z-index: 2000;
-    }
-
-    .bottom-nav button {
-      background: none;
-      border: none;
-      text-align: center;
-      font-size: 12px;
-    }
-  </style>
 </head>
 
 <body>
+
+<!-- TOP STRIP -->
+<div class="top-strip">
+  <span>‹</span>
+  <span>Free delivery</span>
+  <span>×</span>
+</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -103,73 +27,48 @@
 <!-- SIDE MENU -->
 <div id="side-menu" class="side-menu">
   <div class="side-header">
-    <span>Menu</span>
+    <strong>Menu</strong>
     <button onclick="toggleMenu()">×</button>
   </div>
 
-  <div class="accordion">
-    <div class="acc-title" onclick="toggleAcc(this)">Collection <span>+</span></div>
-    <div class="acc-body">
-      <a onclick="loadProducts()">Shop All</a>
-      <a>Christmas Collection</a>
-      <a>Luxury</a>
-    </div>
+  <div class="menu-group">
+    <p>Collection</p>
+    <a onclick="loadCollection('all')">Shop All</a>
+    <a onclick="loadCollection('christmas')">Christmas Collection</a>
+    <a onclick="loadCollection('luxury')">Luxury</a>
+    <a onclick="loadCollection('vases')">Vases</a>
+    <a onclick="loadCollection('box')">Box</a>
+  </div>
+
+  <div class="menu-group">
+    <p>Occasions</p>
+    <a onclick="loadCollection('birthday')">Birthday</a>
+    <a onclick="loadCollection('anniversary')">Anniversary</a>
+    <a onclick="loadCollection('sorry')">I’m Sorry</a>
+    <a onclick="loadCollection('baby')">New Baby</a>
+    <a onclick="loadCollection('baby')">Forever Rose</a>
+    <a onclick="loadCollection('baby')">Baloons</a>
   </div>
 </div>
 
 <!-- HERO -->
 <section class="hero">
-  <h1>THE FRESHEST<br>FLOWERS ARE HERE</h1>
   <img src="hero.jpg" alt="Flowers">
 </section>
 
-<!-- BEST SELLERS -->
-<div class="section-title">Best Sellers</div>
+<h2 class="section-title" id="sectionTitle">Best Sellers</h2>
 
 <!-- PRODUCTS -->
-<div id="products" class="products"></div>
+<section class="products" id="products"></section>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button onclick="scrollToTop()">⌂<br>Shop</button>
-  <button>🔍<br>Search</button>
-  <button>♡<br>Wishlist</button>
-  <button>🛒<br>Cart</button>
+  <button class="active" onclick="loadCollection('all')">🏠<small>Shop</small></button>
+  <button onclick="alert('Search')">🔍<small>Search</small></button>
+  <button onclick="alert('Wishlist')">♡<small>Wishlist</small></button>
+  <button onclick="alert('Cart')">🛒<small>Cart</small></button>
 </nav>
 
-<script>
-function toggleMenu() {
-  document.getElementById('side-menu').classList.toggle('open');
-}
-
-function toggleAcc(el) {
-  const body = el.nextElementSibling;
-  body.classList.toggle('open');
-}
-
-/* TEMP PRODUCTS (пока WooCommerce) */
-function loadProducts() {
-  const box = document.getElementById('products');
-  box.innerHTML = `
-    <div class="product">
-      <img src="hero.jpg">
-      <p>Rose Box</p>
-      <strong>620 AED</strong>
-    </div>
-    <div class="product">
-      <img src="hero.jpg">
-      <p>Luxury Roses</p>
-      <strong>950 AED</strong>
-    </div>
-  `;
-}
-
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-loadProducts();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
