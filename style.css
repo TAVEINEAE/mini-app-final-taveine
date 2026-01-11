@@ -196,19 +196,85 @@ body {
 }
 
 /* ================= FOOTER ================= */
-.footer {
-  background: #f6f6f6;
-  padding: 32px 20px 120px;
+
+.site-footer {
+  background: #f6f7f5;
+  padding: 40px 20px 120px; /* место под bottom nav */
+  color: var(--green);
 }
 
-.footer-top p {
+.footer-logo img {
+  width: 140px;
+  margin-bottom: 20px;
+}
+
+.footer-info p {
   font-size: 14px;
   margin: 6px 0;
 }
 
-.footer-bottom {
-  text-align: center;
+.direction-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.footer-socials a {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.footer-accordion {
   margin-top: 20px;
+}
+
+.footer-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.footer-item button {
+  background: none;
+  border: none;
+  font-size: 20px;
+}
+
+.footer-bottom {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.footer-bottom p {
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.payments {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.payments img {
+  height: 24px;
 }
 
 /* ================= BOTTOM NAV ================= */
