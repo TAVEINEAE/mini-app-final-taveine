@@ -1,57 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TAVEINE Mini App</title>
 
+  <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<!-- TOP STRIP -->
+<!-- TOP BAR -->
 <div class="top-strip">
   <span>Free delivery</span>
-  <span onclick="toggleMenu()">☰</span>
-</div>
-
-<!-- HEADER -->
-<header class="header">
-  <img src="logo.png" class="logo" alt="TAVEINE">
-</header>
-
-<!-- SIDE MENU -->
-<div id="side-menu" class="side-menu">
-  <div class="side-header">
-    <strong>Menu</strong>
-    <button onclick="toggleMenu()">×</button>
-  </div>
-
-  <h4>Collection</h4>
-  <a onclick="filterProducts('all')">Shop All</a>
-  <a onclick="filterProducts('christmas')">Christmas Collection</a>
-  <a onclick="filterProducts('luxury')">Luxury</a>
-  <a onclick="filterProducts('vases')">Vases</a>
-  <a onclick="filterProducts('box')">Box</a>
-
-  <h4>Occasions</h4>
-  <a onclick="filterProducts('birthday')">Birthday</a>
-  <a onclick="filterProducts('anniversary')">Anniversary</a>
-  <a onclick="filterProducts('sorry')">I’m Sorry</a>
-  <a onclick="filterProducts('baby')">New Baby</a>
+  <button onclick="toggleMenu()">☰</button>
 </div>
 
 <!-- HERO -->
 <section class="hero">
+  <h1>THE FRESHEST<br>FLOWERS ARE HERE</h1>
   <img src="hero.jpg" alt="Flowers">
 </section>
 
 <!-- PRODUCTS -->
 <section class="products">
-  <h2>Best Sellers</h2>
+  <h2 id="section-title">Best Sellers</h2>
 
-  <div class="grid" id="products-grid">
+  <div class="grid">
 
     <!-- BOX -->
     <div class="card" data-cat="box">
@@ -60,6 +36,7 @@
       <span>620 AED</span>
       <button>Add to cart</button>
     </div>
+
     <div class="card" data-cat="box">
       <img src="box2.jpg">
       <h3>Rose Box Deluxe</h3>
@@ -74,6 +51,7 @@
       <span>950 AED</span>
       <button>Add to cart</button>
     </div>
+
     <div class="card" data-cat="luxury">
       <img src="lux2.jpg">
       <h3>Golden Luxury Roses</h3>
@@ -88,6 +66,7 @@
       <span>480 AED</span>
       <button>Add to cart</button>
     </div>
+
     <div class="card" data-cat="vases">
       <img src="vase2.jpg">
       <h3>Green Garden Vase</h3>
@@ -102,10 +81,26 @@
       <span>780 AED</span>
       <button>Add to cart</button>
     </div>
+
     <div class="card" data-cat="christmas">
       <img src="xmas2.jpg">
       <h3>Winter Red Box</h3>
       <span>860 AED</span>
+      <button>Add to cart</button>
+    </div>
+
+    <!-- OCCASIONS -->
+    <div class="card" data-cat="birthday">
+      <img src="bday1.jpg">
+      <h3>Birthday Pink</h3>
+      <span>690 AED</span>
+      <button>Add to cart</button>
+    </div>
+
+    <div class="card" data-cat="anniversary">
+      <img src="anni1.jpg">
+      <h3>Anniversary Roses</h3>
+      <span>890 AED</span>
       <button>Add to cart</button>
     </div>
 
@@ -133,19 +128,42 @@
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="active">Shop</button>
+  <button class="active" onclick="filterProducts('all')">Shop</button>
   <button>Search</button>
   <button>Wishlist</button>
   <button>Cart</button>
 </nav>
 
+<!-- SIDE MENU -->
+<div id="side-menu" class="side-menu">
+  <h4>Collection</h4>
+  <a onclick="filterProducts('all')">Shop All</a>
+  <a onclick="filterProducts('christmas')">Christmas</a>
+  <a onclick="filterProducts('luxury')">Luxury</a>
+  <a onclick="filterProducts('vases')">Vases</a>
+  <a onclick="filterProducts('box')">Box</a>
+
+  <h4>Occasions</h4>
+  <a onclick="filterProducts('birthday')">Birthday</a>
+  <a onclick="filterProducts('anniversary')">Anniversary</a>
+</div>
+
 <script>
+if (window.Telegram && Telegram.WebApp) {
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+}
+
 function toggleMenu() {
   document.getElementById('side-menu').classList.toggle('open');
 }
 
 function filterProducts(cat) {
   toggleMenu();
+
+  document.getElementById('section-title').innerText =
+    cat === 'all' ? 'Best Sellers' : cat.toUpperCase();
+
   document.querySelectorAll('.card').forEach(card => {
     card.style.display =
       (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
