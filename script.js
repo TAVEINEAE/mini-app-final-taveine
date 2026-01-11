@@ -169,7 +169,14 @@ requestAnimationFrame(() => {
 }
 
 function closeCategory() {
-  document.getElementById("category-page").style.display = "none";
+  const page = document.getElementById("category-page");
+page.classList.remove("active");
+page.classList.add("exit");
+
+setTimeout(() => {
+  page.style.display = "none";
+  page.classList.remove("exit");
+}, 350);
 
   document.querySelectorAll("body > section, footer, nav")
     .forEach(el => el.style.display = "");
