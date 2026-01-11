@@ -74,6 +74,30 @@ body {
   font-size: 16px;
 }
 
+/* ================= SIDE MENU ================= */
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 85%;
+  max-width: 360px;
+  height: 100vh;
+
+  background: #fff;
+  padding: 24px 20px;
+
+  z-index: 25000;
+  overflow-y: auto;
+
+  transition: left .3s ease;
+}
+
+/* open state */
+.side-menu.open {
+  left: 0;
+}
+
 /* ================= HERO ================= */
 .hero {
   padding: 20px 16px 10px;
