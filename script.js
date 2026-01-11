@@ -164,3 +164,8 @@ function showPurchasePopup() {
     popup.style.display = "none";
   }, 4000);
 }
+
+setTimeout(() => {
+  showPurchasePopup();
+  setInterval(showPurchasePopup, 20000);
+}, 5000);
