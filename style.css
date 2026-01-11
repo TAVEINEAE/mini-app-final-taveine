@@ -715,3 +715,23 @@ body {
   font-size: 18px;
   font-weight: 600;
 }
+
+/* ===== SLIDE ANIMATION ===== */
+
+.page-slide {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 30000;
+
+  transform: translateX(100%);
+  transition: transform 0.35s ease;
+}
+
+.page-slide.active {
+  transform: translateX(0);
+}
+
+.page-slide.exit {
+  transform: translateX(100%);
+}
