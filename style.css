@@ -433,3 +433,49 @@ body {
   width: 100%;
   display: block;
 }
+
+/* ================= BIRTHDAY COLLECTION ================= */
+
+.birthday-collection h2 {
+  text-align: left;
+  margin: 20px 0;
+}
+
+.badge-hot {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--green);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  z-index: 5;
+}
+
+.color-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0;
+  justify-content: center;
+}
+
+.color-dots span {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+}
+
+.color-dots small {
+  font-size: 12px;
+}
+
+.quick-add {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--green);
+  background: none;
+  font-size: 13px;
+}
