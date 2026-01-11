@@ -701,3 +701,17 @@ body {
   width: 100%;
   border-radius: 6px;
 }
+
+#category-page {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 30000;
+  overflow-y: auto;
+}
+
+#category-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
