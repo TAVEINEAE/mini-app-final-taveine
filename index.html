@@ -204,6 +204,81 @@ function filterProducts(cat) {
   });
 }
 </script>
+/**************** STATE ****************/
+let cart = [];
+let wishlist = [];
+
+/**************** HELPERS ****************/
+function updateBadges() {
+  document.querySelectorAll('.bottom-nav .badge').forEach(btn => {
+    const icon = btn.querySelector('.icon').textContent;
+    const counter = btn.querySelector('em');
+
+    if (icon === '🛒') counter.textContent = cart.length;
+    if (icon === '♡') counter.textContent = wishlist.length;
+  });
+}
+
+/**************** ADD TO CART ****************/
+document.querySelectorAll('.card button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const card = btn.closest('.card');
+    const name = card.querySelector('h3').innerText;
+    const price = card.querySelector('span').innerText;
+
+    cart.push({ name, price });
+    updateBadges();
+
+    Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');
+  });
+});
+
+/**************** WISHLIST ****************/
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('dblclick', () => {
+    const name = card.querySelector('h3').innerText;
+
+    if (!wishlist.includes(name)) {
+      wishlist.push(name);
+      updateBadges();
+    }
+  });
+});
+
+/**************** BOTTOM NAV ****************/
+const bottomButtons = document.querySelectorAll('.bottom-nav button');
+
+bottomButtons[0].onclick = () => filterProducts('all'); // Shop
+
+bottomButtons[1].onclick = () => {
+  const q = prompt('Search product');
+  if (!q) return;
+
+  document.getElementById('section-title').innerText = 'Search results';
+
+  document.querySelectorAll('.card').forEach(card => {
+    const name = card.querySelector('h3').innerText.toLowerCase();
+    card.style.display = name.includes(q.toLowerCase()) ? 'block' : 'none';
+  });
+};
+
+bottomButtons[2].onclick = () => {
+  alert('Wishlist:\n' + (wishlist.length ? wishlist.join('\n') : 'Empty'));
+};
+
+bottomButtons[3].onclick = () => {
+  if (!cart.length) {
+    alert('Cart is empty');
+    return;
+  }
+
+  let msg = 'Your cart:\n\n';
+  cart.forEach(i => msg += `${i.name} — ${i.price}\n`);
+  alert(msg);
+};
+
+/**************** INIT ****************/
+updateBadges();
 
 </body>
 </html>
