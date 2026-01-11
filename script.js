@@ -216,3 +216,60 @@ Telegram?.WebApp?.BackButton?.onClick(() => {
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts(productsData);
 });
+
+/* ================= SEARCH PAGE ================= */
+
+function openSearch() {
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "none");
+
+  document.getElementById("search-page").style.display = "block";
+  document.getElementById("search-input").value = "";
+  document.getElementById("search-input").focus();
+
+  renderSearch(productsData);
+
+  Telegram?.WebApp?.BackButton?.show();
+}
+
+function closeSearch() {
+  document.getElementById("search-page").style.display = "none";
+
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "");
+
+  Telegram?.WebApp?.BackButton?.hide();
+}
+
+function searchAll(text) {
+  const value = text.toLowerCase().trim();
+
+  const filtered = productsData.filter(p =>
+    p.name.toLowerCase().includes(value)
+  );
+
+  renderSearch(filtered);
+}
+
+function renderSearch(list) {
+  const grid = document.getElementById("search-grid");
+  grid.innerHTML = "";
+
+  if (!list.length) {
+    grid.innerHTML = `<p style="text-align:center;padding:40px">
+      Nothing found
+    </p>`;
+    return;
+  }
+
+  list.forEach(p => {
+    grid.innerHTML += `
+      <div class="card">
+        <img src="${p.image}">
+        <h3>${p.name}</h3>
+        <span>${p.price} AED</span>
+        <button onclick="addToCart('${p.name}')">Add to cart</button>
+      </div>
+    `;
+  });
+}
