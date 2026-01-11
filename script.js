@@ -197,3 +197,25 @@ function toggleSection(head) {
     sign.textContent = '−';
   }
 }
+
+function goToCategory(cat, title) {
+  // закрываем меню
+  document.getElementById('side-menu').classList.remove('open');
+
+  // меняем заголовок
+  const h = document.getElementById('section-title');
+  if (h && title) h.innerText = title;
+
+  // фильтруем товары
+  renderProducts(
+    cat === 'all'
+      ? productsData
+      : productsData.filter(p => p.category.includes(cat))
+  );
+
+  // скролл к товарам
+  const block = document.querySelector('.products');
+  if (block) {
+    block.scrollIntoView({ behavior: 'smooth' });
+  }
+}
