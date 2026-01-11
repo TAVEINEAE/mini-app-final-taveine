@@ -169,3 +169,8 @@ setTimeout(() => {
   showPurchasePopup();
   setInterval(showPurchasePopup, 20000);
 }, 5000);
+
+function goLuxury() {
+  filterProducts('luxury');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
