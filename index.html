@@ -490,5 +490,34 @@
 
 </section>
 
+<!-- SEARCH PAGE -->
+<section id="search-page" style="display:none">
+
+  <div class="product-top">
+    <button class="back-btn" onclick="closeSearch()">← Back</button>
+  </div>
+
+  <div style="padding:16px">
+    <input
+      id="search-input"
+      type="text"
+      placeholder="Search products"
+      oninput="searchAll(this.value)"
+      style="
+        width:100%;
+        padding:14px;
+        border:1px solid #ddd;
+        border-radius:14px;
+        font-size:15px;
+      "
+    >
+  </div>
+
+  <div class="products">
+    <div class="grid" id="search-grid"></div>
+  </div>
+
+</section>
+
 </body>
 </html>
