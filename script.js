@@ -156,3 +156,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* AUTO LOAD */
 loadProducts();
+const productsData = [
+  { name: "Rose Box", price: 620, image: "p1.jpg", category: "box" },
+  { name: "Luxury Roses", price: 950, image: "p2.jpg", category: "luxury" },
+  { name: "White Elegance", price: 780, image: "p3.jpg", category: "christmas" },
+  { name: "Golden Bloom", price: 1100, image: "p4.jpg", category: "luxury" },
+  { name: "Glass Vase Flowers", price: 520, image: "p5.jpg", category: "vases" },
+  { name: "Baby Pink Box", price: 690, image: "p6.jpg", category: "baby" },
+  { name: "Sorry Bouquet", price: 480, image: "p7.jpg", category: "sorry" },
+  { name: "Anniversary Roses", price: 890, image: "p8.jpg", category: "anniversary" }
+];
+
+function renderProducts(list) {
+  const box = document.getElementById("products");
+  box.innerHTML = "";
+
+  list.forEach(p => {
+    box.innerHTML += `
+      <div class="product">
+        <img src="${p.image}">
+        <p>${p.name}</p>
+        <strong>${p.price} AED</strong>
+      </div>
+    `;
+  });
+}
+
+function loadCollection(cat) {
+  toggleMenu(false);
+
+  if (cat === "all") {
+    renderProducts(productsData);
+    sectionTitle.textContent = "Shop All";
+  } else {
+    renderProducts(productsData.filter(p => p.category === cat));
+    sectionTitle.textContent = cat.toUpperCase();
+  }
+}
+
+function toggleMenu(forceClose = null) {
+  const menu = document.getElementById("side-menu");
+  if (forceClose === false) menu.classList.remove("open");
+  else menu.classList.toggle("open");
+}
+
+loadCollection("all");
