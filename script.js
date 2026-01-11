@@ -219,3 +219,12 @@ function goToCategory(cat, title) {
     block.scrollIntoView({ behavior: 'smooth' });
   }
 }
+
+function openAbout() {
+  toggleMenu();
+  document.getElementById("about-page").style.display = "block";
+}
+
+function closeAbout() {
+  document.getElementById("about-page").style.display = "none";
+}
