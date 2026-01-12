@@ -100,15 +100,29 @@ function toggleWishlist(name, btn) {
 /* ===== WISHLIST MODAL ===== */
 function openWishlist() {
   const box = document.getElementById("wishlistBox");
-  box.innerHTML = wishlist.length
-    ? wishlist.map(n => `<div class="wishlist-item">${n}</div>`).join("")
-    : "<p style='text-align:center'>Wishlist empty</p>";
-  box.innerHTML += `<button onclick="closeWishlist()">OK</button>`;
-  document.getElementById("wishlistModal").style.display = "flex";
-}
 
-function closeWishlist() {
-  document.getElementById("wishlistModal").style.display = "none";
+  if (!wishlist.length) {
+    box.innerHTML = "<p style='text-align:center'>Wishlist empty</p>";
+  } else {
+    box.innerHTML = wishlist.map(name => {
+      const p = productsData.find(i => i.name === name);
+      if (!p) return "";
+
+      return `
+        <div class="wishlist-item" style="display:flex;gap:12px;margin-bottom:12px;align-items:center">
+          <img src="${p.image}" style="width:70px;height:70px;object-fit:cover;border-radius:8px">
+          <div style="flex:1">
+            <strong style="font-size:14px">${p.name}</strong><br>
+            <span>${p.price} AED</span>
+          </div>
+          <button onclick="addToCart('${p.name}')">🛒</button>
+        </div>
+      `;
+    }).join("");
+  }
+
+  box.innerHTML += `<button onclick="closeWishlist()">Close</button>`;
+  document.getElementById("wishlistModal").style.display = "flex";
 }
 
 /* ===== PRODUCT PAGE ===== */
