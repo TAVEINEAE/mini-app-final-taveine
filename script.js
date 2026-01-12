@@ -35,7 +35,8 @@ let cart = [];
 
 /* ===== MENU ===== */
 function toggleMenu() {
-  document.getElementById("side-menu").classList.toggle("open");
+  const menu = document.getElementById("side-menu");
+if (menu) menu.classList.toggle("open");
 }
 
 /* ===== RENDER HOME PRODUCTS ===== */
@@ -188,7 +189,10 @@ setTimeout(() => {
 /* ===== ABOUT US (ИСПРАВЛЕНО) ===== */
 function openAbout() {
   document.getElementById("side-menu").classList.remove("open");
-  document.getElementById("main-content").style.display = "none";
+
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "none");
+
   document.getElementById("about-page").style.display = "block";
   window.scrollTo(0,0);
   Telegram?.WebApp?.BackButton?.show();
@@ -196,21 +200,26 @@ function openAbout() {
 
 function closeAbout() {
   document.getElementById("about-page").style.display = "none";
-  document.getElementById("main-content").style.display = "block";
+
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "");
+
   window.scrollTo(0,0);
   Telegram?.WebApp?.BackButton?.hide();
 }
 
 /* ===== TELEGRAM BACK BUTTON ===== */
-Telegram?.WebApp?.BackButton?.onClick(() => {
-  if (document.getElementById("category-page")?.style.display === "block") {
-    closeCategory();
-  } else if (document.getElementById("about-page")?.style.display === "block") {
-    closeAbout();
-  } else if (document.getElementById("product-page")?.style.display === "block") {
-    closeProduct();
-  }
-});
+if (Telegram?.WebApp?.BackButton) {
+  Telegram.WebApp.BackButton.onClick(() => {
+    if (document.getElementById("category-page")?.style.display === "block") {
+      closeCategory();
+    } else if (document.getElementById("about-page")?.style.display === "block") {
+      closeAbout();
+    } else if (document.getElementById("product-page")?.style.display === "block") {
+      closeProduct();
+    }
+  });
+}
 
 /* ===== INIT ===== */
 document.addEventListener("DOMContentLoaded", () => {
@@ -220,8 +229,8 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ================= SEARCH PAGE ================= */
 
 function openSearch() {
-  document.querySelectorAll("body > section, footer, nav")
-    .forEach(el => el.style.display = "none");
+  document.querySelectorAll("body > section:not(#category-page), footer, nav")
+  .forEach(el => el.style.display = "none");
 
   document.getElementById("search-page").style.display = "block";
   document.getElementById("search-input").value = "";
@@ -235,8 +244,7 @@ function openSearch() {
 function closeSearch() {
   document.getElementById("search-page").style.display = "none";
 
-  document.querySelectorAll("body > section, footer, nav")
-    .forEach(el => el.style.display = "");
+  document.querySelectorAll("body > section:not(#search-page), footer, nav")
 
   Telegram?.WebApp?.BackButton?.hide();
 }
