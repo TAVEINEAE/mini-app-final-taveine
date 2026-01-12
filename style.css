@@ -15,8 +15,9 @@ body {
   color: var(--green);
 
   /* КРИТИЧНО для Telegram iOS */
+  body {
   max-width: 420px;
-  margin-left: 0 auto;
+  margin-left: auto;
   margin-right: auto;
 }
 
@@ -87,7 +88,7 @@ body {
   background: #fff;
   padding: 24px 20px;
 
-  z-index: 21000;
+  z-index: 26000;
   overflow-y: auto;
 
   transition: left .3s ease;
@@ -194,6 +195,35 @@ body {
 .card {
   text-align: center;
   position: relative;
+}
+
+/* ❤️ Wishlist button (top-right corner) */
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.wishlist-btn.active {
+  color: red;
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
 }
 
 .card img {
@@ -313,7 +343,7 @@ body {
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
-  z-index: 15000;
+  z-index: 12000;
 }
 
 .bottom-nav button {
@@ -719,10 +749,11 @@ body {
 /* ===== SLIDE ANIMATION ===== */
 
 .page-slide {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: #fff;
   z-index: 30000;
+}
 
   transform: translateX(100%);
   transition: transform 0.35s ease;
