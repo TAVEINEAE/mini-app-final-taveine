@@ -8,26 +8,122 @@ if (window.Telegram?.WebApp) {
 
 /* ===== DATA ===== */
 const productsData = [
-  { name:"Rose Box Classic", price:620, image:"box1.jpg", category:"box bestseller" },
-  { name:"Velvet Rose Box", price:780, image:"box2.jpg", category:"box luxury" },
-  { name:"Luxury Red Roses", price:950, image:"lux1.jpg", category:"luxury bestseller" },
-  { name:"Golden Luxury Roses", price:1250, image:"lux2.jpg", category:"luxury" },
-  { name:"White Vase Bouquet", price:480, image:"vase1.jpg", category:"vases" },
-  { name:"Garden Vase Mix", price:520, image:"vase2.jpg", category:"vases" },
+  {
+    name:"Rose Box Classic",
+    price:620,
+    image:"box1.jpg",
+    category:"box bestseller",
+    tags:["recommended","popular"]
+  },
+  {
+    name:"Velvet Rose Box",
+    price:780,
+    image:"box2.jpg",
+    category:"box luxury",
+    tags:["recommended"]
+  },
+  {
+    name:"Luxury Red Roses",
+    price:950,
+    image:"lux1.jpg",
+    category:"luxury bestseller",
+    tags:["popular"]
+  },
+  {
+    name:"Golden Luxury Roses",
+    price:1250,
+    image:"lux2.jpg",
+    category:"luxury",
+    tags:["new"]
+  },
+  {
+    name:"White Vase Bouquet",
+    price:480,
+    image:"vase1.jpg",
+    category:"vases",
+    tags:["new"]
+  },
+  {
+    name:"Garden Vase Mix",
+    price:520,
+    image:"vase2.jpg",
+    category:"vases",
+    tags:["recommended"]
+  },
 
-  { name:"Christmas Bloom", price:860, image:"xmas1.jpg", category:"christmas" },
-  { name:"Snowflake Roses", price:920, image:"xmas2.jpg", category:"christmas luxury" },
+  {
+    name:"Christmas Bloom",
+    price:860,
+    image:"xmas1.jpg",
+    category:"christmas",
+    tags:["popular"]
+  },
+  {
+    name:"Snowflake Roses",
+    price:920,
+    image:"xmas2.jpg",
+    category:"christmas luxury",
+    tags:["new"]
+  },
 
-  { name:"Forever Rose Dome", price:690, image:"forever1.jpg", category:"forever bestseller" },
-  { name:"Forever Rose Heart", price:890, image:"forever2.jpg", category:"forever" },
+  {
+    name:"Forever Rose Dome",
+    price:690,
+    image:"forever1.jpg",
+    category:"forever bestseller",
+    tags:["recommended","popular"]
+  },
+  {
+    name:"Forever Rose Heart",
+    price:890,
+    image:"forever2.jpg",
+    category:"forever",
+    tags:["new"]
+  },
 
-  { name:"Birthday Surprise", price:650, image:"bday1.jpg", category:"birthday" },
-  { name:"Anniversary Love", price:880, image:"ann1.jpg", category:"anniversary" },
-  { name:"Sorry Bouquet", price:450, image:"sorry1.jpg", category:"sorry" },
-  { name:"New Baby Pink Box", price:720, image:"baby1.jpg", category:"baby" },
+  {
+    name:"Birthday Surprise",
+    price:650,
+    image:"bday1.jpg",
+    category:"birthday",
+    tags:["recommended"]
+  },
+  {
+    name:"Anniversary Love",
+    price:880,
+    image:"ann1.jpg",
+    category:"anniversary",
+    tags:["popular"]
+  },
+  {
+    name:"Sorry Bouquet",
+    price:450,
+    image:"sorry1.jpg",
+    category:"sorry",
+    tags:["new"]
+  },
+  {
+    name:"New Baby Pink Box",
+    price:720,
+    image:"baby1.jpg",
+    category:"baby",
+    tags:["recommended"]
+  },
 
-  { name:"Heart Balloons Set", price:149, image:"balloon1.jpg", category:"balloons new" },
-  { name:"Red Helium Balloons", price:29, image:"balloon2.jpg", category:"balloons" }
+  {
+    name:"Heart Balloons Set",
+    price:149,
+    image:"balloon1.jpg",
+    category:"balloons",
+    tags:["new"]
+  },
+  {
+    name:"Red Helium Balloons",
+    price:29,
+    image:"balloon2.jpg",
+    category:"balloons",
+    tags:["popular"]
+  }
 ];
 
 let wishlist = [];
@@ -367,4 +463,35 @@ function closeCart() {
   document.querySelectorAll("body > section, footer, nav")
     .forEach(el => el.style.display = "");
   Telegram?.WebApp?.BackButton?.hide();
+}
+
+/* ================= EXPLORE TABS ================= */
+
+function switchTab(tag, btn) {
+  document.querySelectorAll('.tab').forEach(b =>
+    b.classList.remove('active')
+  );
+  btn.classList.add('active');
+
+  let filtered = [];
+
+  if (tag === 'recommended') {
+    filtered = productsData.filter(p =>
+      p.tags && p.tags.includes('recommended')
+    );
+  }
+
+  if (tag === 'new') {
+    filtered = productsData.filter(p =>
+      p.tags && p.tags.includes('new')
+    );
+  }
+
+  if (tag === 'popular') {
+    filtered = productsData.filter(p =>
+      p.tags && p.tags.includes('popular')
+    );
+  }
+
+  renderProducts(filtered.length ? filtered : productsData);
 }
