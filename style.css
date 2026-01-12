@@ -757,3 +757,12 @@ body {
   background: #1f3f38;
   color: #fff;
 }
+
+.checkout-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+}
