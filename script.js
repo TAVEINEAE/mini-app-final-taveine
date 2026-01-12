@@ -132,7 +132,8 @@ let cart = [];
 /* ===== MENU ===== */
 function toggleMenu() {
   const menu = document.getElementById("side-menu");
-if (menu) menu.classList.toggle("open");
+  if (!menu) return;
+  menu.classList.toggle("open");
 }
 
 /* ===== RENDER HOME PRODUCTS ===== */
@@ -240,7 +241,7 @@ function closeProduct() {
 
 function addCurrentToCart() {
   if (!currentProduct) return;
-  cart.push(currentProduct);
+  cart.push(currentProduct.name);
   document.getElementById("cart-count").innerText = cart.length;
 }
 
@@ -339,22 +340,24 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ================= SEARCH PAGE ================= */
 
 function openSearch() {
-  document.querySelectorAll("body > section:not(#category-page), footer, nav")
-  .forEach(el => el.style.display = "none");
+  document
+    .querySelectorAll("body > section:not(#search-page), footer, nav")
+    .forEach(el => el.style.display = "none");
 
   document.getElementById("search-page").style.display = "block";
   document.getElementById("search-input").value = "";
   document.getElementById("search-input").focus();
 
   renderSearch(productsData);
-
   Telegram?.WebApp?.BackButton?.show();
 }
 
 function closeSearch() {
   document.getElementById("search-page").style.display = "none";
 
-  document.querySelectorAll("body > section:not(#search-page), footer, nav")
+  document
+    .querySelectorAll("body > section:not(#search-page), footer, nav")
+    .forEach(el => el.style.display = "");
 
   Telegram?.WebApp?.BackButton?.hide();
 }
@@ -435,7 +438,8 @@ function openCart() {
     .forEach(el => el.style.display = "none");
 
   const grid = document.getElementById("cart-grid");
-  grid.innerHTML = "";
+if (!grid) return;
+grid.innerHTML = "";
 
   if (!cart.length) {
     grid.innerHTML = "<p>Cart is empty</p>";
