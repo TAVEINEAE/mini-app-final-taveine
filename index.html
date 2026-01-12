@@ -382,8 +382,8 @@
       <span>Home</span><b>+</b>
     </div>
     <div class="menu-body">
-      <<a onclick="goToCategory('all','Shop All')">Home</a>
-      <a onclick="showStatic('about')">About Us</a>
+      <a onclick="goToCategory('all','Shop All')">Home</a>
+      <a onclick="openAbout()">About Us</a>
       <a onclick="alert('Privacy Policy page coming soon')">Privacy Policy</a>
     </div>
   </div>
@@ -424,7 +424,6 @@
   </div>
 </div>
 
-</div>
 <!-- ================= END SIDE MENU ================= -->
 
 
@@ -499,20 +498,20 @@
 
   <div style="padding:16px">
     <input
-      id="search-input"
-      type="text"
-      placeholder="Search products"
-      oninput="searchAll(this.value); updateSuggestions(this.value)"
-      <div id="search-suggestions" class="search-suggestions"></div>
-      style="
-        width:100%;
-        padding:14px;
-        border:1px solid #ddd;
-        border-radius:14px;
-        font-size:15px;
-      "
-    >
-  </div>
+  id="search-input"
+  type="text"
+  placeholder="Search products"
+  oninput="searchAll(this.value); updateSuggestions(this.value)"
+  style="
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:14px;
+    font-size:15px;
+  "
+>
+
+<div id="search-suggestions" class="search-suggestions"></div>
 
   <div class="products">
     <div class="grid" id="search-grid"></div>
