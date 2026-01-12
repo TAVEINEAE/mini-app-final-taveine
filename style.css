@@ -766,3 +766,38 @@ body {
   border-radius: 10px;
   font-size: 14px;
 }
+
+/* ================= EXPLORE TABS ================= */
+
+.explore-tabs {
+  padding: 20px 16px 10px;
+  text-align: center;
+}
+
+.explore-tabs h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.tab {
+  padding: 10px 14px;
+  border: 1px solid var(--green);
+  background: #fff;
+  color: var(--green);
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab.active {
+  background: var(--green);
+  color: #fff;
+}
