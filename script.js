@@ -499,3 +499,9 @@ function switchTab(tag, btn) {
 
   renderProducts(filtered.length ? filtered : productsData);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderProducts(
+    productsData.filter(p => p.tags.includes("recommended"))
+  );
+});
