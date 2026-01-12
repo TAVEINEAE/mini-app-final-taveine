@@ -333,3 +333,38 @@ function updateSuggestions(value) {
       box.appendChild(el);
     });
 }
+
+function openCart() {
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "none");
+
+  const grid = document.getElementById("cart-grid");
+  grid.innerHTML = "";
+
+  if (!cart.length) {
+    grid.innerHTML = "<p>Cart is empty</p>";
+  } else {
+    cart.forEach(name => {
+      const p = productsData.find(i => i.name === name);
+      if (!p) return;
+
+      grid.innerHTML += `
+        <div class="card">
+          <img src="${p.image}">
+          <h3>${p.name}</h3>
+          <span>${p.price} AED</span>
+        </div>
+      `;
+    });
+  }
+
+  document.getElementById("cart-page").style.display = "block";
+  Telegram?.WebApp?.BackButton?.show();
+}
+
+function closeCart() {
+  document.getElementById("cart-page").style.display = "none";
+  document.querySelectorAll("body > section, footer, nav")
+    .forEach(el => el.style.display = "");
+  Telegram?.WebApp?.BackButton?.hide();
+}
