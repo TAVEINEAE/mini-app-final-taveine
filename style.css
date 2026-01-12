@@ -16,7 +16,7 @@ body {
 
   /* КРИТИЧНО для Telegram iOS */
   max-width: 420px;
-  margin-left: auto;
+  margin-left: 0 auto;
   margin-right: auto;
 }
 
@@ -87,7 +87,7 @@ body {
   background: #fff;
   padding: 24px 20px;
 
-  z-index: 25000;
+  z-index: 21000;
   overflow-y: auto;
 
   transition: left .3s ease;
@@ -313,7 +313,7 @@ body {
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
-  z-index: 9999;
+  z-index: 15000;
 }
 
 .bottom-nav button {
@@ -605,7 +605,7 @@ body {
 .menu-pill {
   width: 36px;
   height: 56px;
-  background: var(--green);
+  background: transparent;
   border-radius: 28px;
   border: none;
   display: flex;
@@ -719,7 +719,7 @@ body {
 /* ===== SLIDE ANIMATION ===== */
 
 .page-slide {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: #fff;
   z-index: 30000;
