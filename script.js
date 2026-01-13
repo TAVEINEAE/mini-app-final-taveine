@@ -166,4 +166,52 @@ window.closeSearch = () => {
     document.getElementById('search-page').classList.remove('active');
 };
 
+// Открытие/Закрытие
+window.openSearch = () => document.getElementById('search-page').classList.add('active');
+window.closeSearch = () => document.getElementById('search-page').classList.remove('active');
+
+// Переключение вкладок
+window.switchSearchTab = (tab) => {
+    const pTab = document.getElementById('tab-products');
+    const cTab = document.getElementById('tab-categories');
+    const pRes = document.getElementById('search-results-products');
+    const cRes = document.getElementById('search-results-categories');
+
+    if (tab === 'products') {
+        pTab.classList.add('active'); cTab.classList.remove('active');
+        pRes.style.display = 'block'; cRes.style.display = 'none';
+    } else {
+        cTab.classList.add('active'); pTab.classList.remove('active');
+        cRes.style.display = 'block'; pRes.style.display = 'none';
+    }
+};
+
+// Логика поиска
+document.getElementById('product-search-input')?.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    const clearBtn = document.getElementById('clear-search');
+    clearBtn.style.display = term ? 'block' : 'none';
+
+    if (!term) {
+        document.getElementById('search-results-products').innerHTML = '';
+        return;
+    }
+
+    // Фильтр товаров
+    const filtered = products.filter(p => p.name.toLowerCase().includes(term));
+    
+    document.getElementById('search-results-products').innerHTML = filtered.map(p => `
+        <div class="search-item">
+            <img src="${p.image}">
+            <div class="search-item-info">
+                <h4>${p.name}</h4>
+                <span>${p.price} AED</span>
+            </div>
+        </div>
+    `).join('');
+    
+    document.getElementById('view-all-link').style.display = filtered.length > 0 ? 'block' : 'none';
+});
+
+
 document.addEventListener('DOMContentLoaded', startApp);
