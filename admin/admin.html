@@ -21,9 +21,8 @@
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,.1);
   }
-  h1 {
+  h1, h2 {
     text-align: center;
-    margin-bottom: 20px;
   }
   input {
     width: 100%;
@@ -43,12 +42,17 @@
     font-size: 15px;
     cursor: pointer;
   }
+  .logout {
+    background: #999;
+    margin-top: 10px;
+  }
   .hidden {
     display: none;
   }
-  .logout {
-    margin-top: 20px;
-    background: #999;
+  .product {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
   }
 </style>
 </head>
@@ -66,12 +70,27 @@
 <!-- ADMIN PANEL -->
 <div class="box hidden" id="adminBox">
   <h1>🔥 TAVEINE Admin Panel</h1>
-  <p>You are logged in.</p>
+  <p id="auth-status">Checking login...</p>
 
   <button class="logout" onclick="logout()">Logout</button>
+
+  <hr>
+
+  <h2>Add product</h2>
+  <input id="p-name" placeholder="Name">
+  <input id="p-price" type="number" placeholder="Price">
+  <input id="p-image" placeholder="Image filename (e.g. rose.jpg)">
+  <input id="p-category" placeholder="Category (box, luxury, vases)">
+  <input id="p-tags" placeholder="Tags (recommended,new,popular)">
+  <button onclick="addProduct()">➕ Add product</button>
+
+  <hr>
+
+  <h2>Products</h2>
+  <div id="products-list"></div>
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE + LOGIC -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
   import {
@@ -95,23 +114,23 @@
 
   const loginBox = document.getElementById("loginBox");
   const adminBox = document.getElementById("adminBox");
+  const status = document.getElementById("auth-status");
 
-  window.login = function () {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    signInWithEmailAndPassword(auth, email, password)
-      .catch(err => alert(err.message));
+  window.login = () => {
+    signInWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    ).catch(e => alert(e.message));
   };
 
-  window.logout = function () {
-    signOut(auth);
-  };
+  window.logout = () => signOut(auth);
 
   onAuthStateChanged(auth, user => {
     if (user) {
       loginBox.classList.add("hidden");
       adminBox.classList.remove("hidden");
+      status.innerText = "You are logged in.";
     } else {
       loginBox.classList.remove("hidden");
       adminBox.classList.add("hidden");
@@ -120,40 +139,6 @@
 </script>
 
 <script type="module" src="./admin.js"></script>
-
-<body>
-
-  <h1>🔥 TAVEINE Admin Panel</h1>
-
-  <!-- LOGIN STATUS -->
-  <div id="auth-status">
-    Checking login...
-  </div>
-
-  <!-- LOGOUT -->
-  <button onclick="logout()">Logout</button>
-
-  <hr>
-
-  <!-- ADD PRODUCT -->
-  <h2>Add product</h2>
-
-  <input id="p-name" placeholder="Name"><br><br>
-  <input id="p-price" type="number" placeholder="Price"><br><br>
-  <input id="p-image" placeholder="Image filename (e.g. rose.jpg)"><br><br>
-  <input id="p-category" placeholder="Category (box, luxury, vases...)"><br><br>
-  <input id="p-tags" placeholder="Tags (recommended,new,popular)"><br><br>
-
-  <button onclick="addProduct()">➕ Add product</button>
-
-  <hr>
-
-  <!-- PRODUCTS LIST -->
-  <h2>Products</h2>
-  <div id="products-list"></div>
-
-  <!-- FIREBASE + ADMIN SCRIPT -->
-  <script type="module" src="admin.js"></script>
 
 </body>
 </html>
