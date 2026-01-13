@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* AUTH CHECK */
   onAuthStateChanged(auth, user => {
     if (!user) {
-      window.location.href = "../index.html";
+  window.location.href = "./login.html";
+}
     } else {
       const status = document.getElementById("auth-status");
       if (status) status.innerText = `Admin: ${user.email}`;
