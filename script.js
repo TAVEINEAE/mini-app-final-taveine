@@ -158,4 +158,12 @@ function initSearch() {
     });
 }
 
+window.openSearch = () => {
+    document.getElementById('search-page').classList.add('active');
+};
+
+window.closeSearch = () => {
+    document.getElementById('search-page').classList.remove('active');
+};
+
 document.addEventListener('DOMContentLoaded', startApp);
