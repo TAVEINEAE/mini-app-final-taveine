@@ -110,3 +110,27 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
     left: 0;            /* Выезжает слева */
 }
 
+/* Обновленная кнопка меню */
+.burger-menu {
+    background: none;
+    border: none;
+    color: #fff; /* Белый цвет знака */
+    font-size: 35px; /* Размер знака ≈ */
+    font-weight: 300; /* Чтобы знак был изящным */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 5px; /* Немного приподнимаем, чтобы был по центру */
+}
+
+.wave-icon {
+    line-height: 1;
+}
+
+/* Убираем старые полоски, если они остались */
+.burger-menu span:not(.wave-icon) {
+    display: none;
+}
+
+
