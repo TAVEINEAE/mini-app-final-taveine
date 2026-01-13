@@ -9,9 +9,7 @@
 <body>
 
 <header class="top-bar">
-    <button class="burger-menu" onclick="window.toggleMenu()">
-        <span class="wave-icon">≈</span> 
-    </button>
+    <button class="burger-menu" onclick="window.toggleMenu()"><span class="wave-icon">≈</span></button>
     <div class="logo">TAVÉINE</div>
     <div style="width:40px"></div> 
 </header>
@@ -27,30 +25,7 @@
 
     <h2 class="section-title">THE FLOWER</h2>
     <div id="all-products-grid" class="grid"></div>
-
-    <footer class="main-footer">
-        <div class="footer-brand"><span class="logo-text">TAVÉINE</span></div>
-        <div class="footer-acc-container">
-            <div class="acc-item">
-                <div class="acc-btn" onclick="this.parentElement.classList.toggle('active')">Customer Service <span>+</span></div>
-                <div class="acc-content"><a href="#">Shipping Policy</a><a href="#">Refund Policy</a></div>
-            </div>
-        </div>
-    </footer>
 </main>
-
-<nav id="side-menu" class="side-menu">
-    <div class="menu-top"><button class="close-btn" onclick="window.toggleMenu()">✕</button></div>
-    <div class="menu-content">
-        <div class="accordion-item">
-            <div class="acc-header" onclick="window.toggleMenuAcc('cat-menu')">Categories <span>+</span></div>
-            <div id="cat-menu" class="acc-body">
-                <a href="#" onclick="window.openCategory('Roses')">Roses</a>
-                <a href="#" onclick="window.openCategory('Bouquets')">Bouquets</a>
-            </div>
-        </div>
-    </div>
-</nav>
 
 <div id="wish-page" class="full-page">
     <div class="p-header">
@@ -58,7 +33,7 @@
         <span class="p-title">Wishlist</span>
         <button class="close-btn" onclick="window.closePage('wish-page')">✕</button>
     </div>
-    <div class="p-content" id="wish-container"></div>
+    <div id="wish-container" class="p-content"></div>
 </div>
 
 <div id="cart-drawer" class="full-page">
@@ -66,10 +41,16 @@
         <span class="p-title">Shopping Cart</span>
         <button class="close-btn" onclick="window.closePage('cart-drawer')">✕</button>
     </div>
-    <div class="p-content" id="cart-container"></div>
-    <div class="cart-footer" id="cart-actions" style="display:none;">
-        <div class="total-row">Total: <span id="cart-total-sum">0</span> AED</div>
-        <button class="checkout-btn">Checkout</button>
+    <div id="cart-container" class="p-content"></div>
+    <div id="cart-footer-logic" class="cart-summary-fixed" style="display:none;">
+        <div class="subtotal-row">
+            <span>Subtotal:</span>
+            <span id="cart-total-sum">0.00</span> <span>AED</span>
+        </div>
+        <div class="cart-btns">
+            <button class="white-btn">View cart</button>
+            <button class="black-checkout-btn">Checkout</button>
+        </div>
     </div>
 </div>
 
@@ -79,12 +60,11 @@
         <button class="close-btn" onclick="window.closePage('search-page')">✕</button>
     </div>
     <div class="p-content">
-        <div class="search-bar-container">
-            <span class="search-icon-inner">🔍</span>
+        <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
             <input type="text" id="product-search" placeholder="Search">
         </div>
         <div id="search-results-grid" class="grid"></div>
-        <div id="search-empty-state"></div>
     </div>
 </div>
 
