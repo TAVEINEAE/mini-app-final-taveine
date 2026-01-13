@@ -1,56 +1,56 @@
 const tg = window.Telegram?.WebApp;
 
-// Тестовые данные (замени на свои реальные пути к фото)
+// БАЗА ТОВАРОВ (Добавьте сюда больше товаров)
 const productsData = [
-    { name: "Rose Box Classic", price: 620, image: "box1.jpg", category: "box", tags: ["recommended"] },
-    { name: "Luxury Red Roses", price: 950, image: "lux1.jpg", category: "luxury", tags: ["popular"] },
-    { name: "White Vase Bouquet", price: 480, image: "vase1.jpg", category: "vases", tags: ["new"] },
-    { name: "Garden Vase Mix", price: 520, image: "vase2.jpg", category: "vases", tags: ["recommended"] }
+    { name: "Christmas Red Box", price: 450, image: "img1.jpg", category: "Christmas Collection" },
+    { name: "Spring Mixed Bouquet", price: 320, image: "img2.jpg", category: "Spring" },
+    { name: "Luxury Gold Roses", price: 1200, image: "img3.jpg", category: "Luxury" },
+    { name: "Classic White Vases", price: 280, image: "img4.jpg", category: "Vases" },
+    { name: "Birthday Balloon Set", price: 150, image: "img5.jpg", category: "Balloons" },
+    { name: "New Arrival Peonies", price: 550, image: "img6.jpg", category: "New Arrivals" },
+    { name: "Forever Rose in Glass", price: 400, image: "img7.jpg", category: "Forever Rose" },
+    { name: "Anniversary Special", price: 800, image: "img8.jpg", category: "Anniversary" }
 ];
 
-let cart = [];
-
 document.addEventListener("DOMContentLoaded", () => {
-    if (tg) {
-        tg.ready();
-        tg.expand();
-        tg.headerColor = "#1f3f38";
-    }
-    // Рендерим рекомендованные товары при загрузке
-    switchTab('recommended', document.querySelector('.tab.active'));
+    if (tg) { tg.ready(); tg.expand(); }
+    renderProducts(productsData, 'products-grid');
 });
 
 function renderProducts(list, containerId) {
     const grid = document.getElementById(containerId);
     if (!grid) return;
-    grid.innerHTML = "";
-
-    if (list.length === 0) {
-        grid.innerHTML = "<p style='grid-column: 1/3; text-align:center; padding: 20px;'>Nothing found</p>";
-        return;
-    }
-
-    list.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
+    grid.innerHTML = list.map(p => `
+        <div class="card">
             <img src="${p.image}" alt="${p.name}" onclick="openProductDetail('${p.name}')">
             <h3>${p.name}</h3>
             <span>${p.price} AED</span>
             <button onclick="addToCart('${p.name}')">Add to Cart</button>
-        `;
-        grid.appendChild(card);
-    });
+        </div>
+    `).join('');
 }
 
+// Управление меню
 function toggleMenu() {
     document.getElementById('side-menu').classList.toggle('open');
 }
 
 function toggleSection(id) {
     const el = document.getElementById(id);
-    const isHidden = el.style.display === "none" || el.style.display === "";
-    el.style.display = isHidden ? "block" : "none";
+    const allSubs = document.querySelectorAll('.menu-subbody');
+    
+    // Закрываем другие, если открываем новый (опционально)
+    // allSubs.forEach(s => { if(s.id !== id) s.style.display = 'none'; });
+
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+}
+
+// Фильтрация при нажатии на категорию в меню
+function filterByCategory(catName) {
+    const filtered = productsData.filter(p => p.category === catName);
+    renderProducts(filtered, 'products-grid');
+    toggleMenu(); // Закрыть меню после выбора
+    window.scrollTo(0, 0);
 }
 
 function openSearch() {
@@ -63,35 +63,23 @@ function closePage(id) {
 }
 
 function searchAll(query) {
-    const q = query.toLowerCase();
-    const filtered = productsData.filter(p => p.name.toLowerCase().includes(q));
+    const filtered = productsData.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
     renderProducts(filtered, 'search-grid');
 }
 
-function switchTab(tag, btn) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    const filtered = productsData.filter(p => p.tags.includes(tag));
-    renderProducts(filtered, 'products-grid');
-}
-
 function addToCart(name) {
-    cart.push(name);
-    document.getElementById('cart-count').innerText = cart.length;
-    tg?.HapticFeedback?.impactOccurred('medium');
+    tg?.HapticFeedback?.impactOccurred('light');
+    alert(name + " added to cart!");
 }
 
 function openProductDetail(name) {
-    const p = productsData.find(item => item.name === name);
-    if (!p) return;
-    
+    const p = productsData.find(i => i.name === name);
     const details = document.getElementById('product-details');
     details.innerHTML = `
-        <img src="${p.image}" style="width:100%; border-radius:12px;">
-        <h2 style="margin: 20px 0 10px;">${p.name}</h2>
-        <p style="font-size: 20px; font-weight:bold; color: var(--green);">${p.price} AED</p>
-        <p style="margin: 15px 0; color: #666;">Beautiful floral arrangement handcrafted by TAVÉINE experts.</p>
-        <button onclick="addToCart('${p.name}')" style="width:100%; background: var(--green); color:#fff; border:none; padding:15px; border-radius:10px; font-weight:bold;">Add to Cart</button>
+        <img src="${p.image}" style="width:100%">
+        <h2 style="padding:15px 0">${p.name}</h2>
+        <p style="font-size:20px; font-weight:bold">${p.price} AED</p>
+        <button onclick="addToCart('${p.name}')" style="width:100%; background:var(--green); color:#fff; padding:15px; border:none; border-radius:8px; margin-top:20px">Buy Now</button>
     `;
     document.getElementById('product-page').style.display = 'block';
 }
