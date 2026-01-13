@@ -33,7 +33,10 @@ function renderMain() {
     const grid = document.getElementById('all-products-grid');
     const slider = document.getElementById('new-arrivals-slider');
     if(grid) grid.innerHTML = products.map(p => renderCard(p)).join('');
-    if(slider) slider.innerHTML = products.filter(p => p.tags?.includes('new')).map(p => renderCard(p)).join('');
+    if(slider) {
+        const newItems = products.filter(p => p.tags?.includes('new') || p.isNew);
+        slider.innerHTML = newItems.map(p => renderCard(p)).join('');
+    }
 }
 
 function renderCard(p) {
@@ -43,38 +46,41 @@ function renderCard(p) {
             <button onclick="toggleWish('${p.id}')" class="wish-icon-btn">
                 ${isWished ? '❤️' : '🤍'}
             </button>
-            <img src="${p.image || 'https://via.placeholder.com/300x300?text=No+Image'}">
+            <img src="${p.image || 'https://via.placeholder.com/300'}">
             <div class="card-info">
-                <h4>${p.name}</h4>
-                <b>${p.price}.00 AED</b>
+                <h4>${p.name || 'Product'}</h4>
+                <b>${Number(p.price || 0).toFixed(2)} AED</b>
                 <button class="add-btn" onclick="addToCart('${p.id}')">Add to Cart</button>
             </div>
         </div>`;
 }
 
 // Меню СЛЕВА
-function toggleMenu() {
+window.toggleMenu = () => {
     document.getElementById('side-menu').classList.toggle('active');
     document.getElementById('menu-overlay').classList.toggle('active');
-}
+};
+
+window.toggleMenuAcc = (el) => {
+    el.parentElement.classList.toggle('active');
+};
 
 // Поиск СПРАВА
-function openSearch() { document.getElementById('search-drawer').classList.add('active'); }
-function closeSearch() { document.getElementById('search-drawer').classList.remove('active'); }
+window.openSearch = () => document.getElementById('search-drawer').classList.add('active');
+window.closeSearch = () => document.getElementById('search-drawer').classList.remove('active');
 
 // Футер Аккордеон
-function toggleFooterAcc(el) {
-    const item = el.parentElement;
-    item.classList.toggle('active');
-}
+window.toggleFooterAcc = (el) => {
+    el.parentElement.classList.toggle('active');
+};
 
 // КОРЗИНА
-function renderCartPage() {
+window.renderCartPage = () => {
     const container = document.getElementById('cart-container');
     const footer = document.getElementById('cart-footer-logic');
     if (cart.length === 0) {
         footer.style.display = 'none';
-        container.innerHTML = `<div class="empty-state"><h2>Your cart is empty</h2><button class="black-btn" onclick="closePage('cart-drawer')">Return to shop</button></div>`;
+        container.innerHTML = `<div class="empty-state"><h2>Your cart is empty</h2><button class="white-btn" style="margin-top:20px" onclick="closePage('cart-drawer')">Return to shop</button></div>`;
     } else {
         footer.style.display = 'block';
         let total = 0;
@@ -82,10 +88,10 @@ function renderCartPage() {
             total += item.price * (item.qty || 1);
             return `
                 <div class="cart-item">
-                    <img src="${item.image || 'https://via.placeholder.com/90x90?text=No+Image'}">
+                    <img src="${item.image || 'https://via.placeholder.com/90'}">
                     <div class="cart-item-info">
                         <h4>${item.name}</h4>
-                        <p>${item.price}.00 AED</p>
+                        <p>${item.price.toFixed(2)} AED</p>
                         <div class="qty-row">
                             <div class="qty-control">
                                 <button onclick="updateQty(${index}, -1)">-</button>
@@ -96,31 +102,58 @@ function renderCartPage() {
                         </div>
                     </div>
                 </div>`;
-        }).join('') + `<div class="section-title">Customers also bought</div><div class="grid">${products.slice(0,2).map(p => renderCard(p)).join('')}</div>`;
+        }).join('');
         document.getElementById('cart-total-sum').innerText = total.toFixed(2);
     }
-}
+};
 
-function updateQty(index, delta) {
-    cart[index].qty = (cart[index].qty || 1) + delta;
-    if (cart[index].qty < 1) cart[index].qty = 1;
-    saveCart(); renderCartPage();
-}
+window.updateQty = (index, delta) => {
+    cart[index].qty = Math.max(1, (cart[index].qty || 1) + delta);
+    saveCart(); window.renderCartPage();
+};
 
-function removeFromCart(index) { cart.splice(index, 1); saveCart(); renderCartPage(); }
+window.removeFromCart = (index) => { cart.splice(index, 1); saveCart(); window.renderCartPage(); };
 
 // ОБЩЕЕ
-function openPage(id) { 
-    document.getElementById(id).style.display = 'block'; 
-    if(id==='cart-drawer') renderCartPage(); 
-    if(id==='wish-page') renderWishPage(); 
-}
-function closePage(id) { document.getElementById(id).style.display = 'none'; }
+window.openPage = (id) => { 
+    document.getElementById(id).style.display = 'flex'; 
+    if(id==='cart-drawer') window.renderCartPage(); 
+    if(id==='wish-page') window.renderWishPage(); 
+};
+window.closePage = (id) => document.getElementById(id).style.display = 'none';
+
+window.addToCart = (id) => {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    const item = cart.find(x => x.id === id);
+    if (item) item.qty++;
+    else cart.push({ ...p, qty: 1 });
+    saveCart();
+    tg?.HapticFeedback.impactOccurred('light');
+};
+
+window.toggleWish = (id) => {
+    const p = products.find(x => x.id === id);
+    const idx = wishlist.findIndex(x => x.id === id);
+    if (idx === -1) wishlist.push(p);
+    else wishlist.splice(idx, 1);
+    saveWishlist(); renderMain();
+    if(document.getElementById('wish-page').style.display === 'flex') window.renderWishPage();
+};
+
+window.renderWishPage = () => {
+    const container = document.getElementById('wish-container');
+    container.innerHTML = wishlist.length === 0 
+        ? `<div class="empty-state"><h2>Wishlist is empty</h2><button class="white-btn" style="margin-top:20px" onclick="closePage('wish-page')">Return to shop</button></div>`
+        : `<div class="grid">${wishlist.map(p => renderCard(p)).join('')}</div>`;
+};
 
 function saveCart() { localStorage.setItem('taveine_cart', JSON.stringify(cart)); updateCounters(); }
+function saveWishlist() { localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist)); updateCounters(); }
+
 function updateCounters() {
     document.getElementById('w-count').innerText = wishlist.length;
-    document.getElementById('c-count').innerText = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+    document.getElementById('c-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
 }
 
 function initSearchLogic() {
@@ -129,47 +162,15 @@ function initSearchLogic() {
         const results = products.filter(p => p.name.toLowerCase().includes(term));
         document.getElementById('search-results-grid').innerHTML = results.map(p => `
             <div class="search-item-line">
-                <img src="${p.image || 'https://via.placeholder.com/90x90?text=No+Image'}">
+                <img src="${p.image || 'https://via.placeholder.com/70'}">
                 <div><h4>${p.name}</h4><span>${p.price} AED</span></div>
             </div>`).join('');
     });
 }
 
-// Добавленные функции
-function addToCart(id) {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-    const item = cart.find(x => x.id === id);
-    if (item) {
-        item.qty = (item.qty || 1) + 1;
-    } else {
-        cart.push({ ...p, qty: 1 });
-    }
-    saveCart();
-    tg?.HapticFeedback.impactOccurred('light');
-}
-
-function toggleWish(id) {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-    const index = wishlist.findIndex(x => x.id === id);
-    if (index === -1) {
-        wishlist.push(p);
-    } else {
-        wishlist.splice(index, 1);
-    }
-    saveWishlist();
-    renderMain();
-    tg?.HapticFeedback.impactOccurred('light');
-}
-
-function renderWishPage() {
-    const container = document.getElementById('wish-container');
-    container.innerHTML = wishlist.length === 0 
-        ? `<div class="empty-state"><h2>Your wishlist is empty</h2><button class="black-btn" onclick="closePage('wish-page')">Return to shop</button></div>`
-        : wishlist.map(p => renderCard(p)).join('');
-}
-
-function saveWishlist() { localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist)); updateCounters(); }
+window.switchSearchTab = (tab) => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+};
 
 document.addEventListener('DOMContentLoaded', startApp);
