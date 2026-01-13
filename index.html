@@ -22,68 +22,70 @@
     <section class="hero">
         <img src="hero.jpg" alt="Hero Banner">
     </section>
-
-    <section class="explore-tabs">
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('recommended', this)">Recommended</button>
-            <button class="tab" onclick="switchTab('new', this)">New</button>
-            <button class="tab" onclick="switchTab('popular', this)">Popular</button>
-        </div>
-    </section>
-
-    <div class="grid" id="products-grid">
-        </div>
+    <div class="grid" id="products-grid"></div>
 </main>
 
 <div id="side-menu" class="side-menu">
     <div class="menu-header">
         <button class="close-btn" onclick="toggleMenu()">✕</button>
-        <span class="menu-title">Menu</span>
     </div>
     <div class="menu-content">
         <div class="menu-item" onclick="toggleSection('coll-body')">
             <span>Collection</span> <b>+</b>
         </div>
         <div id="coll-body" class="menu-subbody">
-            <a onclick="openCategory('box', 'Flower Boxes')">Flower Boxes</a>
-            <a onclick="openCategory('luxury', 'Luxury')">Luxury</a>
-            <a onclick="openCategory('vases', 'Vases')">Vases</a>
+            <a onclick="filterByCategory('Christmas Collection')">Christmas Collection</a>
+            <a onclick="filterByCategory('Spring')">Spring</a>
+            <a onclick="filterByCategory('New Arrivals')">New Arrivals</a>
+            <a onclick="filterByCategory('Best Sellers')">Best Sellers</a>
+            <a onclick="filterByCategory('Luxury')">Luxury</a>
+            <a onclick="filterByCategory('Specialty')">Specialty</a>
+            <a onclick="filterByCategory('Je t\'aime Collection')">Je t'aime Collection</a>
+            <a onclick="filterByCategory('Vases')">Vases</a>
+            <a onclick="filterByCategory('Box')">Box</a>
         </div>
-        <div class="menu-item" onclick="openAbout()">About Us ></div>
+
+        <div class="menu-item" onclick="toggleSection('occ-body')">
+            <span>Occasions</span> <b>+</b>
+        </div>
+        <div id="occ-body" class="menu-subbody">
+            <a onclick="filterByCategory('Anniversary')">Anniversary</a>
+            <a onclick="filterByCategory('Birthday')">Birthday</a>
+            <a onclick="filterByCategory('I\'m Sorry')">I'm Sorry</a>
+            <a onclick="filterByCategory('New Baby')">New Baby</a>
+            <a onclick="filterByCategory('Event Design')">Event Design Services</a>
+            <a onclick="filterByCategory('Forever Rose')">Forever Rose</a>
+            <a onclick="filterByCategory('Balloons')">Balloons</a>
+        </div>
+
+        <div class="menu-item" onclick="toggleSection('home-body')">
+            <span>Home</span> <b>+</b>
+        </div>
+        <div id="home-body" class="menu-subbody">
+            <a onclick="showAbout()">About Us</a>
+            <a onclick="showPrivacy()">Privacy Policy</a>
+        </div>
     </div>
 </div>
 
 <nav class="bottom-nav">
-    <button onclick="location.reload()">
-        <span class="icon">▦</span><small>Shop</small>
-    </button>
-    <button onclick="openSearch()">
-        <span class="icon">🔍</span><small>Search</small>
-    </button>
-    <button class="badge">
-        <span class="icon">♡</span><small>Wishlist</small><em id="wish-count">0</em>
-    </button>
-    <button class="badge">
-        <span class="icon">🛒</span><small>Cart</small><em id="cart-count">0</em>
-    </button>
+    <button onclick="location.reload()"><span class="icon">▦</span><small>Shop</small></button>
+    <button onclick="openSearch()"><span class="icon">🔍</span><small>Search</small></button>
+    <button class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="wish-count">0</em></button>
+    <button class="badge"><span class="icon">🛒</span><small>Cart</small><em id="cart-count">0</em></button>
 </nav>
 
 <div id="search-page" class="full-page">
-    <div class="page-header">
-        <button class="back-link" onclick="closePage('search-page')">← Back to Shop</button>
-    </div>
+    <div class="page-header"><button class="back-link" onclick="closePage('search-page')">← Back</button></div>
     <div class="page-content">
-        <input type="text" id="search-input" placeholder="Search flowers..." oninput="searchAll(this.value)">
+        <input type="text" id="search-input" placeholder="Search..." oninput="searchAll(this.value)">
         <div class="grid" id="search-grid"></div>
     </div>
 </div>
 
 <div id="product-page" class="full-page">
-    <div class="page-header">
-        <button class="back-link" onclick="closePage('product-page')">← Back</button>
-    </div>
-    <div id="product-details" class="page-content">
-        </div>
+    <div class="page-header"><button class="back-link" onclick="closePage('product-page')">← Back</button></div>
+    <div id="product-details" class="page-content"></div>
 </div>
 
 </body>
