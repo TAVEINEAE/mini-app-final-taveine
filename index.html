@@ -9,7 +9,7 @@
 <body>
 
 <header class="top-bar">
-    <button class="burger-menu" onclick="window.toggleMenu()"><span class="wave-icon">≈</span></button>
+    <button class="burger-menu" onclick="toggleMenu()"><span class="wave-icon">≈</span></button>
     <div class="logo">TAVÉINE</div>
     <div style="width:40px"></div> 
 </header>
@@ -17,20 +17,20 @@
 <div id="side-menu" class="side-drawer">
     <div class="drawer-header">
         <span class="drawer-title">Menu</span>
-        <button class="close-drawer" onclick="window.toggleMenu()">✕</button>
+        <button class="close-drawer" onclick="toggleMenu()">✕</button>
     </div>
     <div class="drawer-content">
         <nav class="side-nav">
-            <a href="#" onclick="window.toggleMenu()">Shop All</a>
-            <a href="#" onclick="window.toggleMenu()">New Arrivals</a>
+            <a href="#" onclick="toggleMenu()">Shop All</a>
+            <a href="#" onclick="toggleMenu()">New Arrivals</a>
             <div class="menu-divider"></div>
-            <a href="#" onclick="window.toggleMenu()">Roses</a>
-            <a href="#" onclick="window.toggleMenu()">Bouquets</a>
-            <a href="#" onclick="window.toggleMenu()">Gifts</a>
+            <a href="#" onclick="toggleMenu()">Roses</a>
+            <a href="#" onclick="toggleMenu()">Bouquets</a>
+            <a href="#" onclick="toggleMenu()">Gifts</a>
         </nav>
     </div>
 </div>
-<div id="menu-overlay" class="menu-overlay" onclick="window.toggleMenu()"></div>
+<div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
 
 <main id="main-page">
     <section class="hero-section">
@@ -60,7 +60,7 @@
 
         <div class="footer-accordeon">
             <div class="acc-item">
-                <div class="acc-header" onclick="window.toggleFooterAcc(this)">
+                <div class="acc-header" onclick="toggleFooterAcc(this)">
                     <span>Help</span> <i class="acc-plus">+</i>
                 </div>
                 <div class="acc-content">
@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div class="acc-item">
-                <div class="acc-header" onclick="window.toggleFooterAcc(this)">
+                <div class="acc-header" onclick="toggleFooterAcc(this)">
                     <span>Useful Links</span> <i class="acc-plus">+</i>
                 </div>
                 <div class="acc-content">
@@ -85,19 +85,19 @@
     </footer>
 </main>
 
-<div id="wish-page" class="full-page">
+<div id="wish-page" class="full-page" style="display:none">
     <div class="p-header">
-        <button class="back-btn" onclick="window.closePage('wish-page')">‹</button>
+        <button class="back-btn" onclick="closePage('wish-page')">‹</button>
         <span class="p-title">Wishlist</span>
-        <button class="close-btn" onclick="window.closePage('wish-page')">✕</button>
+        <button class="close-btn" onclick="closePage('wish-page')">✕</button>
     </div>
     <div id="wish-container" class="p-content"></div>
 </div>
 
-<div id="cart-drawer" class="full-page">
+<div id="cart-drawer" class="full-page" style="display:none">
     <div class="p-header">
         <span class="p-title">Shopping Cart</span>
-        <button class="close-btn" onclick="window.closePage('cart-drawer')">✕</button>
+        <button class="close-btn" onclick="closePage('cart-drawer')">✕</button>
     </div>
     <div id="cart-container" class="p-content"></div>
     <div id="cart-footer-logic" class="cart-summary-fixed">
@@ -112,10 +112,10 @@
     </div>
 </div>
 
-<div id="search-drawer" class="search-drawer">
+<div id="search-drawer" class="search-drawer" style="right:-100%">
     <div class="drawer-header">
         <span class="drawer-title">Search our site</span>
-        <button class="close-drawer" onclick="window.closeSearch()">✕</button>
+        <button class="close-drawer" onclick="closeSearch()">✕</button>
     </div>
     <div class="drawer-content">
         <div class="search-field-container">
@@ -123,20 +123,314 @@
             <input type="text" id="product-search-input" placeholder="Search">
         </div>
         <div class="search-tabs">
-            <button id="tab-products" class="tab-btn active" onclick="window.switchSearchTab('products')">PRODUCTS</button>
-            <button id="tab-categories" class="tab-btn" onclick="window.switchSearchTab('categories')">CATEGORIES</button>
+            <button id="tab-products" class="tab-btn active" onclick="switchSearchTab('products')">PRODUCTS</button>
+            <button id="tab-categories" class="tab-btn" onclick="switchSearchTab('categories')">CATEGORIES</button>
         </div>
         <div id="search-results-grid" class="search-results-list"></div>
     </div>
 </div>
 
 <nav class="bottom-nav">
-    <button onclick="location.reload()" class="nav-btn"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" fill="currentColor"/></svg><span>Shop</span></button>
-    <button onclick="window.openSearch()" class="nav-btn"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg><span>Search</span></button>
-    <button onclick="window.openPage('wish-page')" class="nav-btn badge"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12.1 18.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" fill="currentColor"/></svg><em id="w-count">0</em><span>Wishlist</span></button>
-    <button onclick="window.openPage('cart-drawer')" class="nav-btn badge"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12z" fill="currentColor"/></svg><em id="c-count">0</em><span>Cart</span></button>
+    <button onclick="location.reload()" class="nav-btn">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg>
+        <span>Shop</span>
+    </button>
+    <button onclick="openSearch()" class="nav-btn">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <span>Search</span>
+    </button>
+    <button class="nav-btn">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span>Account</span>
+    </button>
+    <button onclick="openPage('wish-page')" class="nav-btn badge">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12.1 18.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg>
+        <em id="w-count">0</em><span>Wishlist</span>
+    </button>
+    <button onclick="openPage('cart-drawer')" class="nav-btn badge">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12z"/></svg>
+        <em id="c-count">0</em><span>Cart</span>
+    </button>
 </nav>
 
-<script type="module" src="script.js"></script>
+<script type="module">
+    // Делаем функции доступными глобально
+    window.toggleMenu = toggleMenu;
+    window.openSearch = openSearch;
+    window.closeSearch = closeSearch;
+    window.toggleFooterAcc = toggleFooterAcc;
+    window.openPage = openPage;
+    window.closePage = closePage;
+    window.addToCart = addToCart;
+    window.toggleWish = toggleWish;
+    window.updateQty = updateQty;
+    window.removeFromCart = removeFromCart;
+    window.switchSearchTab = switchSearchTab;
+    window.renderCartPage = renderCartPage;
+    window.renderWishPage = renderWishPage;
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
+        authDomain: "taveine-admin.firebaseapp.com",
+        projectId: "taveine-admin",
+        storageBucket: "taveine-admin.firebasestorage.app",
+        messagingSenderId: "916085731146",
+        appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const tg = window.Telegram?.WebApp || null;
+
+    let products = [];
+    let cart = JSON.parse(localStorage.getItem('taveine_cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('taveine_wishlist')) || [];
+
+    // ==================== Основные функции ====================
+
+    async function loadProducts() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "products"));
+            products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderMainPage();
+            updateCounters();
+            initSearch();
+        } catch (error) {
+            console.error("Ошибка загрузки товаров:", error);
+        }
+    }
+
+    function renderMainPage() {
+        const grid = document.getElementById('all-products-grid');
+        const slider = document.getElementById('new-arrivals-slider');
+
+        if (grid) {
+            grid.innerHTML = products.map(p => createProductCard(p)).join('');
+        }
+        if (slider) {
+            const newItems = products.filter(p => p.tags?.includes('new') || p.isNew);
+            slider.innerHTML = newItems.map(p => createProductCard(p)).join('');
+        }
+    }
+
+    function createProductCard(product) {
+        const inWishlist = wishlist.some(item => item.id === product.id);
+        const safeImage = product.image || 'https://via.placeholder.com/300x300?text=No+Image';
+
+        return `
+            <div class="card">
+                <button class="wish-icon-btn" onclick="toggleWish('${product.id}')">
+                    ${inWishlist ? '❤️' : '🤍'}
+                </button>
+                <img src="${safeImage}" alt="${product.name || 'Product'}">
+                <div class="card-info">
+                    <h4>${product.name || 'Без названия'}</h4>
+                    <b>${Number(product.price || 0).toFixed(2)} AED</b>
+                    <button class="add-btn" onclick="addToCart('${product.id}')">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    // ==================== Навигация ====================
+
+    function toggleMenu() {
+        document.getElementById('side-menu').classList.toggle('active');
+        document.getElementById('menu-overlay').classList.toggle('active');
+    }
+
+    function openSearch() {
+        document.getElementById('search-drawer').classList.add('active');
+    }
+
+    function closeSearch() {
+        document.getElementById('search-drawer').classList.remove('active');
+    }
+
+    function toggleFooterAcc(header) {
+        header.parentElement.classList.toggle('active');
+    }
+
+    function openPage(pageId) {
+        const page = document.getElementById(pageId);
+        if (page) {
+            page.style.display = 'block';
+            if (pageId === 'cart-drawer') renderCartPage();
+            if (pageId === 'wish-page') renderWishPage();
+        }
+    }
+
+    function closePage(pageId) {
+        const page = document.getElementById(pageId);
+        if (page) page.style.display = 'none';
+    }
+
+    // ==================== Корзина ====================
+
+    function addToCart(id) {
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+            existing.qty = (existing.qty || 1) + 1;
+        } else {
+            cart.push({ ...product, qty: 1 });
+        }
+
+        saveCart();
+        tg?.HapticFeedback?.impactOccurred('light');
+    }
+
+    function renderCartPage() {
+        const container = document.getElementById('cart-container');
+        const footer = document.getElementById('cart-footer-logic');
+        let total = 0;
+
+        if (cart.length === 0) {
+            footer.style.display = 'none';
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h2>Your cart is empty</h2>
+                    <button onclick="closePage('cart-drawer')">Вернуться в магазин</button>
+                </div>`;
+            document.getElementById('cart-total-sum').textContent = '0.00';
+            return;
+        }
+
+        footer.style.display = 'block';
+
+        container.innerHTML = cart.map((item, i) => {
+            total += item.price * (item.qty || 1);
+            return `
+                <div class="cart-item">
+                    <img src="${item.image || 'https://via.placeholder.com/90'}">
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.price.toFixed(2)} AED</p>
+                        <div class="qty-row">
+                            <div class="qty-control">
+                                <button onclick="updateQty(${i}, -1)">−</button>
+                                <span>${item.qty || 1}</span>
+                                <button onclick="updateQty(${i}, 1)">+</button>
+                            </div>
+                            <button class="remove-link" onclick="removeFromCart(${i})">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('cart-total-sum').textContent = total.toFixed(2);
+    }
+
+    function updateQty(index, change) {
+        cart[index].qty = Math.max(1, (cart[index].qty || 1) + change);
+        saveCart();
+        renderCartPage();
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        saveCart();
+        renderCartPage();
+    }
+
+    // ==================== Wishlist ====================
+
+    function toggleWish(id) {
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+
+        const index = wishlist.findIndex(item => item.id === id);
+        if (index === -1) {
+            wishlist.push(product);
+        } else {
+            wishlist.splice(index, 1);
+        }
+
+        saveWishlist();
+        renderMainPage();
+        renderWishPage();
+        tg?.HapticFeedback?.impactOccurred('medium');
+    }
+
+    function renderWishPage() {
+        const container = document.getElementById('wish-container');
+        if (wishlist.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h2>Your wishlist is empty</h2>
+                    <button onclick="closePage('wish-page')">Вернуться в магазин</button>
+                </div>`;
+        } else {
+            container.innerHTML = wishlist.map(p => createProductCard(p)).join('');
+        }
+    }
+
+    // ==================== Поиск ====================
+
+    function initSearch() {
+        const input = document.getElementById('product-search-input');
+        if (!input) return;
+
+        input.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            const filtered = products.filter(p => 
+                p.name?.toLowerCase().includes(term)
+            );
+
+            document.getElementById('search-results-grid').innerHTML = 
+                filtered.length === 0 
+                    ? '<p style="text-align:center;padding:30px;">Ничего не найдено</p>'
+                    : filtered.map(p => `
+                        <div class="search-item">
+                            <img src="${p.image || 'https://via.placeholder.com/60'}">
+                            <div>
+                                <div class="name">${p.name}</div>
+                                <div class="price">${p.price.toFixed(2)} AED</div>
+                            </div>
+                        </div>
+                    `).join('');
+        });
+    }
+
+    function switchSearchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        // пока категории не реализованы — оставляем только products
+    }
+
+    // ==================== Хелперы ====================
+
+    function saveCart() {
+        localStorage.setItem('taveine_cart', JSON.stringify(cart));
+        updateCounters();
+    }
+
+    function saveWishlist() {
+        localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
+        updateCounters();
+    }
+
+    function updateCounters() {
+        const cartCount = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+        document.getElementById('c-count').textContent = cartCount;
+        document.getElementById('w-count').textContent = wishlist.length;
+    }
+
+    // ==================== Старт ====================
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (tg) tg.expand();
+        loadProducts();
+    });
+</script>
 </body>
 </html>
