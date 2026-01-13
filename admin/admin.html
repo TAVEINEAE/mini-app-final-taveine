@@ -1,46 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TAVEINE Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TAVEINE Admin</title>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f6f7f5;
-      padding: 20px;
-    }
-    h1 { color: #1f3f38; }
-    .box {
-      background: #fff;
-      padding: 16px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-  </style>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background: #f6f7f5;
+    margin: 0;
+    padding: 40px 20px;
+    color: #1f3f38;
+  }
+  .box {
+    max-width: 420px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.1);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+  button {
+    width: 100%;
+    padding: 14px;
+    background: #1f3f38;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .hidden {
+    display: none;
+  }
+  .logout {
+    margin-top: 20px;
+    background: #999;
+  }
+</style>
 </head>
+
 <body>
 
+<!-- LOGIN -->
+<div class="box" id="loginBox">
+  <h1>🔐 Admin Login</h1>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="box hidden" id="adminBox">
   <h1>🔥 TAVEINE Admin Panel</h1>
+  <p>You are logged in.</p>
 
-  <div class="box">
-    <p>Admin panel is working.</p>
-    <p>Next step: Firebase login & products.</p>
-  </div>
+  <button class="logout" onclick="logout()">Logout</button>
+</div>
 
-<!-- FIREBASE SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-<script>
-  // 🔥 Firebase config (ТВОЙ)
   const firebaseConfig = {
     apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
     authDomain: "taveine-admin.firebaseapp.com",
@@ -50,14 +90,33 @@
     appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
   };
 
-  // 🔥 Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-  // 🔐 Auth & DB
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+  const loginBox = document.getElementById("loginBox");
+  const adminBox = document.getElementById("adminBox");
 
-  console.log("🔥 Firebase connected");
+  window.login = function () {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .catch(err => alert(err.message));
+  };
+
+  window.logout = function () {
+    signOut(auth);
+  };
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      loginBox.classList.add("hidden");
+      adminBox.classList.remove("hidden");
+    } else {
+      loginBox.classList.remove("hidden");
+      adminBox.classList.add("hidden");
+    }
+  });
 </script>
 
 </body>
