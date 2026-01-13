@@ -10,108 +10,117 @@
 </head>
 <body>
 
-    <header class="top-strip">
-        <button class="menu-pill" onclick="toggleMenu()">
+    <header class="top-bar">
+        <button class="burger-menu" onclick="toggleMenu()">
             <span></span><span></span><span></span>
         </button>
-        <span class="top-title">TAVÉINE</span>
-        <div style="width:40px"></div>
+        <div class="logo">TAVÉINE</div>
+        <div style="width:40px"></div> 
     </header>
 
-    <main id="main-screen">
-        <section class="hero">
-            <div class="hero-banner">
-                <h1>THE FLOWER</h1>
-            </div>
-        </section>
-
-        <section class="explore-tabs">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('all', this)">All Flowers</button>
-                <button class="tab" onclick="switchTab('Luxury', this)">Luxury</button>
-                <button class="tab" onclick="switchTab('Box', this)">Boxes</button>
-            </div>
-        </section>
-
-        <div class="grid" id="products-grid">
-            </div>
-    </main>
-
     <div id="side-menu" class="side-menu">
-        <div class="menu-header">
+        <div class="menu-top">
             <button class="close-btn" onclick="toggleMenu()">✕</button>
         </div>
-        <div class="menu-content">
-            <div class="menu-group">
-                <div class="menu-item" onclick="toggleSection('coll-body')">
-                    <span>Collection</span> <b class="plus">+</b>
-                </div>
-                <div id="coll-body" class="menu-subbody">
-                    <a onclick="filterByCategory('Christmas Collection')">Christmas Collection</a>
-                    <a onclick="filterByCategory('Spring')">Spring</a>
-                    <a onclick="filterByCategory('New Arrivals')">New Arrivals</a>
-                    <a onclick="filterByCategory('Best Sellers')">Best Sellers</a>
-                    <a onclick="filterByCategory('Luxury')">Luxury</a>
-                    <a onclick="filterByCategory('Specialty')">Specialty</a>
-                    <a onclick="filterByCategory('Je t\'aime Collection')">Je t'aime Collection</a>
-                    <a onclick="filterByCategory('Vases')">Vases</a>
-                    <a onclick="filterByCategory('Box')">Box</a>
+        <div class="menu-list">
+            <div class="accordion">
+                <div class="acc-header" onclick="toggleAcc('coll-items')">Collection <span>+</span></div>
+                <div id="coll-items" class="acc-body">
+                    <a onclick="filterBy('Christmas')">Christmas Collection</a>
+                    <a onclick="filterBy('Spring')">Spring</a>
+                    <a onclick="filterBy('New Arrivals')">New Arrivals</a>
+                    <a onclick="filterBy('Best Sellers')">Best Sellers</a>
+                    <a onclick="filterBy('Luxury')">Luxury</a>
+                    <a onclick="filterBy('Specialty')">Specialty</a>
+                    <a onclick="filterBy('Vases')">Vases</a>
+                    <a onclick="filterBy('Box')">Box</a>
                 </div>
             </div>
-
-            <div class="menu-group">
-                <div class="menu-item" onclick="toggleSection('occ-body')">
-                    <span>Occasions</span> <b class="plus">+</b>
-                </div>
-                <div id="occ-body" class="menu-subbody">
-                    <a onclick="filterByCategory('Anniversary')">Anniversary</a>
-                    <a onclick="filterByCategory('Birthday')">Birthday</a>
-                    <a onclick="filterByCategory('I\'m Sorry')">I'm Sorry</a>
-                    <a onclick="filterByCategory('New Baby')">New Baby</a>
-                    <a onclick="filterByCategory('Event Design')">Event Design Services</a>
-                    <a onclick="filterByCategory('Forever Rose')">Forever Rose</a>
-                    <a onclick="filterByCategory('Balloons')">Balloons</a>
+            <div class="accordion">
+                <div class="acc-header" onclick="toggleAcc('occ-items')">Occasions <span>+</span></div>
+                <div id="occ-items" class="acc-body">
+                    <a onclick="filterBy('Anniversary')">Anniversary</a>
+                    <a onclick="filterBy('Birthday')">Birthday</a>
+                    <a onclick="filterBy('I\'m Sorry')">I'm Sorry</a>
+                    <a onclick="filterBy('New Baby')">New Baby</a>
+                    <a onclick="filterBy('Forever Rose')">Forever Rose</a>
                 </div>
             </div>
-
-            <div class="menu-group">
-                <div class="menu-item" onclick="toggleSection('home-body')">
-                    <span>Home</span> <b class="plus">+</b>
-                </div>
-                <div id="home-body" class="menu-subbody">
-                    <a onclick="showInfo('About Us')">About Us</a>
-                    <a onclick="showInfo('Privacy Policy')">Privacy Policy</a>
+            <div class="accordion">
+                <div class="acc-header" onclick="toggleAcc('home-items')">Home <span>+</span></div>
+                <div id="home-items" class="acc-body">
+                    <a onclick="showInfo('about')">About Us</a>
+                    <a onclick="showInfo('privacy')">Privacy Policy</a>
                 </div>
             </div>
         </div>
     </div>
 
+    <main id="main-content">
+        <section class="hero-section">
+            <img src="main-banner.jpg" alt="Nature's Breath" class="hero-img">
+            <h1>THE FLOWER</h1>
+        </section>
+
+        <section class="tab-section">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('new', this)">New Arrival</button>
+                <button class="tab-btn" onclick="showTab('sale', this)">Sale</button>
+                <button class="tab-btn" onclick="showTab('popular', this)">Popular</button>
+            </div>
+            <div class="grid" id="tab-grid"></div>
+        </section>
+
+        <section class="shop-all">
+            <h2 class="section-title">Shop All</h2>
+            <div class="grid" id="all-products-grid"></div>
+        </section>
+
+        <section class="luxury-section">
+            <h2 class="section-title">Luxury Products</h2>
+            <div class="grid" id="luxury-grid"></div>
+        </section>
+
+        <footer class="main-footer">
+            <div class="footer-logo">TAVÉINE</div>
+            <p>Address: International City, Dubai, UAE</p>
+            <p>Email: support@taveine.com</p>
+            <p>Phone: 971 58 574 37 06</p>
+            <a href="#" class="direction">Get direction ↗</a>
+            
+            <div class="socials">
+                <button onclick="window.open('https://facebook.com')">f</button>
+                <button onclick="window.open('https://instagram.com')">i</button>
+                <button onclick="window.open('https://pinterest.com')">p</button>
+            </div>
+
+            <div class="footer-acc">
+                <div class="acc-header" onclick="toggleAcc('help-f')">Help <span>+</span></div>
+                <div id="help-f" class="acc-body"><p>FAQ, Shipping, Returns</p></div>
+                
+                <div class="acc-header" onclick="toggleAcc('links-f')">Useful Links <span>+</span></div>
+                <div id="help-f" class="acc-body"><a>Track Order</a><a>Contact</a></div>
+            </div>
+            <div class="footer-bottom">
+                <p>© TAVÉINE Flower Shop. All Rights Reserved.</p>
+                <div class="payments">VISA | PAYPAL | AMEX</div>
+            </div>
+        </footer>
+    </main>
+
     <nav class="bottom-nav">
-        <button onclick="location.reload()">
-            <span class="icon">▦</span><small>Shop</small>
-        </button>
-        <button onclick="openSearch()">
-            <span class="icon">🔍</span><small>Search</small>
-        </button>
-        <button class="badge" onclick="alert('Wishlist coming soon!')">
-            <span class="icon">♡</span><small>Wishlist</small><em id="wish-count">0</em>
-        </button>
-        <button class="badge" onclick="alert('Cart coming soon!')">
-            <span class="icon">🛒</span><small>Cart</small><em id="cart-count">0</em>
-        </button>
+        <button onclick="location.reload()"><span class="icon">▦</span><small>Shop</small></button>
+        <button onclick="openPage('search-page')"><span class="icon">🔍</span><small>Search</small></button>
+        <button onclick="openPage('wish-page')" class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="w-count">0</em></button>
+        <button onclick="openPage('cart-page')" class="badge"><span class="icon">🛒</span><small>Cart</small><em id="c-count">0</em></button>
     </nav>
 
     <div id="search-page" class="full-page">
-        <div class="page-header"><button onclick="closePage('search-page')">✕ Close</button></div>
-        <div class="page-content">
-            <input type="text" id="search-input" placeholder="Search flowers..." oninput="searchAll(this.value)">
+        <div class="p-header"><button onclick="closePage('search-page')">← Back</button></div>
+        <div class="p-content">
+            <input type="text" placeholder="Search products..." oninput="search(this.value)">
             <div class="grid" id="search-grid"></div>
         </div>
-    </div>
-
-    <div id="product-page" class="full-page">
-        <div class="page-header"><button onclick="closePage('product-page')">← Back</button></div>
-        <div id="product-details" class="page-content"></div>
     </div>
 
 </body>
