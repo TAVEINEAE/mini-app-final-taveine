@@ -121,6 +121,22 @@ function renderWishlist() {
     document.getElementById('wish-list-container').innerHTML = wishlist.map(p => `<div class="wish-item"><img src="${p.image}"><p>${p.name}</p></div>`).join('');
 }
 
+window.toggleFooterAcc = (id) => {
+    const targetContent = document.getElementById(id);
+    const parentItem = targetContent.parentElement;
+    const isNowActive = parentItem.classList.contains('active');
+
+    // Сначала закрываем вообще все открытые списки в футере
+    document.querySelectorAll('.acc-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Если тот, на который нажали, был закрыт — открываем его
+    if (!isNowActive) {
+        parentItem.classList.add('active');
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     tg?.ready();
     loadDataFromFirebase();
