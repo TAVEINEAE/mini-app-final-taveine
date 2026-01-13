@@ -247,3 +247,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     loadDataFromFirebase();
 });
+
+window.toggleSearchPage = () => {
+    // Если страница поиска еще не открыта — открываем
+    const searchPage = document.getElementById('search-page');
+    if (searchPage) {
+        searchPage.style.display = 'block';
+        // Автоматически ставим курсор в поле поиска
+        setTimeout(() => document.getElementById('product-search').focus(), 100);
+    }
+};
+
+// Убедись, что функция initSearch теперь использует grid для результатов
+function initSearch() {
+    const searchInput = document.getElementById('product-search');
+    searchInput?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const resultsGrid = document.getElementById('search-results-grid');
+        
+        if (term.length > 0) {
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(term) || 
+                p.category?.toLowerCase().includes(term)
+            );
+            renderGrid(filtered, 'search-results-grid');
+        } else {
+            resultsGrid.innerHTML = "";
+        }
+    });
+}
