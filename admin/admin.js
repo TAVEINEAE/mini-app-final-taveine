@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* LOGOUT */
   window.logout = async () => {
     await signOut(auth);
-    window.location.href = "../index.html";
+    window.location.href = "./login.html";
   };
 
   /* ADD PRODUCT */
