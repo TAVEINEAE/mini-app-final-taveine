@@ -564,3 +564,65 @@ body {
     justify-content: center;
     font-style: normal;
 }
+
+/* Новые стили для аккордеона в меню */
+.menu-item-acc {
+    border-bottom: 1px solid var(--border);
+}
+
+.menu-acc-header {
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu-acc-content {
+    display: none;
+    background: #fcfcfc;
+    padding-left: 20px;
+}
+
+.menu-item-acc.active .menu-acc-content {
+    display: block;
+}
+
+.menu-item-acc.active .acc-plus {
+    transform: rotate(45deg);
+}
+
+.menu-acc-content a {
+    border-bottom: none !important;
+    font-size: 1rem !important;
+    color: #666 !important;
+}
+
+/* Фикс для футера соцсетей */
+.footer-socials {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.soc-icon {
+    width: 35px;
+    height: 35px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Фикс отображения страниц */
+.full-page {
+    display: none;
+    flex-direction: column;
+}
