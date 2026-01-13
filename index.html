@@ -1,178 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Taveine AE</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Taveine AE</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="top-bar">
     <button class="burger-menu" onclick="toggleMenu()"><span class="wave-icon">≈</span></button>
     <div class="logo">TAVÉINE</div>
-    <div style="width:40px"></div> 
+    <div style="width:40px"></div>
 </header>
 
+<!-- SIDE MENU -->
 <div id="side-menu" class="side-drawer">
     <div class="drawer-header">
         <span class="drawer-title">Menu</span>
         <button class="close-drawer" onclick="toggleMenu()">✕</button>
     </div>
+
     <div class="drawer-content">
         <nav class="side-nav">
-            <a href="#" onclick="location.reload()">Home</a>
-            
-            <div class="menu-item-acc">
-                <div class="menu-acc-header" onclick="toggleMenuAcc(this)">
-                    Collections <i class="acc-plus">+</i>
-                </div>
-                <div class="menu-acc-content">
-                    <a href="#" onclick="toggleMenu()">Shop All</a>
-                    <a href="#" onclick="toggleMenu()">New Arrivals</a>
-                    <a href="#" onclick="toggleMenu()">Roses</a>
-                    <a href="#" onclick="toggleMenu()">Bouquets</a>
+
+            <a href="#" onclick="goHome()">Home</a>
+
+            <div class="submenu">
+                <div class="submenu-title" onclick="toggleSubMenu(this)">Collections</div>
+                <div class="submenu-content">
+                    <a href="#" onclick="filterCategory('Roses')">Roses</a>
+                    <a href="#" onclick="filterCategory('Bouquets')">Bouquets</a>
+                    <a href="#" onclick="filterCategory('Gifts')">Gifts</a>
                 </div>
             </div>
 
-            <div class="menu-item-acc">
-                <div class="menu-acc-header" onclick="toggleMenuAcc(this)">
-                    Occasion <i class="acc-plus">+</i>
-                </div>
-                <div class="menu-acc-content">
-                    <a href="#" onclick="toggleMenu()">Birthday</a>
-                    <a href="#" onclick="toggleMenu()">Anniversary</a>
-                    <a href="#" onclick="toggleMenu()">Love & Romance</a>
+            <div class="submenu">
+                <div class="submenu-title" onclick="toggleSubMenu(this)">Occasion</div>
+                <div class="submenu-content">
+                    <a href="#" onclick="filterTag('birthday')">Birthday</a>
+                    <a href="#" onclick="filterTag('love')">Love</a>
+                    <a href="#" onclick="filterTag('wedding')">Wedding</a>
                 </div>
             </div>
 
-            <a href="#" onclick="toggleMenu()">Gifts</a>
         </nav>
     </div>
 </div>
+
 <div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
 
 <main id="main-page">
-    <section class="hero-section">
-        <img src="https://static.wixstatic.com/media/8971f1_681966a3928148b394747eb19234858b~mv2.jpg" class="hero-img">
-        <div class="hero-text"><h1>THE FRESHEST FLOWERS ARE HERE</h1></div>
-    </section>
 
-    <h2 class="section-title">NEW ARRIVALS</h2>
-    <div id="new-arrivals-slider" class="slider-container"></div>
+<section class="hero-section">
+    <img src="https://static.wixstatic.com/media/8971f1_681966a3928148b394747eb19234858b~mv2.jpg" class="hero-img">
+    <div class="hero-text"><h1>THE FRESHEST FLOWERS ARE HERE</h1></div>
+</section>
 
-    <h2 class="section-title">THE FLOWER</h2>
-    <div id="all-products-grid" class="grid"></div>
+<h2 class="section-title">NEW ARRIVALS</h2>
+<div id="new-arrivals-slider" class="slider-container"></div>
 
-    <footer class="site-footer">
-        <div class="footer-contact">
-            <img src="https://static.wixstatic.com/media/8971f1_43033580790b490f8450f384795325c7~mv2.png" class="footer-logo">
-            <p>Address: International City, Dubai, UAE</p>
-            <p>Email: <a href="mailto:support@taveine.com">support@taveine.com</a></p>
-            <p>Phone: <b>971 58 574 37 06</b></p>
-            <a href="#" class="get-direction">Get direction ↗</a>
-            <div class="footer-socials">
-                <a href="https://facebook.com" class="soc-icon">f</a>
-                <a href="https://instagram.com/taveine.ae" class="soc-icon">ig</a>
-                <a href="https://pinterest.com" class="soc-icon">p</a>
+<h2 class="section-title">THE FLOWER</h2>
+<div id="all-products-grid" class="grid"></div>
+
+<footer class="site-footer">
+    <div class="footer-contact">
+        <img src="https://static.wixstatic.com/media/8971f1_43033580790b490f8450f384795325c7~mv2.png" class="footer-logo">
+        <p>Address: International City, Dubai, UAE</p>
+        <p>Email: <a href="mailto:support@taveine.com">support@taveine.com</a></p>
+        <p>Phone: <b>971 58 574 37 06</b></p>
+        <a href="#" class="get-direction">Get direction ↗</a>
+
+        <div class="footer-socials">
+            <a href="#" class="soc-icon">f</a>
+            <a href="https://instagram.com/taveine.ae" class="soc-icon">ig</a>
+            <a href="#" class="soc-icon">p</a>
+        </div>
+    </div>
+
+    <div class="footer-accordeon">
+        <div class="acc-item">
+            <div class="acc-header" onclick="toggleFooterAcc(this)">
+                <span>Help</span><i class="acc-plus">+</i>
+            </div>
+            <div class="acc-content">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Refund Policy</a>
+                <a href="#">Care & Handling</a>
+                <a href="#">Terms & Conditions</a>
+                <a href="#">FAQ's</a>
             </div>
         </div>
 
-        <div class="footer-accordeon">
-            <div class="acc-item">
-                <div class="acc-header" onclick="toggleFooterAcc(this)">
-                    <span>Help</span> <i class="acc-plus">+</i>
-                </div>
-                <div class="acc-content">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Refund Policy</a>
-                    <a href="#">Care & Handling</a>
-                    <a href="#">Terms & Conditions</a>
-                    <a href="#">FAQ's</a>
-                </div>
+        <div class="acc-item">
+            <div class="acc-header" onclick="toggleFooterAcc(this)">
+                <span>Useful Links</span><i class="acc-plus">+</i>
             </div>
-            <div class="acc-item">
-                <div class="acc-header" onclick="toggleFooterAcc(this)">
-                    <span>Useful Links</span> <i class="acc-plus">+</i>
-                </div>
-                <div class="acc-content">
-                    <a href="#">Contact Us</a>
-                    <a href="#">About Us</a>
-                    <a href="#">Shipping</a>
-                </div>
+            <div class="acc-content">
+                <a href="#">Contact Us</a>
+                <a href="#">About Us</a>
+                <a href="#">Shipping</a>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 </main>
 
-<div id="wish-page" class="full-page" style="display:none">
-    <div class="p-header">
-        <button class="back-btn" onclick="closePage('wish-page')">‹</button>
-        <span class="p-title">Wishlist</span>
-        <button class="close-btn" onclick="closePage('wish-page')">✕</button>
-    </div>
-    <div id="wish-container" class="p-content"></div>
-</div>
-
-<div id="cart-drawer" class="full-page" style="display:none">
-    <div class="p-header">
-        <span class="p-title">Shopping Cart</span>
-        <button class="close-btn" onclick="closePage('cart-drawer')">✕</button>
-    </div>
-    <div id="cart-container" class="p-content"></div>
-    <div id="cart-footer-logic" class="cart-summary-fixed">
-        <div class="subtotal-row">
-            <span>Subtotal:</span>
-            <div class="total-price-block"><span id="cart-total-sum">0.00</span> <span>AED</span></div>
-        </div>
-        <div class="cart-btns">
-            <button class="white-btn">View cart</button>
-            <button class="black-checkout-btn">Checkout</button>
-        </div>
-    </div>
-</div>
-
-<div id="search-drawer" class="search-drawer">
-    <div class="drawer-header">
-        <span class="drawer-title">Search our site</span>
-        <button class="close-drawer" onclick="closeSearch()">✕</button>
-    </div>
-    <div class="drawer-content">
-        <div class="search-field-container">
-            <span class="search-input-icon">🔍</span>
-            <input type="text" id="product-search-input" placeholder="Search">
-        </div>
-        <div class="search-tabs">
-            <button id="tab-products" class="tab-btn active" onclick="switchSearchTab('products')">PRODUCTS</button>
-            <button id="tab-categories" class="tab-btn" onclick="switchSearchTab('categories')">CATEGORIES</button>
-        </div>
-        <div id="search-results-grid" class="search-results-list"></div>
-    </div>
-</div>
-
-<nav class="bottom-nav">
-    <button onclick="location.reload()" class="nav-btn">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" fill="currentColor"/></svg>
-        <span>Shop</span>
-    </button>
-    <button onclick="openSearch()" class="nav-btn">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
-        <span>Search</span>
-    </button>
-    <button class="nav-btn">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg>
-        <span>Account</span>
-    </button>
-    <button onclick="openPage('wish-page')" class="nav-btn badge">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12.1 18.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" fill="currentColor"/></svg>
-        <em id="w-count">0</em><span>Wishlist</span>
-    </button>
-    <button onclick="openPage('cart-drawer')" class="nav-btn badge">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12z" fill="currentColor"/></svg>
-        <em id="c-count">0</em><span>Cart</span>
-    </button>
-</nav>
-
-<script type="module" src="script.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
