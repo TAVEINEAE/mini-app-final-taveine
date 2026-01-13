@@ -1,111 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Taveine AE</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Taveine App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="top-bar">
-    <button class="burger-menu" onclick="toggleMenu()"><span class="wave-icon">≈</span></button>
+    <button class="burger-menu" onclick="window.toggleMenu()">
+        <span class="wave-icon">≈</span>
+    </button>
     <div class="logo">TAVÉINE</div>
-    <div style="width:40px"></div>
+    <div style="width:40px"></div> 
 </header>
 
-<!-- SIDE MENU -->
-<div id="side-menu" class="side-drawer">
-    <div class="drawer-header">
-        <span class="drawer-title">Menu</span>
-        <button class="close-drawer" onclick="toggleMenu()">✕</button>
+<main id="main-content">
+    <section id="default-content">
+        <img src="https://via.placeholder.com/600x400?text=THE+FRESHEST+FLOWERS" class="hero-img">
+        <h2 class="section-title">New Arrivals</h2>
+        <div id="new-slider" class="slider-container"></div>
+    </section>
+
+    <h2 id="grid-title" class="section-title">Shop All</h2>
+    <div id="all-products-grid" class="grid"></div>
+</main>
+
+<nav id="side-menu" class="side-menu">
+    <div class="menu-top">
+        <button class="close-btn" onclick="window.toggleMenu()">✕</button>
     </div>
+    <div class="accordion-item">
+        <div class="acc-header" onclick="window.toggleMenuAcc('cat-list')">Categories <span>+</span></div>
+        <div id="cat-list" class="acc-body">
+            <a href="#" onclick="window.openCategoryPage('Roses')">Roses</a>
+            <a href="#" onclick="window.openCategoryPage('Bouquets')">Bouquets</a>
+        </div>
+    </div>
+</nav>
 
-    <div class="drawer-content">
-        <nav class="side-nav">
+<div id="wish-page" class="full-page">
+    <div class="p-header">
+        <button class="back-btn" onclick="window.closePage('wish-page')">‹</button>
+        <span class="p-title">Wishlist</span>
+        <button class="close-btn" onclick="window.closePage('wish-page')">✕</button>
+    </div>
+    <div class="p-content" id="wish-list-container"></div>
+</div>
 
-            <a href="#" onclick="goHome()">Home</a>
-
-            <div class="submenu">
-                <div class="submenu-title" onclick="toggleSubMenu(this)">Collections</div>
-                <div class="submenu-content">
-                    <a href="#" onclick="filterCategory('Roses')">Roses</a>
-                    <a href="#" onclick="filterCategory('Bouquets')">Bouquets</a>
-                    <a href="#" onclick="filterCategory('Gifts')">Gifts</a>
-                </div>
-            </div>
-
-            <div class="submenu">
-                <div class="submenu-title" onclick="toggleSubMenu(this)">Occasion</div>
-                <div class="submenu-content">
-                    <a href="#" onclick="filterTag('birthday')">Birthday</a>
-                    <a href="#" onclick="filterTag('love')">Love</a>
-                    <a href="#" onclick="filterTag('wedding')">Wedding</a>
-                </div>
-            </div>
-
-        </nav>
+<div id="cart-drawer" class="full-page">
+    <div class="p-header">
+        <span class="p-title">Shopping Cart</span>
+        <button class="close-btn" onclick="window.toggleCart()">✕</button>
+    </div>
+    <div class="p-content" id="cart-items-list"></div>
+    <div class="cart-footer" id="cart-footer-actions">
+        <b>Total: <span id="cart-total-price">0</span> AED</b>
+        <button class="checkout-btn">Checkout</button>
     </div>
 </div>
 
-<div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
-
-<main id="main-page">
-
-<section class="hero-section">
-    <img src="https://static.wixstatic.com/media/8971f1_681966a3928148b394747eb19234858b~mv2.jpg" class="hero-img">
-    <div class="hero-text"><h1>THE FRESHEST FLOWERS ARE HERE</h1></div>
-</section>
-
-<h2 class="section-title">NEW ARRIVALS</h2>
-<div id="new-arrivals-slider" class="slider-container"></div>
-
-<h2 class="section-title">THE FLOWER</h2>
-<div id="all-products-grid" class="grid"></div>
-
-<footer class="site-footer">
-    <div class="footer-contact">
-        <img src="https://static.wixstatic.com/media/8971f1_43033580790b490f8450f384795325c7~mv2.png" class="footer-logo">
-        <p>Address: International City, Dubai, UAE</p>
-        <p>Email: <a href="mailto:support@taveine.com">support@taveine.com</a></p>
-        <p>Phone: <b>971 58 574 37 06</b></p>
-        <a href="#" class="get-direction">Get direction ↗</a>
-
-        <div class="footer-socials">
-            <a href="#" class="soc-icon">f</a>
-            <a href="https://instagram.com/taveine.ae" class="soc-icon">ig</a>
-            <a href="#" class="soc-icon">p</a>
-        </div>
+<div id="search-page" class="full-page">
+    <div class="p-header">
+        <span class="p-title">Search our site</span>
+        <button class="close-btn" onclick="window.closePage('search-page')">✕</button>
     </div>
-
-    <div class="footer-accordeon">
-        <div class="acc-item">
-            <div class="acc-header" onclick="toggleFooterAcc(this)">
-                <span>Help</span><i class="acc-plus">+</i>
-            </div>
-            <div class="acc-content">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Refund Policy</a>
-                <a href="#">Care & Handling</a>
-                <a href="#">Terms & Conditions</a>
-                <a href="#">FAQ's</a>
-            </div>
+    <div class="p-content">
+        <div class="search-bar-container">
+            <span class="search-icon-inner">🔍</span>
+            <input type="text" id="product-search" placeholder="Search">
         </div>
-
-        <div class="acc-item">
-            <div class="acc-header" onclick="toggleFooterAcc(this)">
-                <span>Useful Links</span><i class="acc-plus">+</i>
-            </div>
-            <div class="acc-content">
-                <a href="#">Contact Us</a>
-                <a href="#">About Us</a>
-                <a href="#">Shipping</a>
-            </div>
-        </div>
+        <div id="search-results-grid" class="grid"></div>
     </div>
-</footer>
-</main>
+</div>
 
-<script type="module" src="app.js"></script>
+<nav class="bottom-nav">
+    <button onclick="location.reload()" class="nav-btn">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" fill="currentColor"/></svg>
+        <span>Shop</span>
+    </button>
+    <button onclick="window.openPage('search-page')" class="nav-btn">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+        <span>Search</span>
+    </button>
+    <button onclick="window.openPage('wish-page')" class="nav-btn badge">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12.1 18.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05zM16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.31C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z" fill="currentColor"/></svg>
+        <em id="w-count">0</em>
+        <span>Wishlist</span>
+    </button>
+    <button onclick="window.toggleCart()" class="nav-btn badge">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z" fill="currentColor"/></svg>
+        <em id="c-count">0</em>
+        <span>Cart</span>
+    </button>
+</nav>
+
+<script type="module" src="script.js"></script>
 </body>
 </html>
