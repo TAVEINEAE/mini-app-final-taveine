@@ -44,3 +44,28 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
 .about-hero { width: 100%; margin-bottom: 20px; }
 .about-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 .about-gallery img { width: 100%; border-radius: 5px; }
+
+.main-footer { background: #fff; color: #1f3f38; padding: 40px 20px; font-family: sans-serif; }
+.footer-brand { margin-bottom: 20px; }
+.logo-text { font-size: 28px; font-weight: bold; letter-spacing: 2px; }
+.footer-info p { margin: 5px 0; font-size: 14px; color: #444; }
+.directions { display: inline-block; margin-top: 10px; color: #1f3f38; text-decoration: underline; font-size: 13px; }
+
+.footer-socials { display: flex; gap: 10px; margin: 25px 0; }
+.footer-socials a { 
+    width: 35px; height: 35px; border: 1px solid #1f3f38; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    text-decoration: none; color: #1f3f38; font-weight: bold;
+}
+
+.acc-item { border-top: 1px solid #eee; }
+.acc-btn { 
+    display: flex; justify-content: space-between; padding: 15px 0; 
+    font-size: 16px; cursor: pointer; color: #1f3f38;
+}
+.acc-content { display: none; padding-bottom: 15px; }
+.acc-content a { display: block; padding: 5px 0; color: #666; text-decoration: none; font-size: 14px; }
+
+/* Когда открыто */
+.acc-item.active .acc-content { display: block; }
+.acc-item.active .acc-btn span { transform: rotate(45deg); display: inline-block; }
