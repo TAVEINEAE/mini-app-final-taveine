@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TAVEINE Flower Shop</title>
+    <title>TAVÉINE Flower Shop</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script defer src="script.js"></script>
@@ -15,81 +15,76 @@
         <span></span><span></span><span></span>
     </button>
     <span class="top-title">TAVÉINE</span>
-    <div style="width:36px"></div> </div>
+    <div style="width:40px"></div>
+</div>
 
-<main id="main-content">
+<main id="main-screen">
     <section class="hero">
-        <img src="hero.jpg" alt="Taveine Flowers">
+        <img src="hero.jpg" alt="Hero Banner">
     </section>
 
     <section class="explore-tabs">
-        <h2>Explore Products</h2>
         <div class="tabs">
             <button class="tab active" onclick="switchTab('recommended', this)">Recommended</button>
-            <button class="tab" onclick="switchTab('new', this)">New products</button>
-            <button class="tab" onclick="switchTab('popular', this)">Most Popular</button>
+            <button class="tab" onclick="switchTab('new', this)">New</button>
+            <button class="tab" onclick="switchTab('popular', this)">Popular</button>
         </div>
     </section>
 
-    <section class="products">
-        <h2 id="section-title">Shop All</h2>
-        <div class="grid" id="products-grid"></div>
-    </section>
+    <div class="grid" id="products-grid">
+        </div>
 </main>
 
-<section id="search-page" class="page-slide" style="display:none">
-    <div class="product-top">
-        <button class="back-btn" onclick="closeSearch()">← Back</button>
-    </div>
-    <div style="padding:16px">
-        <input id="search-input" type="text" placeholder="Search products..." oninput="searchAll(this.value); updateSuggestions(this.value)">
-        <div id="search-suggestions" class="search-suggestions"></div>
-        <div class="grid" id="search-grid" style="margin-top:20px"></div>
-    </div>
-</section>
-
-<section id="category-page" class="page-slide" style="display:none">
-    <div class="product-top">
-        <button class="back-btn" onclick="closeCategory()">← Back</button>
-        <h2 id="category-title" style="display:inline; margin-left:20px">Category</h2>
-    </div>
-    <div class="grid" id="category-grid"></div>
-</section>
-
-<section id="product-page" class="page-slide" style="display:none">
-    <div class="product-top">
-        <button class="back-btn" onclick="closeProduct()">← Back</button>
-    </div>
-    <div class="product-content">
-        <img id="product-img" src="" alt="">
-        <h2 id="product-title"></h2>
-        <p id="product-price" style="font-weight:bold; font-size:1.2em"></p>
-        <p id="product-desc"></p>
-        <button class="add-cart-btn" onclick="addCurrentToCart()">Add to cart</button>
-    </div>
-</section>
-
 <div id="side-menu" class="side-menu">
-    <button class="menu-close" onclick="toggleMenu()">✕</button>
-    <div class="menu-section">
-        <div class="menu-head" onclick="toggleSection('coll-body')"><span>Collection</span><b>+</b></div>
-        <div id="coll-body" class="menu-body">
-            <a onclick="openCategory('box','Flower Boxes')">Flower Boxes</a>
-            <a onclick="openCategory('luxury','Luxury Collection')">Luxury</a>
-            <a onclick="openCategory('vases','Vases')">Vases</a>
-        </div>
+    <div class="menu-header">
+        <button class="close-btn" onclick="toggleMenu()">✕</button>
+        <span class="menu-title">Menu</span>
     </div>
-    <div class="menu-section">
-        <div class="menu-head" onclick="openAbout()"><span>About Us</span><b>></b></div>
+    <div class="menu-content">
+        <div class="menu-item" onclick="toggleSection('coll-body')">
+            <span>Collection</span> <b>+</b>
+        </div>
+        <div id="coll-body" class="menu-subbody">
+            <a onclick="openCategory('box', 'Flower Boxes')">Flower Boxes</a>
+            <a onclick="openCategory('luxury', 'Luxury')">Luxury</a>
+            <a onclick="openCategory('vases', 'Vases')">Vases</a>
+        </div>
+        <div class="menu-item" onclick="openAbout()">About Us ></div>
     </div>
 </div>
 
 <nav class="bottom-nav">
-    <button onclick="window.location.reload()"><span class="icon">▦</span><small>Shop</small></button>
-    <button onclick="openSearch()"><span class="icon">🔍</span><small>Search</small></button>
-    <button class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="wish-count">0</em></button>
-    <button class="badge"><span class="icon">🛒</span><small>Cart</small><em id="cart-count">0</em></button>
+    <button onclick="location.reload()">
+        <span class="icon">▦</span><small>Shop</small>
+    </button>
+    <button onclick="openSearch()">
+        <span class="icon">🔍</span><small>Search</small>
+    </button>
+    <button class="badge">
+        <span class="icon">♡</span><small>Wishlist</small><em id="wish-count">0</em>
+    </button>
+    <button class="badge">
+        <span class="icon">🛒</span><small>Cart</small><em id="cart-count">0</em>
+    </button>
 </nav>
+
+<div id="search-page" class="full-page">
+    <div class="page-header">
+        <button class="back-link" onclick="closePage('search-page')">← Back to Shop</button>
+    </div>
+    <div class="page-content">
+        <input type="text" id="search-input" placeholder="Search flowers..." oninput="searchAll(this.value)">
+        <div class="grid" id="search-grid"></div>
+    </div>
+</div>
+
+<div id="product-page" class="full-page">
+    <div class="page-header">
+        <button class="back-link" onclick="closePage('product-page')">← Back</button>
+    </div>
+    <div id="product-details" class="page-content">
+        </div>
+</div>
 
 </body>
 </html>
