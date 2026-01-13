@@ -11,7 +11,7 @@
 <body>
 
     <header class="top-bar">
-        <button class="burger-menu" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+        <button class="burger-menu" onclick="window.toggleMenu()"><span></span><span></span><span></span></button>
         <div class="logo">TAVÉINE</div>
         <div style="width:40px"></div> 
     </header>
@@ -51,20 +51,20 @@
     </main>
 
     <div id="side-menu" class="side-menu">
-        <div class="menu-top"><button class="close-btn" onclick="toggleMenu()">✕</button></div>
+        <div class="menu-top"><button class="close-btn" onclick="window.toggleMenu()">✕</button></div>
         <div class="menu-list">
             <div class="accordion">
-                <div class="acc-header" onclick="toggleAcc('coll-items')">Collection <span>+</span></div>
+                <div class="acc-header" onclick="window.toggleAcc('coll-items')">Collection <span>+</span></div>
                 <div id="coll-items" class="acc-body">
-                    <a onclick="openCategoryPage('Christmas')">Christmas Collection</a>
-                    <a onclick="openCategoryPage('Spring')">Spring</a>
-                    <a onclick="openCategoryPage('Luxury')">Luxury</a>
-                    <a onclick="openCategoryPage('Vases')">Vases</a>
-                    <a onclick="openCategoryPage('Box')">Box</a>
+                    <a onclick="window.openCategoryPage('Christmas')">Christmas Collection</a>
+                    <a onclick="window.openCategoryPage('Spring')">Spring</a>
+                    <a onclick="window.openCategoryPage('Luxury')">Luxury</a>
+                    <a onclick="window.openCategoryPage('Vases')">Vases</a>
+                    <a onclick="window.openCategoryPage('Box')">Box</a>
                 </div>
             </div>
             <div class="accordion">
-                <div class="acc-header" onclick="showInfoPage('about')">About Us <span>></span></div>
+                <div class="acc-header" onclick="window.showInfoPage('about')">About Us <span>></span></div>
             </div>
         </div>
     </div>
@@ -72,7 +72,7 @@
     <div id="cart-drawer" class="cart-drawer">
         <div class="cart-header">
             <h3>Your Cart</h3>
-            <button onclick="toggleCart()">✕</button>
+            <button onclick="window.toggleCart()">✕</button>
         </div>
         <div id="cart-items-list" class="cart-items"></div>
         <div class="cart-footer">
@@ -82,17 +82,17 @@
     </div>
 
     <div id="category-page" class="full-page">
-        <div class="p-header"><button onclick="closePage('category-page')">← Back</button> <h3 id="cat-title"></h3></div>
+        <div class="p-header"><button onclick="window.closePage('category-page')">← Back</button> <h3 id="cat-title"></h3></div>
         <div class="grid" id="category-grid"></div>
     </div>
 
     <div id="wish-page" class="full-page">
-        <div class="p-header"><button onclick="closePage('wish-page')">← Back</button> <h3>Wishlist</h3></div>
+        <div class="p-header"><button onclick="window.closePage('wish-page')">← Back</button> <h3>Wishlist</h3></div>
         <div id="wish-list-container" class="wish-list"></div>
     </div>
 
     <div id="about-page" class="full-page">
-        <div class="p-header"><button onclick="closePage('about-page')">← Back</button> <h3>About Us</h3></div>
+        <div class="p-header"><button onclick="window.closePage('about-page')">← Back</button> <h3>About Us</h3></div>
         <div class="p-content about-content">
             <img src="about-img.jpg" class="about-hero">
             <p>Welcome to TAVÉINE. We believe in the power of nature's breath. Our flowers are handpicked and arranged with passion.</p>
@@ -104,8 +104,8 @@
 
     <nav class="bottom-nav">
         <button onclick="location.reload()"><span class="icon">▦</span><small>Shop</small></button>
-        <button onclick="openPage('wish-page')" class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="w-count">0</em></button>
-        <button onclick="toggleCart()" class="badge"><span class="icon">🛒</span><small>Cart</small><em id="c-count">0</em></button>
+        <button onclick="window.openPage('wish-page')" class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="w-count">0</em></button>
+        <button onclick="window.toggleCart()" class="badge"><span class="icon">🛒</span><small>Cart</small><em id="c-count">0</em></button>
     </nav>
 
 </body>
