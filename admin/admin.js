@@ -32,18 +32,6 @@ const db = getFirestore(app);
 /* ================= DOM READY ================= */
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* AUTH CHECK */
-  onAuthStateChanged(auth, user => {
-    if (!user) {
-  window.location.href = "./login.html";
-}
-    } else {
-      const status = document.getElementById("auth-status");
-      if (status) status.innerText = `Admin: ${user.email}`;
-      loadProducts();
-    }
-  });
-
   /* LOGOUT */
   window.logout = async () => {
     await signOut(auth);
