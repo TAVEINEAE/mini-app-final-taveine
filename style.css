@@ -69,3 +69,32 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
 /* Когда открыто */
 .acc-item.active .acc-content { display: block; }
 .acc-item.active .acc-btn span { transform: rotate(45deg); display: inline-block; }
+
+.accordion-item {
+    border-bottom: 1px solid #eee;
+}
+.acc-header {
+    padding: 18px 0;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    font-weight: 500;
+    color: #333;
+}
+.acc-body {
+    display: none;
+    padding-left: 15px;
+    padding-bottom: 15px;
+}
+.acc-body a {
+    display: block;
+    padding: 8px 0;
+    color: #666;
+    text-decoration: none;
+    font-size: 15px;
+}
+.acc-body a:active {
+    color: #1f3f38;
+}
+
