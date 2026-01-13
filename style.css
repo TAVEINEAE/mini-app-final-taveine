@@ -1,47 +1,95 @@
-:root { --green: #1f3f38; --white: #ffffff; }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-
-body { background: var(--white); color: var(--green); overflow-x: hidden; }
-
-.top-strip {
-    background: var(--green); height: 60px; display: flex;
-    align-items: center; justify-content: space-between; padding: 0 15px;
-    position: sticky; top: 0; z-index: 5000;
+:root {
+    --green: #1f3f38;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
 }
-.top-title { color: #fff; font-weight: bold; letter-spacing: 1px; }
 
-/* Сетка */
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; margin-bottom: 80px; }
-.card { border: 1px solid #eee; border-radius: 8px; text-align: center; padding-bottom: 10px; }
-.card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px 8px 0 0; }
-.card h3 { font-size: 13px; margin: 8px 5px; height: 32px; overflow: hidden; }
-.card span { font-weight: bold; display: block; margin-bottom: 8px; }
-.card button { background: var(--green); color: #fff; border: none; padding: 7px 0; width: 90%; border-radius: 4px; font-size: 11px; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-/* Боковое меню */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif;
+    background: var(--white);
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+/* Header */
+.top-strip {
+    background: var(--green);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    position: sticky;
+    top: 0;
+    z-index: 9000;
+}
+
+.top-title { color: #fff; font-weight: bold; letter-spacing: 2px; font-size: 18px; }
+
+.menu-pill { background: none; border: none; display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+.menu-pill span { width: 22px; height: 2px; background: #fff; display: block; }
+
+/* Hero Section */
+.hero-banner {
+    padding: 80px 20px;
+    text-align: center;
+    background: #f8f8f8;
+}
+.hero-banner h1 { font-size: 40px; color: var(--green); letter-spacing: 5px; font-weight: 300; }
+
+/* Tabs */
+.tabs { display: flex; gap: 10px; padding: 15px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { padding: 8px 20px; border: 1px solid #ddd; border-radius: 20px; background: #fff; white-space: nowrap; cursor: pointer; }
+.tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 15px;
+    padding-bottom: 100px; /* Чтобы контент не перекрывался нижней навигацией */
+}
+
+.card { border-radius: 8px; overflow: hidden; text-align: center; border: 1px solid #eee; padding-bottom: 10px; }
+.card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.card h3 { font-size: 14px; padding: 10px 5px; height: 40px; overflow: hidden; }
+.card span { font-weight: bold; font-size: 16px; color: var(--green); display: block; margin-bottom: 10px; }
+.card button { background: var(--green); color: #fff; border: none; padding: 8px 15px; border-radius: 4px; width: 90%; }
+
+/* Side Menu */
 .side-menu {
-    position: fixed; top: 0; left: -100%; width: 80%; height: 100%;
-    background: #fff; z-index: 10000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    position: fixed; top: 0; left: -100%; width: 85%; height: 100%;
+    background: #fff; z-index: 10000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.3);
 }
 .side-menu.open { left: 0; }
 .menu-header { padding: 20px; border-bottom: 1px solid #eee; text-align: right; }
-.close-btn { background: none; border: none; font-size: 24px; color: #000; }
+.close-btn { background: none; border: none; font-size: 28px; cursor: pointer; }
+.menu-content { padding: 10px 0; }
 .menu-item { 
-    padding: 15px 20px; border-bottom: 1px solid #f5f5f5; 
-    display: flex; justify-content: space-between; font-size: 16px; cursor: pointer;
+    padding: 15px 25px; border-bottom: 1px solid #f9f9f9; 
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+    font-size: 17px;
 }
-.menu-subbody { display: none; background: #fafafa; padding-left: 30px; }
-.menu-subbody a { display: block; padding: 12px 0; color: #333; text-decoration: none; font-size: 14px; border-bottom: 1px solid #eee; }
+.menu-subbody { display: none; background: #fafafa; padding: 5px 0 5px 40px; }
+.menu-subbody a { display: block; padding: 12px 0; color: #444; text-decoration: none; border-bottom: 1px solid #eee; font-size: 15px; }
 
-/* Навигация */
+/* Bottom Nav */
 .bottom-nav {
     position: fixed; bottom: 0; width: 100%; background: #fff;
     display: flex; justify-content: space-around; padding: 10px 0 25px;
-    border-top: 1px solid #eee; z-index: 6000;
+    border-top: 1px solid #eee; z-index: 9000;
 }
-.bottom-nav button { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; }
-.bottom-nav .icon { font-size: 18px; margin-bottom: 3px; }
+.bottom-nav button { background: none; border: none; color: #999; display: flex; flex-direction: column; align-items: center; font-size: 11px; }
+.bottom-nav .icon { font-size: 22px; margin-bottom: 4px; }
+.badge { position: relative; }
+.badge em { position: absolute; top: -5px; right: -5px; background: red; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 50%; font-style: normal; }
 
-.full-page { position: fixed; inset: 0; background: #fff; z-index: 8000; display: none; overflow-y: auto; }
-.page-header { padding: 15px; border-bottom: 1px solid #eee; }
-.back-link { background: none; border: none; color: var(--green); font-size: 16px; }
+/* Pages */
+.full-page { position: fixed; inset: 0; background: #fff; z-index: 11000; display: none; overflow-y: auto; }
+.page-header { padding: 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; }
+#search-input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; outline: none; }
