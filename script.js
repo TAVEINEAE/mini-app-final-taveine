@@ -10,6 +10,57 @@ const firebaseConfig = {
   appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
 
+// Функция для аккордеона в МЕНЮ (как в футере: одно открыл - другое закрылось)
+window.toggleMenuAcc = (id) => {
+    const target = document.getElementById(id);
+    const parent = target.parentElement;
+    const isOpen = parent.classList.contains('active');
+
+    // Закрываем все разделы в меню
+    document.querySelectorAll('#side-menu .accordion-item').forEach(item => {
+        item.classList.remove('active');
+        item.querySelector('.acc-body').style.display = 'none';
+        item.querySelector('span').innerText = '+';
+    });
+
+    // Если был закрыт - открываем
+    if (!isOpen) {
+        parent.classList.add('active');
+        target.style.display = 'block';
+        parent.querySelector('span').innerText = '-';
+    }
+};
+
+// Функция открытия страницы категории
+window.openCategoryPage = (catName) => {
+    const titleEl = document.getElementById('cat-title');
+    const gridEl = document.getElementById('category-grid');
+    
+    if (titleEl) titleEl.innerText = catName;
+    
+    // Фильтруем товары из базы по категории
+    const filteredProducts = products.filter(p => p.category === catName);
+    
+    // Рисуем сетку товаров именно для этой страницы
+    if (gridEl) {
+        if (filteredProducts.length > 0) {
+            gridEl.innerHTML = filteredProducts.map(p => `
+                <div class="card">
+                    <img src="${p.image || 'https://via.placeholder.com/300'}">
+                    <h4>${p.name}</h4>
+                    <b>${p.price} AED</b>
+                    <button class="add-btn" onclick="window.addToCart('${p.id}')">Add to Cart</button>
+                </div>
+            `).join('');
+        } else {
+            gridEl.innerHTML = "<p style='padding:20px; color:gray;'>No products in this category yet.</p>";
+        }
+    }
+    
+    window.openPage('category-page'); // Показываем страницу
+    window.toggleMenu(); // Закрываем боковое меню
+};
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
