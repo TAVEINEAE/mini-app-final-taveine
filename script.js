@@ -1,117 +1,44 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+:root { --green: #1f3f38; --gray: #f4f4f4; --text: #333; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Segoe UI', sans-serif; background: #fff; color: var(--text); }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
-  authDomain: "taveine-admin.firebaseapp.com",
-  projectId: "taveine-admin",
-  storageBucket: "taveine-admin.firebasestorage.app",
-  messagingSenderId: "916085731146",
-  appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
-};
+.top-bar { background: var(--green); height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; position: sticky; top: 0; z-index: 1000; color: #fff; }
+.hero-img { width: 100%; height: auto; display: block; }
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const tg = window.Telegram?.WebApp;
+.section-title { padding: 20px 15px 10px; font-size: 18px; font-weight: bold; color: var(--green); text-transform: uppercase; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
 
-let products = [];
-let cart = [];
-let wishlist = [];
+/* Карта товара в сетке */
+.card { border: 1px solid #eee; border-radius: 4px; overflow: hidden; position: relative; }
+.card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.card-info { padding: 10px; }
+.card-info h4 { font-size: 13px; color: #555; height: 32px; overflow: hidden; margin-bottom: 5px; }
+.card-info b { font-size: 14px; color: #000; }
+.add-btn { width: 100%; border: 1px solid #000; background: #fff; padding: 8px; margin-top: 10px; font-size: 12px; text-transform: uppercase; }
 
-// ЗАГРУЗКА ДАННЫХ
-async function loadData() {
-    try {
-        const snap = await getDocs(collection(db, "products"));
-        products = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderAll();
-        initSearch();
-    } catch (e) { console.error(e); }
-}
+/* Стили корзины со скриншота */
+.cart-item { display: flex; padding: 15px; border-bottom: 1px solid #eee; gap: 15px; }
+.cart-item img { width: 80px; height: 80px; object-fit: cover; }
+.cart-item-info { flex: 1; }
+.cart-item-info h4 { font-size: 14px; margin-bottom: 4px; }
+.cart-item-info p { font-size: 14px; font-weight: bold; margin-bottom: 10px; }
 
-function renderAll() {
-    renderGrid(products.filter(p => p.tags?.includes('new')), 'new-slider');
-    renderGrid(products, 'all-products-grid');
-}
+.qty-control { display: flex; align-items: center; border: 1px solid #ddd; width: fit-content; border-radius: 4px; }
+.qty-control button { border: none; background: none; padding: 5px 10px; font-size: 18px; }
+.qty-control span { padding: 0 10px; font-size: 14px; }
 
-function renderGrid(list, gridId) {
-    const grid = document.getElementById(gridId);
-    if (!grid) return;
-    grid.innerHTML = list.map(p => `
-        <div class="card">
-            <button class="wish-btn" onclick="window.addToWishlist('${p.id}')">❤</button>
-            <img src="${p.image}">
-            <h4>${p.name}</h4>
-            <b>${p.price} AED</b>
-            <button class="add-btn" onclick="window.addToCart('${p.id}')">Add to Cart</button>
-        </div>
-    `).join('');
-}
+.remove-link { color: #666; font-size: 12px; text-decoration: underline; margin-left: 15px; border:none; background:none;}
 
-// ПУСТЫЕ СОСТОЯНИЯ
-window.renderWishlist = () => {
-    const cont = document.getElementById('wish-list-container');
-    if (wishlist.length === 0) {
-        cont.innerHTML = `<div class="empty-state"><h2>Wishlist is empty.</h2><p>Find interesting products on our Shop page.</p><button class="black-btn" onclick="window.closePage('wish-page')">Return to shop</button></div>`;
-    } else {
-        renderGrid(wishlist, 'wish-list-container');
-    }
-};
+.cart-summary-fixed { position: fixed; bottom: 85px; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 15px; z-index: 4001; }
+.subtotal-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+.cart-btns { display: flex; gap: 10px; }
+.white-btn { flex: 1; border: 1px solid #000; background: #fff; padding: 12px; font-weight: bold; }
+.black-checkout-btn { flex: 1; background: #000; color: #fff; border: none; padding: 12px; font-weight: bold; }
 
-window.renderCart = () => {
-    const cont = document.getElementById('cart-items-list');
-    const footer = document.getElementById('cart-footer-actions');
-    if (cart.length === 0) {
-        cont.innerHTML = `<div class="empty-state"><h2>Your cart is empty</h2><p>Check out available products in the shop</p><button class="black-btn" onclick="window.closePage('cart-drawer')">Return to shop ↗</button></div>`;
-        footer.style.display = 'none';
-    } else {
-        cont.innerHTML = cart.map(p => `<div class="wish-item"><b>${p.name}</b> - ${p.price} AED</div>`).join('');
-        document.getElementById('cart-total-price').innerText = cart.reduce((s, p) => s + p.price, 0);
-        footer.style.display = 'block';
-    }
-};
+/* Пустые состояния */
+.empty-state { text-align: center; padding: 100px 20px; }
+.empty-state h2 { font-size: 22px; margin-bottom: 15px; }
+.black-btn { background: #000; color: #fff; padding: 15px 30px; border: none; text-transform: uppercase; margin-top: 20px; }
 
-// ПОИСК
-function initSearch() {
-    document.getElementById('product-search')?.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const resGrid = document.getElementById('search-results-grid');
-        const filtered = products.filter(p => p.name.toLowerCase().includes(term));
-        renderGrid(filtered, 'search-results-grid');
-    });
-}
-
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ
-window.toggleMenu = () => document.getElementById('side-menu').classList.toggle('open');
-window.openPage = (id) => { 
-    document.getElementById(id).style.display = 'block'; 
-    if(id==='wish-page') window.renderWishlist();
-};
-window.closePage = (id) => document.getElementById(id).style.display = 'none';
-window.toggleCart = () => { window.openPage('cart-drawer'); window.renderCart(); };
-
-window.addToCart = (id) => {
-    const p = products.find(x => x.id === id);
-    if (p) { cart.push(p); updateCounters(); tg?.HapticFeedback.impactOccurred('medium'); }
-};
-
-window.addToWishlist = (id) => {
-    if (!wishlist.find(x => x.id === id)) {
-        wishlist.push(products.find(x => x.id === id));
-        updateCounters();
-    }
-};
-
-function updateCounters() {
-    document.getElementById('w-count').innerText = wishlist.length;
-    document.getElementById('c-count').innerText = cart.length;
-}
-
-window.toggleMenuAcc = (id) => {
-    const el = document.getElementById(id);
-    el.style.display = el.style.display === 'block' ? 'none' : 'block';
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    tg?.ready();
-    loadData();
-});
+.full-page { position: fixed; inset: 0; background: #fff; z-index: 4000; display: none; overflow-y: auto; padding-bottom: 180px;}
+.p-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
