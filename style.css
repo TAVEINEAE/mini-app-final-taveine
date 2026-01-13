@@ -20,6 +20,12 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
 .card .wish-btn { position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.8); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; color: #ff4757; }
 .card h4 { font-size: 12px; margin: 8px 4px; height: 32px; overflow: hidden; }
 
+/* Боковое меню (Side Menu) - ИСПРАВЛЕНО ДЛЯ ПЛАВНОСТИ */
+.side-menu { position: fixed; top: 0; left: -100%; width: 85%; height: 100%; background: #fff; z-index: 6000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px; }
+.side-menu.open { left: 0; }
+.menu-top { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+.close-btn { background: none; border: none; font-size: 24px; color: var(--green); cursor: pointer; }
+
 /* Корзина Drawer */
 .cart-drawer { position: fixed; top: 0; right: -100%; width: 85%; height: 100%; background: #fff; z-index: 5000; transition: 0.3s; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
 .cart-drawer.open { right: 0; }
@@ -45,7 +51,8 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
 .about-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 .about-gallery img { width: 100%; border-radius: 5px; }
 
-.main-footer { background: #fff; color: #1f3f38; padding: 40px 20px; font-family: sans-serif; }
+/* Футер */
+.main-footer { background: #fff; color: #1f3f38; padding: 40px 20px; font-family: sans-serif; position: relative; }
 .footer-brand { margin-bottom: 20px; }
 .logo-text { font-size: 28px; font-weight: bold; letter-spacing: 2px; }
 .footer-info p { margin: 5px 0; font-size: 14px; color: #444; }
@@ -58,6 +65,7 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
     text-decoration: none; color: #1f3f38; font-weight: bold;
 }
 
+/* Аккордеоны ФУТЕРА */
 .acc-item { border-top: 1px solid #eee; }
 .acc-btn { 
     display: flex; justify-content: space-between; padding: 15px 0; 
@@ -65,36 +73,19 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
 }
 .acc-content { display: none; padding-bottom: 15px; }
 .acc-content a { display: block; padding: 5px 0; color: #666; text-decoration: none; font-size: 14px; }
-
-/* Когда открыто */
 .acc-item.active .acc-content { display: block; }
-.acc-item.active .acc-btn span { transform: rotate(45deg); display: inline-block; }
+.acc-item.active .acc-btn span { transform: rotate(45deg); display: inline-block; transition: 0.2s; }
 
-.accordion-item {
-    border-bottom: 1px solid #eee;
-}
-.acc-header {
-    padding: 18px 0;
-    font-size: 16px;
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    font-weight: 500;
-    color: #333;
-}
-.acc-body {
-    display: none;
-    padding-left: 15px;
-    padding-bottom: 15px;
-}
-.acc-body a {
-    display: block;
-    padding: 8px 0;
-    color: #666;
-    text-decoration: none;
-    font-size: 15px;
-}
-.acc-body a:active {
-    color: #1f3f38;
-}
+/* Аккордеоны МЕНЮ */
+.accordion-item { border-bottom: 1px solid #eee; }
+.acc-header { padding: 18px 0; font-size: 16px; display: flex; justify-content: space-between; cursor: pointer; font-weight: 500; color: #333; }
+.acc-body { display: none; padding-left: 15px; padding-bottom: 15px; }
+.acc-body a { display: block; padding: 8px 0; color: #666; text-decoration: none; font-size: 15px; }
+.acc-body a:active { color: #1f3f38; }
 
+/* Универсальные правила для работы скрипта */
+.accordion-item.active .acc-body { display: block; }
+.accordion-item.active .acc-header span { transform: rotate(45deg); display: inline-block; transition: 0.2s; }
+
+/* Кнопка ВВЕРХ */
+.scroll-top { position: absolute; right: 20px; bottom: 20px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #eee; background: #fff; color: var(--green); }
