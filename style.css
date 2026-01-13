@@ -39,10 +39,62 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
 .wish-item img { width: 60px; height: 60px; border-radius: 5px; }
 
 /* Bottom Nav */
-.bottom-nav { position: fixed; bottom: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0 25px; border-top: 1px solid #eee; z-index: 1000; }
-.bottom-nav button { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; }
-.badge { position: relative; }
-.badge em { position: absolute; top: -5px; right: -5px; background: var(--green); color: #fff; font-size: 9px; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-style: normal; }
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0 20px;
+    border-top: 1px solid #f0f0f0;
+    z-index: 1000;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: #1f3f38; /* Твой фирменный зеленый */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    flex: 1;
+    cursor: pointer;
+}
+
+.nav-icon {
+    width: 26px;
+    height: 26px;
+    color: #333; /* Тёмный цвет как на фото */
+}
+
+.nav-btn span {
+    font-size: 11px;
+    font-weight: 700; /* Жирный шрифт как на фото */
+    color: #1f3f38;
+}
+
+/* Красные кружочки с цифрами */
+.badge em {
+    position: absolute;
+    top: -2px;
+    right: 25%;
+    background: #d32f2f; /* Насыщенный красный */
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: normal;
+    border: 2px solid #fff;
+}
 
 /* Полноэкранные страницы */
 .full-page { position: fixed; inset: 0; background: #fff; z-index: 4000; display: none; overflow-y: auto; }
