@@ -15,109 +15,147 @@ const db = getFirestore(app);
 const tg = window.Telegram?.WebApp;
 
 let products = [];
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
-let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+let cart = JSON.parse(localStorage.getItem('taveine_cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('taveine_wishlist')) || [];
 
-async function initApp() {
+async function startApp() {
     tg?.expand();
-    await loadProducts();
+    const querySnapshot = await getDocs(collection(db, "products"));
+    products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
     renderMain();
     updateCounters();
     initSearch();
 }
 
-async function loadProducts() {
-    try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (e) { console.error("Firebase Error:", e); }
-}
-
 function renderMain() {
-    renderGrid(products.filter(p => p.tags?.includes('new')), 'new-arrivals-slider');
-    renderGrid(products, 'all-products-grid');
+    const grid = document.getElementById('all-products-grid');
+    const slider = document.getElementById('new-arrivals-slider');
+    
+    if(grid) grid.innerHTML = products.map(p => renderCard(p)).join('');
+    if(slider) slider.innerHTML = products.filter(p => p.tags?.includes('new')).map(p => renderCard(p)).join('');
 }
 
-function renderGrid(data, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = data.map(p => `
+function renderCard(p) {
+    const isWished = wishlist.some(x => x.id === p.id);
+    return `
         <div class="card">
-            <button class="wish-btn" onclick="window.toggleWish('${p.id}')" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px;">
-                ${wishlist.some(item => item.id === p.id) ? '❤️' : '♡'}
+            <button onclick="window.toggleWish('${p.id}')" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; z-index:5;">
+                ${isWished ? '❤️' : '🤍'}
             </button>
             <img src="${p.image}">
-            <div style="padding:10px;">
-                <h4 style="font-size:14px;">${p.name}</h4>
-                <b style="color:#1f3f38;">${p.price} AED</b>
+            <div class="card-info">
+                <h4>${p.name}</h4>
+                <b>${p.price}.00 AED</b>
                 <button class="add-btn" onclick="window.addToCart('${p.id}')">Add to Cart</button>
             </div>
-        </div>
-    `).join('');
+        </div>`;
 }
 
+// ЛОГИКА КОРЗИНЫ (Как на скриншоте)
+window.renderCartPage = () => {
+    const container = document.getElementById('cart-container');
+    const footer = document.getElementById('cart-footer-logic');
+    
+    if (cart.length === 0) {
+        footer.style.display = 'none';
+        container.innerHTML = `
+            <div class="empty-state">
+                <h2>Your cart is empty</h2>
+                <p>You may check out all the available products and buy some in the shop</p>
+                <button class="black-btn" onclick="window.closePage('cart-drawer')">Return to shop ↗</button>
+            </div>`;
+    } else {
+        footer.style.display = 'block';
+        let total = 0;
+        container.innerHTML = cart.map((item, index) => {
+            total += item.price * (item.qty || 1);
+            return `
+                <div class="cart-item">
+                    <img src="${item.image}">
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.price}.00 AED</p>
+                        <div style="display:flex; align-items:center;">
+                            <div class="qty-control">
+                                <button onclick="window.updateQty(${index}, -1)">-</button>
+                                <span>${item.qty || 1}</span>
+                                <button onclick="window.updateQty(${index}, 1)">+</button>
+                            </div>
+                            <button class="remove-link" onclick="window.removeFromCart(${index})">Remove</button>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('') + `
+            <div class="section-title" style="margin-top:20px;">Customers also bought</div>
+            <div class="grid">${products.slice(0,2).map(p => renderCard(p)).join('')}</div>
+        `;
+        document.getElementById('cart-total-sum').innerText = total.toFixed(2);
+    }
+};
+
+window.updateQty = (index, delta) => {
+    cart[index].qty = (cart[index].qty || 1) + delta;
+    if (cart[index].qty < 1) cart[index].qty = 1;
+    saveCart();
+    window.renderCartPage();
+};
+
+// ЛОГИКА ВИШЛИСТА (Как на скриншоте)
 window.renderWishPage = () => {
     const container = document.getElementById('wish-container');
     if (wishlist.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <div style="font-size:60px; color:#eee; margin-bottom:20px;">♡</div>
+                <div style="font-size:50px; color:#ccc;">♡</div>
                 <h2>Wishlist is empty.</h2>
                 <p>You don't have any products in the wishlist yet. You will find a lot of interesting products on our "Shop" page.</p>
                 <button class="black-btn" onclick="window.closePage('wish-page')">Return to shop</button>
             </div>`;
-    } else { renderGrid(wishlist, 'wish-container'); }
-};
-
-window.renderCartPage = () => {
-    const container = document.getElementById('cart-container');
-    const actions = document.getElementById('cart-actions');
-    if (cart.length === 0) {
-        actions.style.display = 'none';
-        container.innerHTML = `<div class="empty-state"><h2>Your cart is empty</h2><p>Check out all available products in the shop</p><button class="black-btn" onclick="window.closePage('cart-drawer')">Return to shop ↗</button></div>`;
     } else {
-        actions.style.display = 'block';
-        container.innerHTML = cart.map((item, idx) => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;"><span>${item.name}</span><button onclick="window.removeCart(${idx})" style="color:red; background:none; border:none;">✕</button></div>`).join('');
-        document.getElementById('cart-total-sum').innerText = cart.reduce((s, i) => s + i.price, 0);
+        container.innerHTML = `<div class="grid">${wishlist.map(p => renderCard(p)).join('')}</div>`;
     }
 };
 
-function initSearch() {
-    document.getElementById('product-search')?.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase().trim();
-        const results = products.filter(p => p.name.toLowerCase().includes(term));
-        renderGrid(results, 'search-results-grid');
-    });
-}
-
 window.toggleWish = (id) => {
-    const p = products.find(x => x.id === id);
     const idx = wishlist.findIndex(x => x.id === id);
-    if (idx === -1) wishlist.push(p); else wishlist.splice(idx, 1);
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    updateCounters(); renderMain(); if(document.getElementById('wish-page').style.display === 'block') window.renderWishPage();
+    if (idx === -1) wishlist.push(products.find(p => p.id === id));
+    else wishlist.splice(idx, 1);
+    localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
+    updateCounters(); renderMain();
+    if(document.getElementById('wish-page').style.display === 'block') window.renderWishPage();
 };
 
 window.addToCart = (id) => {
-    cart.push(products.find(x => x.id === id));
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCounters(); tg?.HapticFeedback.notificationOccurred('success');
+    const p = products.find(x => x.id === id);
+    const existing = cart.find(x => x.id === id);
+    if (existing) existing.qty = (existing.qty || 1) + 1;
+    else cart.push({...p, qty: 1});
+    saveCart();
+    tg?.HapticFeedback.notificationOccurred('success');
 };
 
-window.removeCart = (idx) => { cart.splice(idx, 1); localStorage.setItem('cart', JSON.stringify(cart)); window.renderCartPage(); updateCounters(); };
-
-window.openPage = (id) => { 
-    document.getElementById(id).style.display = 'block'; 
-    if(id === 'wish-page') window.renderWishPage();
-    if(id === 'cart-drawer') window.renderCartPage();
-};
-window.closePage = (id) => document.getElementById(id).style.display = 'none';
-window.toggleMenu = () => document.getElementById('side-menu').classList.toggle('open');
-window.toggleMenuAcc = (id) => { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; };
+window.removeFromCart = (index) => { cart.splice(index, 1); saveCart(); window.renderCartPage(); };
+function saveCart() { localStorage.setItem('taveine_cart', JSON.stringify(cart)); updateCounters(); }
 
 function updateCounters() {
     document.getElementById('w-count').innerText = wishlist.length;
     document.getElementById('c-count').innerText = cart.length;
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
+window.openPage = (id) => {
+    document.getElementById(id).style.display = 'block';
+    if(id === 'cart-drawer') window.renderCartPage();
+    if(id === 'wish-page') window.renderWishPage();
+};
+window.closePage = (id) => document.getElementById(id).style.display = 'none';
+
+function initSearch() {
+    document.getElementById('product-search')?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const res = products.filter(p => p.name.toLowerCase().includes(term));
+        document.getElementById('search-results-grid').innerHTML = res.map(p => renderCard(p)).join('');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', startApp);
