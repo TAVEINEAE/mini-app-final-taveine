@@ -1,550 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAVEINE Mini App</title>
-
-<link rel="stylesheet" href="style.css">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script defer src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TAVEINE Flower Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script defer src="script.js"></script>
 </head>
-
 <body>
 
-<!-- TOP BAR -->
 <div class="top-strip">
-  <button class="menu-pill" onclick="toggleMenu()">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
-  <span class="top-title">TAVÉINE</span>
-  <span class="top-right"></span>
-</div>
-
-<!-- HERO -->
-<section class="hero">
-  <img src="hero.jpg" alt="Taveine Flowers">
-</section>
-
-<!-- EXPLORE PRODUCTS TABS -->
-<section class="explore-tabs">
-
-  <h2>Explore Products</h2>
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('recommended', this)">
-      Recommended
+    <button class="menu-pill" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
     </button>
-    <button class="tab" onclick="switchTab('new', this)">
-      New products
-    </button>
-    <button class="tab" onclick="switchTab('popular', this)">
-      Most Popular
-    </button>
-  </div>
+    <span class="top-title">TAVÉINE</span>
+    <div style="width:36px"></div> </div>
 
+<main id="main-content">
+    <section class="hero">
+        <img src="hero.jpg" alt="Taveine Flowers">
+    </section>
+
+    <section class="explore-tabs">
+        <h2>Explore Products</h2>
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('recommended', this)">Recommended</button>
+            <button class="tab" onclick="switchTab('new', this)">New products</button>
+            <button class="tab" onclick="switchTab('popular', this)">Most Popular</button>
+        </div>
+    </section>
+
+    <section class="products">
+        <h2 id="section-title">Shop All</h2>
+        <div class="grid" id="products-grid"></div>
+    </section>
+</main>
+
+<section id="search-page" class="page-slide" style="display:none">
+    <div class="product-top">
+        <button class="back-btn" onclick="closeSearch()">← Back</button>
+    </div>
+    <div style="padding:16px">
+        <input id="search-input" type="text" placeholder="Search products..." oninput="searchAll(this.value); updateSuggestions(this.value)">
+        <div id="search-suggestions" class="search-suggestions"></div>
+        <div class="grid" id="search-grid" style="margin-top:20px"></div>
+    </div>
 </section>
 
-<!-- BEST SELLERS -->
-<section class="best-sellers">
-  <h2>Best Sellers</h2>
-
-  <div class="best-slider">
-    <div class="best-track">
-
-      <div class="best-card" data-cat="bestseller"
-        onclick="openProduct({
-          name:'Heart Rose Arrangement',
-          price:1499,
-          image:'heart1.jpg',
-          desc:'Signature heart-shaped rose arrangement.'
-        })">
-        <img src="heart1.jpg" alt="Heart Rose Arrangement">
-      </div>
-
-      <div class="best-card" data-cat="bestseller"
-        onclick="openProduct({
-          name:'Luxury Heart Roses',
-          price:1699,
-          image:'heart2.jpg',
-          desc:'Premium red roses arranged in a luxury heart shape.'
-        })">
-        <img src="heart2.jpg" alt="Luxury Heart Roses">
-      </div>
-
-      <div class="best-card" data-cat="bestseller"
-        onclick="openProduct({
-          name:'Forever Heart Roses',
-          price:1299,
-          image:'heart3.jpg',
-          desc:'Long-lasting roses designed to last forever.'
-        })">
-        <img src="heart3.jpg" alt="Forever Heart Roses">
-      </div>
-
-      <div class="best-card" data-cat="bestseller"
-        onclick="openProduct({
-          name:'Premium Heart Sculpture',
-          price:1899,
-          image:'heart4.jpg',
-          desc:'Luxury floral sculpture handcrafted by TAVÉINE.'
-        })">
-        <img src="heart4.jpg" alt="Premium Heart Sculpture">
-      </div>
-
+<section id="category-page" class="page-slide" style="display:none">
+    <div class="product-top">
+        <button class="back-btn" onclick="closeCategory()">← Back</button>
+        <h2 id="category-title" style="display:inline; margin-left:20px">Category</h2>
     </div>
-  </div>
-
-  <div class="dots">
-    <span class="dot active"></span>
-    <span class="dot"></span>
-  </div>
-</section>
-
-<!-- SHOP ALL -->
-<section class="products">
-  <h2 id="section-title">Shop All</h2>
-  <div class="grid" id="products-grid"></div>
-</section>
-
-<!-- NEW ARRIVALS -->
-<section class="products new-arrivals">
-  <h2>New Arrivals</h2>
-
-  <div class="grid">
-
-    <div class="card">
-      <span class="badge-new">New</span>
-      <div class="card-actions">
-        <button class="icon-btn">♡</button>
-      </div>
-      <img src="balloon-heart.jpg" alt="">
-      <h3>Set of 10 Heart-Shaped Helium Foil Balloons</h3>
-      <span>149 AED</span>
-      <button>Add to cart</button>
-    </div>
-
-    <div class="card">
-      <span class="badge-new">New</span>
-      <div class="card-actions">
-        <button class="icon-btn">♡</button>
-      </div>
-      <img src="balloon-red.jpg" alt="">
-      <h3>Set of 3 Red Helium Balloons</h3>
-      <span>29 AED</span>
-      <button>Add to cart</button>
-    </div>
-
-    <div class="card">
-      <span class="badge-new">New</span>
-      <div class="card-actions">
-        <button class="icon-btn">♡</button>
-      </div>
-      <img src="balloon-gold.jpg" alt="">
-      <h3>Set of 3 Gold Helium Balloons</h3>
-      <span>29 AED</span>
-      <button>Add to cart</button>
-    </div>
-
-    <div class="card">
-      <span class="badge-new">New</span>
-      <div class="card-actions">
-        <button class="icon-btn">♡</button>
-      </div>
-      <img src="balloon-white.jpg" alt="">
-      <h3>Set of 3 White Helium Balloons</h3>
-      <span>29 AED</span>
-      <button>Add to cart</button>
-    </div>
-
-  </div>
-</section>
-
-<!-- LUXURY COLLECTION -->
-<section class="luxury-block">
-
-  <button class="load-more-btn">Load more</button>
-
-  <div class="luxury-content">
-    <h2>The Luxury Collection</h2>
-
-    <p>
-      At Taveine, floristry transcends design to become an art of emotion and presence.
-      Every creation is thoughtfully composed to leave a lasting impression—where scale,
-      detail, and harmony come together in perfect balance.
-    </p>
-
-    <button class="shop-luxury-btn" onclick="goLuxury()">
-      Shop Luxury
-    </button>
-  </div>
-
-  <div class="luxury-image">
-    <img src="luxury-model.jpg" alt="Luxury Roses">
-  </div>
-
-</section>
-
-<!-- BIRTHDAY COLLECTION -->
-<section class="products birthday-collection">
-
-  <h2>Birthday Collection</h2>
-
-  <div class="grid">
-
-    <!-- CARD 1 -->
-    <div class="card">
-      <span class="badge-hot">Hot</span>
-
-      <div class="card-actions">
-        <button class="icon-btn">♡</button>
-        <button class="icon-btn"
-          onclick="openProduct({
-            name:'La Couronne – Mix',
-            price:3799,
-            image:'bday1.jpg',
-            desc:'Luxury birthday rose arrangement.'
-          })">👁</button>
-      </div>
-
-      <img src="bday1.jpg" alt="La Couronne Mix">
-
-      <h3>La Couronne – Mix</h3>
-      <span>3,799 AED</span>
-
-      <div class="color-dots">
-        <span style="background:#e91e63"></span>
-        <span style="background:#f8bbd0"></span>
-        <span style="background:#f5f5f5"></span>
-        <small>+1</small>
-      </div>
-
-      <button class="quick-add">QUICK ADD</button>
-    </div>
-
-    <!-- CARD 2 -->
-    <div class="card">
-      <span class="badge-hot">Hot</span>
-
-      <div class="card-actions">
-        <button class="icon-btn">♡</button>
-        <button class="icon-btn"
-          onclick="openProduct({
-            name:'La Couronne',
-            price:3799,
-            image:'bday2.jpg',
-            desc:'Signature birthday rose collection.'
-          })">👁</button>
-      </div>
-
-      <img src="bday2.jpg" alt="La Couronne">
-
-      <h3>La Couronne</h3>
-      <span>3,799 AED</span>
-
-      <div class="color-dots">
-        <span style="background:#fce4ec"></span>
-        <span style="background:#e91e63"></span>
-        <span style="background:#f5f5f5"></span>
-        <small>+1</small>
-      </div>
-
-      <button class="quick-add">QUICK ADD</button>
-    </div>
-
-  </div>
-</section>
-
-<!-- WHERE FLORALS MEET FORM -->
-<section class="florals-form">
-
-  <div class="florals-image">
-    <img src="vases-hero.jpg" alt="Where Florals Meet Form">
-  </div>
-
-  <div class="florals-text">
-    <h2>Where Florals Meet Form</h2>
-
-    <p>
-      Each Taveine floral vase creation is a refined expression of balance,
-      form, and artistry. Carefully selected blooms are harmonized with
-      distinctive vases, transforming natural beauty into an elegant design
-      statement.
-      <br><br>
-      Every arrangement is thoughtfully composed to elevate your space,
-      bringing timeless sophistication and curated luxury into every setting.
-    </p>
-  </div>
-
-</section>
-
-<!-- FOOTER -->
-<footer class="site-footer">
-
-  <div class="footer-logo">
-    <img src="logo-dark.png" alt="Taveine">
-  </div>
-
-  <div class="footer-info">
-    <p>Address: International City,<br>Dubai, UAE</p>
-    <p>Email: <strong>support@taveine.com</strong></p>
-    <p>Phone: <strong>971 58 574 37 06</strong></p>
-    <a href="#" class="direction-link">Get direction ↗</a>
-  </div>
-
-  <div class="footer-socials">
-    <a href="#" aria-label="Facebook">f</a>
-    <a href="#" aria-label="Instagram">◎</a>
-    <a href="#" aria-label="Pinterest">P</a>
-  </div>
-
-  <div class="footer-accordion">
-    <div class="footer-item">
-      <span>Help</span>
-      <button>+</button>
-    </div>
-    <div class="footer-item">
-      <span>Useful Links</span>
-      <button>+</button>
-    </div>
-    <div class="footer-item">
-      <span>Sign Up for Email</span>
-      <button>+</button>
-    </div>
-  </div>
-
-  <div class="footer-bottom">
-    <p>© TAVÉINE Flower Shop. All Rights Reserved.</p>
-
-    <div class="payments">
-      <img src="visa.png" alt="Visa">
-      <img src="paypal.png" alt="PayPal">
-      <img src="mastercard.png" alt="Mastercard">
-      <img src="amex.png" alt="Amex">
-      <img src="applepay.png" alt="Apple Pay">
-    </div>
-  </div>
-
-</footer>
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="active" onclick="filterProducts('all')">
-    <span class="icon">▦</span>
-    <small>Shop</small>
-  </button>
-
-  <button onclick="openSearch()">
-    <span class="icon">🔍</span>
-    <small>Search</small>
-  </button>
-
-  <button class="badge" onclick="openWishlist()">
-    <span class="icon">♡</span>
-    <small>Wishlist</small>
-    <em id="wish-count">0</em>
-  </button>
-
-  <button class="badge">
-    <span class="icon">🛒</span>
-    <small>Cart</small>
-    <em id="cart-count">0</em>
-  </button>
-</nav>
-
-<!-- SIDE MENU -->
-<div id="side-menu" class="side-menu">
-
-  <!-- MENU TOP -->
-  <div class="menu-top">
-    <button class="menu-close" onclick="toggleMenu()">✕</button>
-  </div>
-
-  <!-- COLLECTION -->
-  <div class="menu-section">
-    <div class="menu-head" onclick="toggleSection(this)">
-      <span>Collection</span><b>+</b>
-    </div>
-    <div class="menu-body">
-      <a onclick="goToCategory('christmas','Christmas Collection')">Christmas Collection</a>
-      <a onclick="goToCategory('spring','Spring')">Spring</a>
-      <a onclick="goToCategory('new','New Arrivals')">New Arrivals</a>
-      <a onclick="goToCategory('bestseller','Best Sellers')">Best Sellers</a>
-      <a onclick="goToCategory('luxury','Luxury')">Luxury</a>
-      <a onclick="goToCategory('specialty','Specialty')">Specialty</a>
-      <a onclick="goToCategory('vases','Vases')">Vases</a>
-      <a onclick="goToCategory('box','Box')">Box</a>
-    </div>
-  </div>
-
-  <!-- OCCASIONS -->
-  <div class="menu-section">
-    <div class="menu-head" onclick="toggleSection(this)">
-      <span>Occasions</span><b>+</b>
-    </div>
-    <div class="menu-body">
-      <a onclick="goToCategory('anniversary','Anniversary')">Anniversary</a>
-      <a onclick="goToCategory('birthday','Birthday')">Birthday</a>
-      <a onclick="goToCategory('sorry','I\'m Sorry')">I'm Sorry</a>
-      <a onclick="goToCategory('baby','New Baby')">New Baby</a>
-      <a onclick="goToCategory('event','Event Design Services')">Event Design Services</a>
-      <a onclick="goToCategory('forever','Forever Rose')">Forever Rose</a>
-      <a onclick="goToCategory('balloons','Balloons')">Balloons</a>
-    </div>
-  </div>
-
-  <!-- HOME -->
-  <div class="menu-section">
-    <div class="menu-head" onclick="toggleSection(this)">
-      <span>Home</span><b>+</b>
-    </div>
-    <div class="menu-body">
-      <a onclick="goToCategory('all','Shop All')">Home</a>
-      <a onclick="openAbout()">About Us</a>
-      <a onclick="alert('Privacy Policy page coming soon')">Privacy Policy</a>
-    </div>
-  </div>
-
-</div>
-
-<!-- WISHLIST MODAL -->
-<div class="wishlist-modal" id="wishlistModal">
-  <div class="wishlist-box" id="wishlistBox"></div>
-</div>
-
-<!-- PRODUCT PAGE -->
-<section id="product-page" style="display:none">
-
-  <div class="product-top">
-    <button class="back-btn" onclick="closeProduct()">← Back</button>
-  </div>
-
-  <div class="product-content">
-    <img id="product-img" alt="">
-    <h2 id="product-title"></h2>
-    <p id="product-price"></p>
-    <p id="product-desc"></p>
-
-    <button class="add-cart-btn" onclick="addCurrentToCart()">
-      Add to cart
-    </button>
-  </div>
-
-</section>
-
-<!-- PURCHASE POPUP -->
-<div id="purchase-popup" class="purchase-popup" style="display:none">
-  <img id="popup-img" src="">
-  <div class="popup-text">
-    <strong id="popup-name"></strong>
-    <span id="popup-time"></span>
-  </div>
-</div>
-
-<!-- ================= END SIDE MENU ================= -->
-
-
-<!-- ================= ABOUT PAGE ================= -->
-<section id="about-page" style="display:none">
-
-  <div class="product-top">
-    <button class="back-btn" onclick="closeAbout()">← Back</button>
-  </div>
-
-  <div class="about-content">
-
-    <div class="about-hero">
-      <img src="about-hero.jpg">
-      <h1>
-        Empowering you to celebrate every moment<br>
-        with the beauty of flowers.
-      </h1>
-    </div>
-
-    <div class="about-text">
-      <h2>We are TAVÉINE</h2>
-      <p>
-        Welcome to our exquisite flower studio, where timeless beauty never fades.
-      </p>
-    </div>
-
-    <div class="about-section">
-      <h2>Established – 2025</h2>
-      <p>
-        Founded in the UAE with a focus on luxury floral artistry.
-      </p>
-    </div>
-
-    <div class="about-images">
-      <img src="about1.jpg">
-      <img src="about2.jpg">
-    </div>
-
-    <div class="about-section">
-      <h2>Our Mission</h2>
-      <p>
-        To bring elegant floral design to every occasion.
-      </p>
-    </div>
-
-  </div>
-
-</section>
-<!-- ================= END ABOUT PAGE ================= -->
-
-<!-- CATEGORY PAGE -->
-<section id="category-page" style="display:none">
-
-  <div class="product-top">
-    <button class="back-btn" onclick="closeCategory()">← Back</button>
-    <h2 id="category-title"></h2>
-  </div>
-
-  <div class="products">
     <div class="grid" id="category-grid"></div>
-  </div>
-
 </section>
 
-<!-- SEARCH PAGE -->
-<section id="search-page" style="display:none">
-
-  <div class="product-top">
-    <button class="back-btn" onclick="closeSearch()">← Back</button>
-  </div>
-
-  <div style="padding:16px">
-    <input
-  id="search-input"
-  type="text"
-  placeholder="Search products"
-  oninput="searchAll(this.value); updateSuggestions(this.value)"
-  style="
-    width:100%;
-    padding:16px;
-    border:1px solid #ddd;
-    border-radius:14px;
-    font-size:15px;
-  "
->
-  <input
-  id="search-input"
-  type="text"
-  placeholder="Search products"
-  oninput="searchAll(this.value); updateSuggestions(this.value)"
-  style="
-    width:100%;
-    padding:16px;
-    border:1px solid #ddd;
-    border-radius:14px;
-    font-size:15px;
-  "
->
-<div id="search-suggestions" class="search-suggestions"></div>
-
+<section id="product-page" class="page-slide" style="display:none">
+    <div class="product-top">
+        <button class="back-btn" onclick="closeProduct()">← Back</button>
+    </div>
+    <div class="product-content">
+        <img id="product-img" src="" alt="">
+        <h2 id="product-title"></h2>
+        <p id="product-price" style="font-weight:bold; font-size:1.2em"></p>
+        <p id="product-desc"></p>
+        <button class="add-cart-btn" onclick="addCurrentToCart()">Add to cart</button>
+    </div>
 </section>
+
+<div id="side-menu" class="side-menu">
+    <button class="menu-close" onclick="toggleMenu()">✕</button>
+    <div class="menu-section">
+        <div class="menu-head" onclick="toggleSection('coll-body')"><span>Collection</span><b>+</b></div>
+        <div id="coll-body" class="menu-body">
+            <a onclick="openCategory('box','Flower Boxes')">Flower Boxes</a>
+            <a onclick="openCategory('luxury','Luxury Collection')">Luxury</a>
+            <a onclick="openCategory('vases','Vases')">Vases</a>
+        </div>
+    </div>
+    <div class="menu-section">
+        <div class="menu-head" onclick="openAbout()"><span>About Us</span><b>></b></div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <button onclick="window.location.reload()"><span class="icon">▦</span><small>Shop</small></button>
+    <button onclick="openSearch()"><span class="icon">🔍</span><small>Search</small></button>
+    <button class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="wish-count">0</em></button>
+    <button class="badge"><span class="icon">🛒</span><small>Cart</small><em id="cart-count">0</em></button>
+</nav>
 
 </body>
 </html>
