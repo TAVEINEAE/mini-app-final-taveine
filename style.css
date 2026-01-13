@@ -89,3 +89,24 @@ body { font-family: sans-serif; background: #fff; color: var(--green); overflow-
 
 /* Кнопка ВВЕРХ */
 .scroll-top { position: absolute; right: 20px; bottom: 20px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #eee; background: #fff; color: var(--green); }
+
+/* ИСПРАВЛЕНИЕ: Меню теперь поверх всего сайта */
+.side-menu {
+    position: fixed;    /* Фиксируем на экране */
+    top: 0;
+    left: -100%;        /* Прячем за левый край */
+    width: 85%;         /* Ширина меню */
+    height: 100vh;      /* Высота на весь экран */
+    background: #fff;
+    z-index: 9999;      /* Самый высокий слой, выше футера и кнопок */
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    overflow-y: auto;   /* Если категорий много, их можно будет листать */
+}
+
+/* Когда меню открыто */
+.side-menu.open {
+    left: 0;            /* Выезжает слева */
+}
+
