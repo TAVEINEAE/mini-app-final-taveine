@@ -1,73 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>TAVEINE Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>TAVEINE Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div class="layout">
-    <aside class="sidebar">
-        <h2>🔥 TAVEINE</h2>
-        <nav>
-            <a class="active"><i class="fas fa-home"></i> Dashboard</a>
-            <a><i class="fas fa-box"></i> Products</a>
-            <a><i class="fas fa-shopping-cart"></i> Orders</a>
-            <a><i class="fas fa-users"></i> Customers</a>
-        </nav>
-    </aside>
 
-    <main class="main">
-        <header class="topbar">
-            <span id="auth-status">Admin Dashboard</span>
-            <button onclick="logout()" class="btn-logout">Logout</button>
-        </header>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>🔥 TAVEINE</h2>
+    <nav>
+      <a class="active"><i class="fas fa-home"></i> Dashboard</a>
+      <a><i class="fas fa-box"></i> Products</a>
+      <a><i class="fas fa-shopping-cart"></i> Orders</a>
+      <a><i class="fas fa-users"></i> Customers</a>
+    </nav>
+  </aside>
 
-        <section class="stats">
-            <div class="card">
-                <h4>Total Orders</h4>
-                <strong id="ordersCount">0</strong>
-            </div>
-            <div class="card">
-                <h4>Revenue</h4>
-                <strong id="revenue">$0</strong>
-            </div>
-            <div class="card">
-                <h4>Products</h4>
-                <strong id="productsCount">0</strong>
-            </div>
-        </section>
+  <!-- MAIN -->
+  <main class="main">
 
-        <section class="form-section" style="padding: 20px; background: #fff; margin: 20px; border-radius: 10px;">
-            <h3>Add New Product</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <input type="text" id="p-name" placeholder="Product Name">
-                <input type="number" id="p-price" placeholder="Price (AED)">
-                <input type="text" id="p-category" placeholder="Category">
-                <input type="text" id="p-image" placeholder="Image URL">
-                <input type="text" id="p-tags" placeholder="Tags (comma separated)" style="grid-column: span 2;">
-                <button onclick="addProduct()" style="grid-column: span 2; background: #e67e22; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">Add Product</button>
-            </div>
-        </section>
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <span id="auth-status">Checking login...</span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </header>
 
-        <section class="charts" style="margin-top: 20px;">
-            <div class="chart-box">
-                <h3>Products in Store</h3>
-                <div id="products-list">
-                    </div>
-            </div>
-            <div class="chart-box">
-                <h3>Sales Overview</h3>
-                <canvas id="salesChart"></canvas>
-            </div>
-        </section>
-    </main>
+    <!-- STATS -->
+    <section class="stats">
+      <div class="card">
+        <h4>Total Orders</h4>
+        <strong id="ordersCount">0</strong>
+      </div>
+
+      <div class="card">
+        <h4>Revenue</h4>
+        <strong id="revenue">0 AED</strong>
+      </div>
+
+      <div class="card">
+        <h4>Products</h4>
+        <strong id="productsCount">0</strong>
+      </div>
+    </section>
+
+    <!-- ADD PRODUCT -->
+    <section class="form-section">
+      <h3>Add New Product</h3>
+
+      <div class="form-grid">
+        <input id="p-name" type="text" placeholder="Product Name">
+        <input id="p-price" type="number" placeholder="Price (AED)">
+        <input id="p-category" type="text" placeholder="Category">
+        <input id="p-image" type="text" placeholder="Image filename or URL">
+        <input id="p-tags" type="text" placeholder="Tags (recommended,new,popular)" class="full">
+
+        <button class="btn-add" onclick="addProduct()">➕ Add Product</button>
+      </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="charts">
+
+      <!-- PRODUCTS LIST -->
+      <div class="chart-box">
+        <h3>Products in Store</h3>
+        <div id="products-list"></div>
+      </div>
+
+      <!-- SALES CHART -->
+      <div class="chart-box">
+        <h3>Sales Overview</h3>
+        <canvas id="salesChart"></canvas>
+      </div>
+
+    </section>
+
+  </main>
 </div>
 
+<!-- ADMIN LOGIC -->
 <script type="module" src="./admin.js"></script>
+
+<!-- CHART INIT -->
+<script>
+  const ctx = document.getElementById("salesChart");
+  if (ctx) {
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+        datasets: [{
+          label: "Sales",
+          data: [5,20,15,25,10,14,11],
+          borderColor: "#1f3f38",
+          backgroundColor: "rgba(31,63,56,.4)",
+          tension: 0.4,
+          fill: true
+        }]
+      }
+    });
+  }
+</script>
+
 </body>
 </html>
