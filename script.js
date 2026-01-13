@@ -1,111 +1,89 @@
 const tg = window.Telegram?.WebApp;
 
-// БАЗА ДАННЫХ ТОВАРОВ
-const productsData = [
-    { name: "Christmas Red Rose Box", price: 450, image: "https://via.placeholder.com/300", category: "Christmas Collection" },
-    { name: "Spring Tulip Vase", price: 280, image: "https://via.placeholder.com/300", category: "Spring" },
-    { name: "Luxury Gold Orchid", price: 1200, image: "https://via.placeholder.com/300", category: "Luxury" },
-    { name: "Standard Box Mix", price: 350, image: "https://via.placeholder.com/300", category: "Box" },
-    { name: "Anniversary White Roses", price: 500, image: "https://via.placeholder.com/300", category: "Anniversary" },
-    { name: "Birthday Balloon Set", price: 150, image: "https://via.placeholder.com/300", category: "Balloons" },
-    { name: "New Baby Blue Bouquet", price: 300, image: "https://via.placeholder.com/300", category: "New Baby" },
-];
+// БАЗА ДАННЫХ (50 товаров)
+const products = [];
+const categories = ['Christmas', 'Spring', 'Luxury', 'Vases', 'Box', 'Anniversary', 'Birthday'];
 
-let cart = [];
+// Генерируем 50 товаров для теста
+for (let i = 1; i <= 55; i++) {
+    products.push({
+        id: i,
+        name: `Product ${i} ${categories[i % categories.length]}`,
+        price: 150 + (i * 10),
+        cat: categories[i % categories.length],
+        tag: i < 10 ? 'new' : (i < 20 ? 'sale' : 'popular'),
+        img: `https://picsum.photos/seed/${i+50}/300/300` // Заглушка фото
+    });
+}
 
-// Запуск при загрузке
 document.addEventListener("DOMContentLoaded", () => {
-    if (tg) {
-        tg.ready();
-        tg.expand();
-    }
-    renderProducts(productsData, 'products-grid');
+    if (tg) { tg.ready(); tg.expand(); }
+    renderAll();
 });
 
-// ФУНКЦИЯ ОТРИСОВКИ ТОВАРОВ
-function renderProducts(list, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+function renderAll() {
+    // Рендерим табы (New Arrival по умолчанию)
+    showTab('new', document.querySelector('.tab-btn'));
     
-    container.innerHTML = list.map(p => `
+    // Shop All
+    renderGrid(products, 'all-products-grid');
+    
+    // Luxury Section
+    const luxury = products.filter(p => p.cat === 'Luxury');
+    renderGrid(luxury, 'luxury-grid');
+}
+
+function renderGrid(list, gridId) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    grid.innerHTML = list.map(p => `
         <div class="card">
-            <img src="${p.image}" alt="${p.name}" onclick="openProductDetail('${p.name}')">
-            <h3>${p.name}</h3>
-            <span>${p.price} AED</span>
-            <button onclick="addToCart('${p.name}')">Add to Cart</button>
+            <img src="${p.img}">
+            <h4>${p.name}</h4>
+            <b>${p.price} AED</b>
+            <button onclick="addToCart(${p.id})" style="background:var(--green); color:#fff; border:none; padding:5px 10px; border-radius:3px; font-size:11px; margin-bottom:10px">Add</button>
         </div>
     `).join('');
 }
 
-// УПРАВЛЕНИЕ МЕНЮ
+// Переключение табов
+function showTab(tag, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = products.filter(p => p.tag === tag);
+    renderGrid(filtered, 'tab-grid');
+}
+
+// Меню
 function toggleMenu() {
     document.getElementById('side-menu').classList.toggle('open');
 }
 
-function toggleSection(id) {
+function toggleAcc(id) {
     const el = document.getElementById(id);
-    const isVisible = el.style.display === 'block';
-    
-    // Закрываем все остальные секции в меню
-    document.querySelectorAll('.menu-subbody').forEach(s => s.style.display = 'none');
-    
-    // Переключаем текущую
-    el.style.display = isVisible ? 'none' : 'block';
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
 }
 
-// ФИЛЬТРАЦИЯ ПО КАТЕГОРИИ
-function filterByCategory(cat) {
-    const filtered = productsData.filter(p => p.category === cat);
-    renderProducts(filtered, 'products-grid');
-    toggleMenu(); // Закрываем меню после выбора
-    window.scrollTo({top: 0, behavior: 'smooth'});
+function filterBy(cat) {
+    const filtered = products.filter(p => p.cat === cat);
+    renderGrid(filtered, 'all-products-grid');
+    document.querySelector('.shop-all .section-title').innerText = "Category: " + cat;
+    toggleMenu();
+    window.scrollTo({top: 500, behavior: 'smooth'});
 }
 
-// ТАБЫ НА ГЛАВНОМ ЭКРАНЕ
-function switchTab(type, btn) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    
-    if (type === 'all') {
-        renderProducts(productsData, 'products-grid');
-    } else {
-        const filtered = productsData.filter(p => p.category === type);
-        renderProducts(filtered, 'products-grid');
-    }
+// Системные функции
+function openPage(id) { document.getElementById(id).style.display = 'block'; }
+function closePage(id) { document.getElementById(id).style.display = 'none'; }
+
+let cCount = 0;
+function addToCart(id) {
+    cCount++;
+    document.getElementById('c-count').innerText = cCount;
+    tg?.HapticFeedback.impactOccurred('medium');
 }
 
-// ПОИСК
-function openSearch() {
-    document.getElementById('search-page').style.display = 'block';
-}
-
-function searchAll(query) {
-    const q = query.toLowerCase();
-    const filtered = productsData.filter(p => p.name.toLowerCase().includes(q));
-    renderProducts(filtered, 'search-grid');
-}
-
-// ДЕТАЛИ ТОВАРОВ
-function openProductDetail(name) {
-    const p = productsData.find(i => i.name === name);
-    const details = document.getElementById('product-details');
-    details.innerHTML = `
-        <img src="${p.image}" style="width:100%; border-radius:15px">
-        <h2 style="margin:20px 0">${p.name}</h2>
-        <p style="font-size:24px; color:var(--green); font-weight:bold">${p.price} AED</p>
-        <p style="margin:20px 0; color:#666">Premium quality flowers from TAVÉINE AE. Handcrafted for your special moments.</p>
-        <button onclick="addToCart('${p.name}')" style="width:100%; background:var(--green); color:#fff; border:none; padding:18px; border-radius:12px; font-size:18px">Add to Cart</button>
-    `;
-    document.getElementById('product-page').style.display = 'block';
-}
-
-function closePage(id) {
-    document.getElementById(id).style.display = 'none';
-}
-
-// КОРЗИНА (Haptic)
-function addToCart(name) {
-    cart.push(name);
-    document.getElementById('cart-count').innerText = cart.length;
-    tg?.HapticFeedback?.impactOccurred('medium');
+function search(val) {
+    const filtered = products.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
+    renderGrid(filtered, 'search-grid');
 }
