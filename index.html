@@ -11,74 +11,29 @@
 <body>
 
     <header class="top-bar">
-        <button class="burger-menu" onclick="toggleMenu()">
-            <span></span><span></span><span></span>
-        </button>
+        <button class="burger-menu" onclick="toggleMenu()"><span></span><span></span><span></span></button>
         <div class="logo">TAVÉINE</div>
         <div style="width:40px"></div> 
     </header>
 
-    <div id="side-menu" class="side-menu">
-        <div class="menu-top">
-            <button class="close-btn" onclick="toggleMenu()">✕</button>
-        </div>
-        <div class="menu-list">
-            <div class="accordion">
-                <div class="acc-header" onclick="toggleAcc('coll-items')">Collection <span>+</span></div>
-                <div id="coll-items" class="acc-body">
-                    <a onclick="filterBy('Christmas')">Christmas Collection</a>
-                    <a onclick="filterBy('Spring')">Spring</a>
-                    <a onclick="filterBy('New Arrivals')">New Arrivals</a>
-                    <a onclick="filterBy('Best Sellers')">Best Sellers</a>
-                    <a onclick="filterBy('Luxury')">Luxury</a>
-                    <a onclick="filterBy('Specialty')">Specialty</a>
-                    <a onclick="filterBy('Vases')">Vases</a>
-                    <a onclick="filterBy('Box')">Box</a>
-                </div>
-            </div>
-            <div class="accordion">
-                <div class="acc-header" onclick="toggleAcc('occ-items')">Occasions <span>+</span></div>
-                <div id="occ-items" class="acc-body">
-                    <a onclick="filterBy('Anniversary')">Anniversary</a>
-                    <a onclick="filterBy('Birthday')">Birthday</a>
-                    <a onclick="filterBy('I\'m Sorry')">I'm Sorry</a>
-                    <a onclick="filterBy('New Baby')">New Baby</a>
-                    <a onclick="filterBy('Forever Rose')">Forever Rose</a>
-                </div>
-            </div>
-            <div class="accordion">
-                <div class="acc-header" onclick="toggleAcc('home-items')">Home <span>+</span></div>
-                <div id="home-items" class="acc-body">
-                    <a onclick="showInfo('about')">About Us</a>
-                    <a onclick="showInfo('privacy')">Privacy Policy</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <main id="main-content">
         <section class="hero-section">
-            <img src="main-banner.jpg" alt="Nature's Breath" class="hero-img">
+            <img src="hero.jpg" alt="Nature's Breath" class="hero-img">
             <h1>THE FLOWER</h1>
         </section>
 
-        <section class="tab-section">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('new', this)">New Arrival</button>
-                <button class="tab-btn" onclick="showTab('sale', this)">Sale</button>
-                <button class="tab-btn" onclick="showTab('popular', this)">Popular</button>
-            </div>
-            <div class="grid" id="tab-grid"></div>
-        </section>
+        <h2 class="section-title">New Arrivals</h2>
+        <div class="slider-container" id="new-slider"></div>
+
+        <h2 class="section-title">Sale</h2>
+        <div class="slider-container" id="sale-slider"></div>
+
+        <h2 class="section-title">Popular</h2>
+        <div class="slider-container" id="popular-slider"></div>
 
         <section class="shop-all">
             <h2 class="section-title">Shop All</h2>
             <div class="grid" id="all-products-grid"></div>
-        </section>
-
-        <section class="luxury-section">
-            <h2 class="section-title">Luxury Products</h2>
-            <div class="grid" id="luxury-grid"></div>
         </section>
 
         <footer class="main-footer">
@@ -86,42 +41,72 @@
             <p>Address: International City, Dubai, UAE</p>
             <p>Email: support@taveine.com</p>
             <p>Phone: 971 58 574 37 06</p>
-            <a href="#" class="direction">Get direction ↗</a>
-            
             <div class="socials">
-                <button onclick="window.open('https://facebook.com')">f</button>
-                <button onclick="window.open('https://instagram.com')">i</button>
-                <button onclick="window.open('https://pinterest.com')">p</button>
-            </div>
-
-            <div class="footer-acc">
-                <div class="acc-header" onclick="toggleAcc('help-f')">Help <span>+</span></div>
-                <div id="help-f" class="acc-body"><p>FAQ, Shipping, Returns</p></div>
-                
-                <div class="acc-header" onclick="toggleAcc('links-f')">Useful Links <span>+</span></div>
-                <div id="help-f" class="acc-body"><a>Track Order</a><a>Contact</a></div>
+                <button>f</button><button>i</button><button>p</button>
             </div>
             <div class="footer-bottom">
                 <p>© TAVÉINE Flower Shop. All Rights Reserved.</p>
-                <div class="payments">VISA | PAYPAL | AMEX</div>
             </div>
         </footer>
     </main>
 
-    <nav class="bottom-nav">
-        <button onclick="location.reload()"><span class="icon">▦</span><small>Shop</small></button>
-        <button onclick="openPage('search-page')"><span class="icon">🔍</span><small>Search</small></button>
-        <button onclick="openPage('wish-page')" class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="w-count">0</em></button>
-        <button onclick="openPage('cart-page')" class="badge"><span class="icon">🛒</span><small>Cart</small><em id="c-count">0</em></button>
-    </nav>
-
-    <div id="search-page" class="full-page">
-        <div class="p-header"><button onclick="closePage('search-page')">← Back</button></div>
-        <div class="p-content">
-            <input type="text" placeholder="Search products..." oninput="search(this.value)">
-            <div class="grid" id="search-grid"></div>
+    <div id="side-menu" class="side-menu">
+        <div class="menu-top"><button class="close-btn" onclick="toggleMenu()">✕</button></div>
+        <div class="menu-list">
+            <div class="accordion">
+                <div class="acc-header" onclick="toggleAcc('coll-items')">Collection <span>+</span></div>
+                <div id="coll-items" class="acc-body">
+                    <a onclick="openCategoryPage('Christmas')">Christmas Collection</a>
+                    <a onclick="openCategoryPage('Spring')">Spring</a>
+                    <a onclick="openCategoryPage('Luxury')">Luxury</a>
+                    <a onclick="openCategoryPage('Vases')">Vases</a>
+                    <a onclick="openCategoryPage('Box')">Box</a>
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="acc-header" onclick="showInfoPage('about')">About Us <span>></span></div>
+            </div>
         </div>
     </div>
+
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button onclick="toggleCart()">✕</button>
+        </div>
+        <div id="cart-items-list" class="cart-items"></div>
+        <div class="cart-footer">
+            <div class="total">Total: <span id="cart-total-price">0</span> AED</div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <div id="category-page" class="full-page">
+        <div class="p-header"><button onclick="closePage('category-page')">← Back</button> <h3 id="cat-title"></h3></div>
+        <div class="grid" id="category-grid"></div>
+    </div>
+
+    <div id="wish-page" class="full-page">
+        <div class="p-header"><button onclick="closePage('wish-page')">← Back</button> <h3>Wishlist</h3></div>
+        <div id="wish-list-container" class="wish-list"></div>
+    </div>
+
+    <div id="about-page" class="full-page">
+        <div class="p-header"><button onclick="closePage('about-page')">← Back</button> <h3>About Us</h3></div>
+        <div class="p-content about-content">
+            <img src="about-img.jpg" class="about-hero">
+            <p>Welcome to TAVÉINE. We believe in the power of nature's breath. Our flowers are handpicked and arranged with passion.</p>
+            <div class="about-gallery">
+                <img src="flower1.jpg"><img src="flower2.jpg">
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button onclick="location.reload()"><span class="icon">▦</span><small>Shop</small></button>
+        <button onclick="openPage('wish-page')" class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="w-count">0</em></button>
+        <button onclick="toggleCart()" class="badge"><span class="icon">🛒</span><small>Cart</small><em id="c-count">0</em></button>
+    </nav>
 
 </body>
 </html>
