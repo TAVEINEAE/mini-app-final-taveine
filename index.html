@@ -10,7 +10,7 @@
 
 <header class="top-bar">
     <button class="burger-menu" onclick="window.toggleMenu()">
-        <span class="wave-icon">≈</span>
+        <span class="wave-icon">≈</span> 
     </button>
     <div class="logo">TAVÉINE</div>
     <div style="width:40px"></div> 
@@ -18,64 +18,37 @@
 
 <main id="main-page">
     <section class="hero-section">
-        <img src="https://static.wixstatic.com/media/8971f1_681966a3928148b394747eb19234858b~mv2.jpg" class="hero-img" alt="The freshest flowers">
-        <div class="hero-text">
-            <h1>THE FRESHEST FLOWERS ARE HERE</h1>
-        </div>
+        <img src="https://static.wixstatic.com/media/8971f1_681966a3928148b394747eb19234858b~mv2.jpg" class="hero-img">
+        <div class="hero-text"><h1>THE FRESHEST FLOWERS ARE HERE</h1></div>
     </section>
 
     <h2 class="section-title">NEW ARRIVALS</h2>
-    <div id="new-arrivals-slider" class="slider-container">
-        </div>
+    <div id="new-arrivals-slider" class="slider-container"></div>
 
     <h2 class="section-title">THE FLOWER</h2>
-    <div id="all-products-grid" class="grid">
-        </div>
-
-    <section class="about-section" style="padding: 40px 15px; background: #f9f9f9;">
-        <h3>NATURE'S BREATH</h3>
-        <p>TAVÉINE offers premium floral arrangements delivered with care across the UAE.</p>
-    </section>
+    <div id="all-products-grid" class="grid"></div>
 
     <footer class="main-footer">
-        <div class="footer-brand">
-            <span class="logo-text">TAVÉINE</span>
-            <div class="footer-info">
-                <p>Dubai, UAE</p>
-                <p>Daily: 09:00 - 22:00</p>
-            </div>
-        </div>
-        
+        <div class="footer-brand"><span class="logo-text">TAVÉINE</span></div>
         <div class="footer-acc-container">
             <div class="acc-item">
-                <div class="acc-btn" onclick="this.parentElement.classList.toggle('active')">
-                    Customer Service <span>+</span>
-                </div>
-                <div class="acc-content">
-                    <a href="#">Shipping Policy</a>
-                    <a href="#">Refund Policy</a>
-                    <a href="#">Contact Us</a>
-                </div>
+                <div class="acc-btn" onclick="this.parentElement.classList.toggle('active')">Customer Service <span>+</span></div>
+                <div class="acc-content"><a href="#">Shipping Policy</a><a href="#">Refund Policy</a></div>
             </div>
         </div>
     </footer>
 </main>
 
 <nav id="side-menu" class="side-menu">
-    <div class="menu-top">
-        <button class="close-btn" onclick="window.toggleMenu()">✕</button>
-    </div>
+    <div class="menu-top"><button class="close-btn" onclick="window.toggleMenu()">✕</button></div>
     <div class="menu-content">
         <div class="accordion-item">
             <div class="acc-header" onclick="window.toggleMenuAcc('cat-menu')">Categories <span>+</span></div>
             <div id="cat-menu" class="acc-body">
                 <a href="#" onclick="window.openCategory('Roses')">Roses</a>
                 <a href="#" onclick="window.openCategory('Bouquets')">Bouquets</a>
-                <a href="#" onclick="window.openCategory('Box')">Flower Boxes</a>
             </div>
         </div>
-        <a href="#" class="menu-link">About Us</a>
-        <a href="#" class="menu-link">Delivery</a>
     </div>
 </nav>
 
@@ -116,24 +89,11 @@
 </div>
 
 <nav class="bottom-nav">
-    <button onclick="location.reload()" class="nav-btn">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" fill="currentColor"/></svg>
-        <span>Shop</span>
-    </button>
-    <button onclick="window.openPage('search-page')" class="nav-btn">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
-        <span>Search</span>
-    </button>
-    <button onclick="window.openPage('wish-page')" class="nav-btn badge">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12.1 18.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05zM16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.31C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z" fill="currentColor"/></svg>
-        <em id="w-count">0</em>
-        <span>Wishlist</span>
-    </button>
-    <button onclick="window.openPage('cart-drawer')" class="nav-btn badge">
-        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z" fill="currentColor"/></svg>
-        <em id="c-count">0</em>
-        <span>Cart</span>
-    </button>
+    <button onclick="location.reload()" class="nav-btn"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" fill="currentColor"/></svg><span>Shop</span></button>
+    <button onclick="window.openPage('search-page')" class="nav-btn"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg><span>Search</span></button>
+    <button class="nav-btn"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg><span>Account</span></button>
+    <button onclick="window.openPage('wish-page')" class="nav-btn badge"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M12.1 18.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" fill="currentColor"/></svg><em id="w-count">0</em><span>Wishlist</span></button>
+    <button onclick="window.openPage('cart-drawer')" class="nav-btn badge"><svg viewBox="0 0 24 24" class="nav-icon"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12z" fill="currentColor"/></svg><em id="c-count">0</em><span>Cart</span></button>
 </nav>
 
 <script type="module" src="script.js"></script>
