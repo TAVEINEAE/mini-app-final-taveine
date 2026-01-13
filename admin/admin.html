@@ -27,13 +27,16 @@
   </aside>
 
   <!-- MAIN -->
-  <main class="main">
+<main class="main">
 
-    <!-- TOP BAR -->
-    <header class="topbar">
-      <span id="auth-status">Checking login...</span>
-      <button class="btn-logout" onclick="logout()">Logout</button>
-    </header>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <span id="auth-status">Checking login...</span>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </header>
+
+  <!-- ================= DASHBOARD ================= -->
+  <section class="page" id="dashboard-page">
 
     <!-- STATS -->
     <section class="stats">
@@ -53,7 +56,19 @@
       </div>
     </section>
 
-    <!-- ADD PRODUCT -->
+    <!-- CHART -->
+    <section class="charts">
+      <div class="chart-box">
+        <h3>Sales Overview</h3>
+        <canvas id="salesChart"></canvas>
+      </div>
+    </section>
+
+  </section>
+
+  <!-- ================= PRODUCTS ================= -->
+  <section class="page hidden" id="products-page">
+
     <section class="form-section">
       <h3>Add New Product</h3>
 
@@ -68,24 +83,32 @@
       </div>
     </section>
 
-    <!-- CONTENT -->
     <section class="charts">
-
-      <!-- PRODUCTS LIST -->
       <div class="chart-box">
         <h3>Products in Store</h3>
         <div id="products-list"></div>
       </div>
-
-      <!-- SALES CHART -->
-      <div class="chart-box">
-        <h3>Sales Overview</h3>
-        <canvas id="salesChart"></canvas>
-      </div>
-
     </section>
 
-  </main>
+  </section>
+
+  <!-- ================= ORDERS ================= -->
+  <section class="page hidden" id="orders-page">
+    <div class="chart-box">
+      <h3>Orders</h3>
+      <p>Orders will appear here (Telegram / Website).</p>
+    </div>
+  </section>
+
+  <!-- ================= CUSTOMERS ================= -->
+  <section class="page hidden" id="customers-page">
+    <div class="chart-box">
+      <h3>Customers</h3>
+      <p>Customers list will appear here.</p>
+    </div>
+  </section>
+
+</main>
 </div>
 
 <!-- ADMIN LOGIC -->
