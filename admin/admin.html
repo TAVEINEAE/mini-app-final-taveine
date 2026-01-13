@@ -4,136 +4,98 @@
   <meta charset="UTF-8">
   <title>TAVEINE Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .hidden { display: none !important; }
+    .nav-link { cursor: pointer; }
+  </style>
 </head>
 <body>
 
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <h2>🔥 TAVEINE</h2>
-    <nav>
-      <a class="active"><i class="fas fa-home"></i> Dashboard</a>
-      <a><i class="fas fa-box"></i> Products</a>
-      <a><i class="fas fa-shopping-cart"></i> Orders</a>
-      <a><i class="fas fa-users"></i> Customers</a>
+    <nav id="main-nav">
+      <a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a>
+      <a class="nav-link" data-page="products"><i class="fas fa-box"></i> Products</a>
+      <a class="nav-link" data-page="orders"><i class="fas fa-shopping-cart"></i> Orders</a>
+      <a class="nav-link" data-page="customers"><i class="fas fa-users"></i> Customers</a>
     </nav>
   </aside>
 
-  <!-- MAIN -->
-<main class="main">
+  <main class="main">
+    <header class="topbar">
+      <span id="auth-status">Checking login...</span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </header>
 
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <span id="auth-status">Checking login...</span>
-    <button class="btn-logout" onclick="logout()">Logout</button>
-  </header>
-
-  <!-- ================= DASHBOARD ================= -->
-  <section class="page" id="dashboard-page">
-
-    <!-- STATS -->
-    <section class="stats">
-      <div class="card">
-        <h4>Total Orders</h4>
-        <strong id="ordersCount">0</strong>
-      </div>
-
-      <div class="card">
-        <h4>Revenue</h4>
-        <strong id="revenue">0 AED</strong>
-      </div>
-
-      <div class="card">
-        <h4>Products</h4>
-        <strong id="productsCount">0</strong>
-      </div>
+    <section class="page" id="dashboard-page">
+      <section class="stats">
+        <div class="card"><h4>Total Orders</h4><strong id="ordersCount">0</strong></div>
+        <div class="card"><h4>Revenue</h4><strong id="revenue">0 AED</strong></div>
+        <div class="card"><h4>Products</h4><strong id="productsCount">0</strong></div>
+      </section>
+      <section class="charts">
+        <div class="chart-box">
+          <h3>Sales Overview</h3>
+          <canvas id="salesChart"></canvas>
+        </div>
+      </section>
     </section>
 
-    <!-- CHART -->
-    <section class="charts">
-      <div class="chart-box">
-        <h3>Sales Overview</h3>
-        <canvas id="salesChart"></canvas>
-      </div>
+    <section class="page hidden" id="products-page">
+      <section class="form-section">
+        <h3>Add New Product</h3>
+        <div class="form-grid">
+          <input id="p-name" type="text" placeholder="Product Name">
+          <input id="p-price" type="number" placeholder="Price (AED)">
+          <input id="p-category" type="text" placeholder="Category">
+          <input id="p-image" type="text" placeholder="Image URL">
+          <input id="p-tags" type="text" placeholder="Tags (comma separated)" class="full">
+          <button class="btn-add" onclick="addProduct()">➕ Add Product</button>
+        </div>
+      </section>
+      <section class="charts">
+        <div class="chart-box">
+          <h3>Products in Store</h3>
+          <div id="products-list"></div>
+        </div>
+      </section>
     </section>
 
-  </section>
-
-  <!-- ================= PRODUCTS ================= -->
-  <section class="page hidden" id="products-page">
-
-    <section class="form-section">
-      <h3>Add New Product</h3>
-
-      <div class="form-grid">
-        <input id="p-name" type="text" placeholder="Product Name">
-        <input id="p-price" type="number" placeholder="Price (AED)">
-        <input id="p-category" type="text" placeholder="Category">
-        <input id="p-image" type="text" placeholder="Image filename or URL">
-        <input id="p-tags" type="text" placeholder="Tags (recommended,new,popular)" class="full">
-
-        <button class="btn-add" onclick="addProduct()">➕ Add Product</button>
-      </div>
+    <section class="page hidden" id="orders-page">
+        <div class="chart-box"><h3>Orders</h3><p>Coming soon...</p></div>
     </section>
-
-    <section class="charts">
-      <div class="chart-box">
-        <h3>Products in Store</h3>
-        <div id="products-list"></div>
-      </div>
+    <section class="page hidden" id="customers-page">
+        <div class="chart-box"><h3>Customers</h3><p>Coming soon...</p></div>
     </section>
-
-  </section>
-
-  <!-- ================= ORDERS ================= -->
-  <section class="page hidden" id="orders-page">
-    <div class="chart-box">
-      <h3>Orders</h3>
-      <p>Orders will appear here (Telegram / Website).</p>
-    </div>
-  </section>
-
-  <!-- ================= CUSTOMERS ================= -->
-  <section class="page hidden" id="customers-page">
-    <div class="chart-box">
-      <h3>Customers</h3>
-      <p>Customers list will appear here.</p>
-    </div>
-  </section>
-
-</main>
+  </main>
 </div>
 
-<!-- ADMIN LOGIC -->
 <script type="module" src="./admin.js"></script>
 
-<!-- CHART INIT -->
 <script>
-  const ctx = document.getElementById("salesChart");
-  if (ctx) {
-    new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-        datasets: [{
-          label: "Sales",
-          data: [5,20,15,25,10,14,11],
-          borderColor: "#1f3f38",
-          backgroundColor: "rgba(31,63,56,.4)",
-          tension: 0.4,
-          fill: true
-        }]
-      }
-    });
-  }
+  // Инициализация графика (простая заглушка)
+  window.onload = () => {
+    const ctx = document.getElementById("salesChart");
+    if (ctx) {
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+          datasets: [{
+            label: "Sales",
+            data: [5,20,15,25,10,14,11],
+            borderColor: "#1f3f38",
+            tension: 0.4,
+            fill: true
+          }]
+        }
+      });
+    }
+  };
 </script>
-
 </body>
 </html>
