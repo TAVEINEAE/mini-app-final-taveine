@@ -10,42 +10,74 @@ const firebaseConfig = {
   appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
 
-// Функция для аккордеона в МЕНЮ (как в футере: одно открыл - другое закрылось)
+// Инициализация Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const tg = window.Telegram?.WebApp;
+let products = [];
+let cart = [];
+let wishlist = [];
+
+// ================= ФУНКЦИИ АККОРДЕОНОВ (МЕНЮ И ФУТЕР) =================
+
 window.toggleMenuAcc = (id) => {
     const target = document.getElementById(id);
     const parent = target.parentElement;
     const isOpen = parent.classList.contains('active');
 
-    // Закрываем все разделы в меню
     document.querySelectorAll('#side-menu .accordion-item').forEach(item => {
         item.classList.remove('active');
-        item.querySelector('.acc-body').style.display = 'none';
-        item.querySelector('span').innerText = '+';
+        const body = item.querySelector('.acc-body');
+        if (body) body.style.display = 'none';
+        const span = item.querySelector('.acc-header span');
+        if (span) span.innerText = '+';
     });
 
-    // Если был закрыт - открываем
     if (!isOpen) {
         parent.classList.add('active');
-        target.style.display = 'block';
-        parent.querySelector('span').innerText = '-';
+        if (target) target.style.display = 'block';
+        const span = parent.querySelector('.acc-header span');
+        if (span) span.innerText = '-';
     }
 };
 
-// Функция открытия страницы категории
+window.toggleFooterAcc = (id) => {
+    const targetContent = document.getElementById(id);
+    const parentItem = targetContent.parentElement;
+    const isNowActive = parentItem.classList.contains('active');
+
+    document.querySelectorAll('.footer-accordion .acc-item').forEach(item => {
+        item.classList.remove('active');
+        const content = item.querySelector('.acc-content');
+        if (content) content.style.display = 'none';
+        const span = item.querySelector('.acc-btn span');
+        if (span) span.innerText = '+';
+    });
+
+    if (!isNowActive) {
+        parentItem.classList.add('active');
+        if (targetContent) targetContent.style.display = 'block';
+        const span = parentItem.querySelector('.acc-btn span');
+        if (span) span.innerText = '-';
+    }
+};
+
+// ================= ЛОГИКА ТОВАРОВ И КАТЕГОРИЙ =================
+
 window.openCategoryPage = (catName) => {
     const titleEl = document.getElementById('cat-title');
     const gridEl = document.getElementById('category-grid');
     
     if (titleEl) titleEl.innerText = catName;
     
-    // Фильтруем товары из базы по категории
     const filteredProducts = products.filter(p => p.category === catName);
     
-    // Рисуем сетку товаров именно для этой страницы
     if (gridEl) {
         if (filteredProducts.length > 0) {
             gridEl.innerHTML = filteredProducts.map(p => `
                 <div class="card">
+                    <button class="wish-btn" onclick="window.addToWishlist('${p.id}')">❤</button>
                     <img src="${p.image || 'https://via.placeholder.com/300'}">
                     <h4>${p.name}</h4>
                     <b>${p.price} AED</b>
@@ -57,19 +89,10 @@ window.openCategoryPage = (catName) => {
         }
     }
     
-    window.openPage('category-page'); // Показываем страницу
-    window.toggleMenu(); // Закрываем боковое меню
+    window.openPage('category-page'); 
+    window.toggleMenu(); 
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const tg = window.Telegram?.WebApp;
-let products = [];
-let cart = [];
-let wishlist = [];
-
-// ЗАГРУЗКА
 async function loadDataFromFirebase() {
     try {
         const querySnapshot = await getDocs(collection(db, "products"));
@@ -105,7 +128,6 @@ function renderGrid(list, gridId) {
     `).join('');
 }
 
-// ПОИСК
 function initSearch() {
     document.getElementById('product-search')?.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
@@ -129,66 +151,99 @@ function initSearch() {
     });
 }
 
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ
-window.toggleMenu = () => document.getElementById('side-menu').classList.toggle('open');
-window.toggleCart = () => { document.getElementById('cart-drawer').classList.toggle('open'); renderCart(); };
-window.openPage = (id) => { document.getElementById(id).style.display = 'block'; if(id==='wish-page') renderWishlist(); };
-window.closePage = (id) => document.getElementById(id).style.display = 'none';
-window.toggleAcc = (id) => { const el = document.getElementById(id); el.style.display = el.style.display==='block'?'none':'block'; };
+// ================= ГЛОБАЛЬНЫЕ UI ФУНКЦИИ =================
+
+window.toggleMenu = () => {
+    const menu = document.getElementById('side-menu');
+    if(menu) menu.classList.toggle('open');
+};
+
+window.toggleCart = () => { 
+    const cartDrawer = document.getElementById('cart-drawer');
+    if(cartDrawer) {
+        cartDrawer.classList.toggle('open'); 
+        renderCart(); 
+    }
+};
+
+window.openPage = (id) => { 
+    const page = document.getElementById(id);
+    if(page) {
+        page.style.display = 'block'; 
+        if(id === 'wish-page') renderWishlist();
+    }
+};
+
+window.closePage = (id) => {
+    const page = document.getElementById(id);
+    if(page) page.style.display = 'none';
+};
+
+window.toggleAcc = (id) => { 
+    const el = document.getElementById(id); 
+    if(el) el.style.display = el.style.display === 'block' ? 'none' : 'block'; 
+};
 
 window.addToCart = (id) => {
     const p = products.find(x => x.id === id);
-    if (p) { cart.push(p); updateCounters(); tg?.HapticFeedback.impactOccurred('medium'); }
+    if (p) { 
+        cart.push(p); 
+        updateCounters(); 
+        tg?.HapticFeedback.impactOccurred('medium'); 
+    }
 };
 
 window.addToWishlist = (id) => {
     if (!wishlist.find(x => x.id === id)) {
-        wishlist.push(products.find(x => x.id === id));
-        updateCounters();
+        const p = products.find(x => x.id === id);
+        if(p) {
+            wishlist.push(p);
+            updateCounters();
+        }
     }
 };
 
-window.openCategoryPage = (cat) => {
-    document.getElementById('cat-title').innerText = cat;
-    renderGrid(products.filter(p => p.category === cat), 'category-grid');
-    window.openPage('category-page');
-    window.toggleMenu();
+window.showInfoPage = (id) => { 
+    window.openPage(id + '-page'); 
+    window.toggleMenu(); 
 };
 
-window.showInfoPage = (id) => { window.openPage(id + '-page'); window.toggleMenu(); };
-
 function updateCounters() {
-    document.getElementById('w-count').innerText = wishlist.length;
-    document.getElementById('c-count').innerText = cart.length;
+    const wCount = document.getElementById('w-count');
+    const cCount = document.getElementById('c-count');
+    if(wCount) wCount.innerText = wishlist.length;
+    if(cCount) cCount.innerText = cart.length;
 }
 
 function renderCart() {
     const list = document.getElementById('cart-items-list');
-    list.innerHTML = cart.map((p, i) => `<div class="wish-item"><img src="${p.image}"><b>${p.name}</b><span>${p.price} AED</span></div>`).join('');
-    document.getElementById('cart-total-price').innerText = cart.reduce((s, p) => s + p.price, 0);
+    if(!list) return;
+    list.innerHTML = cart.map((p, i) => `
+        <div class="wish-item">
+            <img src="${p.image}">
+            <b>${p.name}</b>
+            <span>${p.price} AED</span>
+        </div>
+    `).join('');
+    const totalEl = document.getElementById('cart-total-price');
+    if(totalEl) totalEl.innerText = cart.reduce((s, p) => s + p.price, 0);
 }
 
 function renderWishlist() {
-    document.getElementById('wish-list-container').innerHTML = wishlist.map(p => `<div class="wish-item"><img src="${p.image}"><p>${p.name}</p></div>`).join('');
+    const container = document.getElementById('wish-list-container');
+    if(!container) return;
+    container.innerHTML = wishlist.map(p => `
+        <div class="wish-item">
+            <img src="${p.image}">
+            <p>${p.name}</p>
+        </div>
+    `).join('');
 }
 
-window.toggleFooterAcc = (id) => {
-    const targetContent = document.getElementById(id);
-    const parentItem = targetContent.parentElement;
-    const isNowActive = parentItem.classList.contains('active');
-
-    // Сначала закрываем вообще все открытые списки в футере
-    document.querySelectorAll('.acc-item').forEach(item => {
-        item.classList.remove('active');
-    });
-
-    // Если тот, на который нажали, был закрыт — открываем его
-    if (!isNowActive) {
-        parentItem.classList.add('active');
-    }
-};
-
 document.addEventListener("DOMContentLoaded", () => {
-    tg?.ready();
+    if (tg) {
+        tg.ready();
+        tg.expand();
+    }
     loadDataFromFirebase();
 });
