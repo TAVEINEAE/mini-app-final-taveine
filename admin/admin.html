@@ -121,5 +121,39 @@
 
 <script type="module" src="./admin.js"></script>
 
+<body>
+
+  <h1>🔥 TAVEINE Admin Panel</h1>
+
+  <!-- LOGIN STATUS -->
+  <div id="auth-status">
+    Checking login...
+  </div>
+
+  <!-- LOGOUT -->
+  <button onclick="logout()">Logout</button>
+
+  <hr>
+
+  <!-- ADD PRODUCT -->
+  <h2>Add product</h2>
+
+  <input id="p-name" placeholder="Name"><br><br>
+  <input id="p-price" type="number" placeholder="Price"><br><br>
+  <input id="p-image" placeholder="Image filename (e.g. rose.jpg)"><br><br>
+  <input id="p-category" placeholder="Category (box, luxury, vases...)"><br><br>
+  <input id="p-tags" placeholder="Tags (recommended,new,popular)"><br><br>
+
+  <button onclick="addProduct()">➕ Add product</button>
+
+  <hr>
+
+  <!-- PRODUCTS LIST -->
+  <h2>Products</h2>
+  <div id="products-list"></div>
+
+  <!-- FIREBASE + ADMIN SCRIPT -->
+  <script type="module" src="admin.js"></script>
+
 </body>
 </html>
