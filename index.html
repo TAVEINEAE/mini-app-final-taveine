@@ -186,5 +186,53 @@
     </button>
 </nav>
 
+<div id="search-page" class="full-page">
+    <div class="p-header">
+        <span class="p-title">Search our site</span>
+        <button class="close-btn" onclick="window.closePage('search-page')">✕</button>
+    </div>
+    <div class="p-content">
+        <div class="search-bar-container">
+            <span class="search-icon-inner">🔍</span>
+            <input type="text" id="product-search" placeholder="Search">
+        </div>
+        <div id="search-results-grid" class="grid"></div>
+        <div id="search-empty" class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>Type something to start searching...</p>
+        </div>
+    </div>
+</div>
+
+<div id="wish-page" class="full-page">
+    <div class="p-header">
+        <button class="back-btn" onclick="window.closePage('wish-page')">‹</button>
+        <span class="p-title">Wishlist</span>
+        <button class="close-btn" onclick="window.closePage('wish-page')">✕</button>
+    </div>
+    <div class="p-content" id="wish-container">
+        <div class="empty-state">
+            <div class="empty-icon-heart">♡</div>
+            <h2>Wishlist is empty.</h2>
+            <p>You don't have any products in the wishlist yet. You will find a lot of interesting products on our "Shop" page.</p>
+            <button class="black-btn" onclick="window.closePage('wish-page')">Return to shop</button>
+        </div>
+    </div>
+</div>
+
+<div id="cart-page" class="full-page">
+    <div class="p-header">
+        <span class="p-title">Shopping Cart</span>
+        <button class="close-btn" onclick="window.closePage('cart-page')">✕</button>
+    </div>
+    <div class="p-content" id="cart-container">
+        <div class="empty-state">
+            <h2>Your cart is empty</h2>
+            <p>You may check out all the available products and buy some in the shop</p>
+            <button class="black-btn" onclick="window.closePage('cart-page')">Return to shop ↗</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
