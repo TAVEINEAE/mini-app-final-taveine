@@ -2,10 +2,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import {
   getAuth,
-  signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
 import {
   getFirestore,
   collection,
@@ -15,7 +15,7 @@ import {
   doc
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-// 🔑 Firebase config (ТВОЙ)
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
   authDomain: "taveine-admin.firebaseapp.com",
@@ -25,67 +25,61 @@ const firebaseConfig = {
   appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
 
-// init
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ================= AUTH =================
-const loginForm = document.getElementById("login-form");
-const adminPanel = document.getElementById("admin-panel");
-
-if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      alert("Login error");
-    }
-  });
-}
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    loginForm.style.display = "none";
-    adminPanel.style.display = "block";
-    loadProducts();
+/* AUTH */
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "./index.html";
   } else {
-    loginForm.style.display = "block";
-    adminPanel.style.display = "none";
+    document.getElementById("auth-status").innerText = "You are logged in.";
+    loadProducts();
   }
 });
 
-// ================= PRODUCTS =================
+/* LOGOUT */
+window.logout = async () => {
+  await signOut(auth);
+};
+
+/* LOAD PRODUCTS */
 async function loadProducts() {
   const list = document.getElementById("products-list");
   list.innerHTML = "";
 
   const snap = await getDocs(collection(db, "products"));
+
   snap.forEach(docSnap => {
     const p = docSnap.data();
+
     const div = document.createElement("div");
+    div.style.marginBottom = "10px";
+
     div.innerHTML = `
-      <strong>${p.name}</strong> – ${p.price} AED
+      <strong>${p.name}</strong> — ${p.price} AED
       <button data-id="${docSnap.id}">❌</button>
     `;
+
     div.querySelector("button").onclick = async () => {
       await deleteDoc(doc(db, "products", docSnap.id));
       loadProducts();
     };
+
     list.appendChild(div);
   });
 }
 
-window.addProduct = async function () {
+/* ADD PRODUCT */
+window.addProduct = async () => {
   const name = document.getElementById("p-name").value;
   const price = Number(document.getElementById("p-price").value);
   const image = document.getElementById("p-image").value;
   const category = document.getElementById("p-category").value;
-  const tags = document.getElementById("p-tags").value.split(",");
+  const tags = document.getElementById("p-tags").value
+    .split(",")
+    .map(t => t.trim());
 
   await addDoc(collection(db, "products"), {
     name,
