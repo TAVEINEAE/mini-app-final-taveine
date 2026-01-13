@@ -4,7 +4,7 @@ import {
   getAuth,
   onAuthStateChanged,
   signOut
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.7.с/firebase-auth.js";
 
 import {
   getFirestore,
@@ -25,28 +25,33 @@ const firebaseConfig = {
   appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
 
+/* INIT */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* AUTH */
+/* ================= AUTH ================= */
 onAuthStateChanged(auth, user => {
   if (!user) {
+    // если не залогинен — назад на login
     window.location.href = "./index.html";
   } else {
-    document.getElementById("auth-status").innerText = "You are logged in.";
+    const status = document.getElementById("auth-status");
+    if (status) status.innerText = "You are logged in.";
     loadProducts();
   }
 });
 
-/* LOGOUT */
+/* ================= LOGOUT ================= */
 window.logout = async () => {
   await signOut(auth);
 };
 
-/* LOAD PRODUCTS */
+/* ================= LOAD PRODUCTS ================= */
 async function loadProducts() {
   const list = document.getElementById("products-list");
+  if (!list) return;
+
   list.innerHTML = "";
 
   const snap = await getDocs(collection(db, "products"));
@@ -55,11 +60,23 @@ async function loadProducts() {
     const p = docSnap.data();
 
     const div = document.createElement("div");
+    div.style.display = "flex";
+    div.style.justifyContent = "space-between";
+    div.style.alignItems = "center";
     div.style.marginBottom = "10px";
+    div.style.padding = "10px";
+    div.style.border = "1px solid #eee";
+    div.style.borderRadius = "8px";
 
     div.innerHTML = `
-      <strong>${p.name}</strong> — ${p.price} AED
-      <button data-id="${docSnap.id}">❌</button>
+      <span>
+        <strong>${p.name}</strong><br>
+        ${p.price} AED<br>
+        <small>${p.category}</small>
+      </span>
+      <button style="background:#c0392b;border:none;color:#fff;padding:8px 10px;border-radius:6px;cursor:pointer">
+        ❌
+      </button>
     `;
 
     div.querySelector("button").onclick = async () => {
@@ -71,15 +88,21 @@ async function loadProducts() {
   });
 }
 
-/* ADD PRODUCT */
+/* ================= ADD PRODUCT ================= */
 window.addProduct = async () => {
-  const name = document.getElementById("p-name").value;
+  const name = document.getElementById("p-name").value.trim();
   const price = Number(document.getElementById("p-price").value);
-  const image = document.getElementById("p-image").value;
-  const category = document.getElementById("p-category").value;
+  const image = document.getElementById("p-image").value.trim();
+  const category = document.getElementById("p-category").value.trim();
   const tags = document.getElementById("p-tags").value
     .split(",")
-    .map(t => t.trim());
+    .map(t => t.trim())
+    .filter(Boolean);
+
+  if (!name || !price || !category) {
+    alert("Fill name, price and category");
+    return;
+  }
 
   await addDoc(collection(db, "products"), {
     name,
@@ -89,6 +112,13 @@ window.addProduct = async () => {
     tags,
     createdAt: Date.now()
   });
+
+  // очистка формы
+  document.getElementById("p-name").value = "";
+  document.getElementById("p-price").value = "";
+  document.getElementById("p-image").value = "";
+  document.getElementById("p-category").value = "";
+  document.getElementById("p-tags").value = "";
 
   loadProducts();
 };
