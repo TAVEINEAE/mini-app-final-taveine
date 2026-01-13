@@ -22,17 +22,24 @@
             <h1>THE FLOWER</h1>
         </section>
 
-        <h2 class="section-title">New Arrivals</h2>
-        <div class="slider-container" id="new-slider"></div>
+        <section class="search-box" style="padding: 10px 15px;">
+            <input type="text" id="product-search" placeholder="Search roses, colors, tags..." 
+                   style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff;">
+        </section>
 
-        <h2 class="section-title">Sale</h2>
-        <div class="slider-container" id="sale-slider"></div>
+        <div id="default-content">
+            <h2 class="section-title">New Arrivals</h2>
+            <div class="slider-container" id="new-slider"></div>
 
-        <h2 class="section-title">Popular</h2>
-        <div class="slider-container" id="popular-slider"></div>
+            <h2 class="section-title">Sale</h2>
+            <div class="slider-container" id="sale-slider"></div>
+
+            <h2 class="section-title">Popular</h2>
+            <div class="slider-container" id="popular-slider"></div>
+        </div>
 
         <section class="shop-all">
-            <h2 class="section-title">Shop All</h2>
+            <h2 class="section-title" id="grid-title">Shop All</h2>
             <div class="grid" id="all-products-grid"></div>
         </section>
 
@@ -41,9 +48,6 @@
             <p>Address: International City, Dubai, UAE</p>
             <p>Email: support@taveine.com</p>
             <p>Phone: 971 58 574 37 06</p>
-            <div class="socials">
-                <button>f</button><button>i</button><button>p</button>
-            </div>
             <div class="footer-bottom">
                 <p>© TAVÉINE Flower Shop. All Rights Reserved.</p>
             </div>
@@ -70,10 +74,7 @@
     </div>
 
     <div id="cart-drawer" class="cart-drawer">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button onclick="window.toggleCart()">✕</button>
-        </div>
+        <div class="cart-header"><h3>Your Cart</h3><button onclick="window.toggleCart()">✕</button></div>
         <div id="cart-items-list" class="cart-items"></div>
         <div class="cart-footer">
             <div class="total">Total: <span id="cart-total-price">0</span> AED</div>
@@ -94,11 +95,7 @@
     <div id="about-page" class="full-page">
         <div class="p-header"><button onclick="window.closePage('about-page')">← Back</button> <h3>About Us</h3></div>
         <div class="p-content about-content">
-            <img src="about-img.jpg" class="about-hero">
-            <p>Welcome to TAVÉINE. We believe in the power of nature's breath. Our flowers are handpicked and arranged with passion.</p>
-            <div class="about-gallery">
-                <img src="flower1.jpg"><img src="flower2.jpg">
-            </div>
+            <p>Handpicked flowers with passion.</p>
         </div>
     </div>
 
