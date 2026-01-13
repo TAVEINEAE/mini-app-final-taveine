@@ -54,17 +54,30 @@
     </div>
 </div>
 
-<div id="search-page" class="full-page">
-    <div class="p-header">
-        <span class="p-title">Search our site</span>
-        <button class="close-btn" onclick="window.closePage('search-page')">✕</button>
+<div id="search-page" class="search-drawer">
+    <div class="drawer-header">
+        <span class="drawer-title">Search our site</span>
+        <button class="close-drawer" onclick="window.closeSearch()">✕</button>
     </div>
-    <div class="p-content">
-        <div class="search-input-wrapper">
+    
+    <div class="drawer-content">
+        <div class="search-field-container">
             <span class="search-icon">🔍</span>
-            <input type="text" id="product-search" placeholder="Search">
+            <input type="text" id="product-search-input" placeholder="Search">
+            <button id="clear-search" style="display:none;">✕</button>
         </div>
-        <div id="search-results-grid" class="grid"></div>
+
+        <div class="search-tabs">
+            <button id="tab-products" class="tab-btn active" onclick="window.switchSearchTab('products')">PRODUCTS</button>
+            <button id="tab-categories" class="tab-btn" onclick="window.switchSearchTab('categories')">CATEGORIES</button>
+        </div>
+
+        <div id="search-results-products" class="search-results-list"></div>
+        <div id="search-results-categories" class="search-results-list" style="display:none;"></div>
+        
+        <div id="view-all-link" class="view-all" style="display:none;">
+            <a href="#">View all ↗</a>
+        </div>
     </div>
 </div>
 
