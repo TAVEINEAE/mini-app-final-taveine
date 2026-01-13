@@ -171,10 +171,28 @@
     </div>
 
     <nav class="bottom-nav">
-        <button onclick="location.reload()"><span class="icon">▦</span><small>Shop</small></button>
-        <button onclick="window.openPage('wish-page')" class="badge"><span class="icon">♡</span><small>Wishlist</small><em id="w-count">0</em></button>
-        <button onclick="window.toggleCart()" class="badge"><span class="icon">🛒</span><small>Cart</small><em id="c-count">0</em></button>
-    </nav>
+    <button onclick="location.reload()" class="nav-btn">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" fill="currentColor"/></svg>
+        <span>Shop</span>
+    </button>
+    
+    <button onclick="window.toggleSearchPage()" class="nav-btn">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+        <span>Search</span>
+    </button>
+    
+    <button onclick="window.openPage('wish-page')" class="nav-btn badge">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M12.1 18.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05zM16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.31C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z" fill="currentColor"/></svg>
+        <em id="w-count">0</em>
+        <span>Wishlist</span>
+    </button>
+    
+    <button onclick="window.toggleCart()" class="nav-btn badge">
+        <svg viewBox="0 0 24 24" class="nav-icon"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z" fill="currentColor"/></svg>
+        <em id="c-count">0</em>
+        <span>Cart</span>
+    </button>
+</nav>
 
 </body>
 </html>
