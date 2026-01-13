@@ -15,89 +15,62 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// AUTH CHECK
+// Проверка входа
 onAuthStateChanged(auth, user => {
   if (!user) {
-    window.location.href = "./index.html"; 
+    console.log("Пользователь не авторизован");
+    // Если хотите редирект на главную: window.location.href = "../index.html";
   } else {
-    const status = document.getElementById("auth-status");
-    if (status) status.innerText = `Admin: ${user.email}`;
+    document.getElementById("auth-status").innerText = `Admin: ${user.email}`;
     loadProducts();
-    initChart();
   }
 });
 
-// LOGOUT
+// Глобальные функции для кнопок HTML
 window.logout = async () => {
-  try {
-    await signOut(auth);
-  } catch (err) {
-    console.error("Logout error", err);
-  }
+  await signOut(auth);
+  location.reload();
 };
 
-// LOAD PRODUCTS
-async function loadProducts() {
-  const list = document.getElementById("products-list");
-  if (!list) return;
-  list.innerHTML = "Loading...";
-
-  const snap = await getDocs(collection(db, "products"));
-  list.innerHTML = "";
-  
-  document.getElementById("productsCount").innerText = snap.size;
-
-  snap.forEach(docSnap => {
-    const p = docSnap.data();
-    const div = document.createElement("div");
-    div.className = "product-item"; // добавьте стили в CSS
-    div.style = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:10px 0;";
-    
-    div.innerHTML = `
-      <span>
-        <strong>${p.name}</strong> — ${p.price} AED <br>
-        <small>${p.category}</small>
-      </span>
-      <button onclick="deleteProduct('${docSnap.id}')" style="background:none; border:none; color:red; cursor:pointer; font-size:18px;">&times;</button>
-    `;
-    list.appendChild(div);
-  });
-}
-
-// ADD PRODUCT
 window.addProduct = async () => {
   const name = document.getElementById("p-name").value.trim();
   const price = Number(document.getElementById("p-price").value);
   const category = document.getElementById("p-category").value.trim();
-  const image = document.getElementById("p-image").value.trim();
-  const tags = document.getElementById("p-tags").value.split(",").map(t => t.trim());
 
-  if (!name || !price) return alert("Enter Name and Price");
+  if (!name || !price) return alert("Введите название и цену");
 
-  await addDoc(collection(db, "products"), { name, price, category, image, tags, createdAt: Date.now() });
-  
-  // Clear inputs
-  ["p-name", "p-price", "p-category", "p-image", "p-tags"].forEach(id => document.getElementById(id).value = "");
+  await addDoc(collection(db, "products"), {
+    name, price, category, createdAt: Date.now()
+  });
+
+  document.getElementById("p-name").value = "";
+  document.getElementById("p-price").value = "";
   loadProducts();
 };
 
-// DELETE PRODUCT
 window.deleteProduct = async (id) => {
-  if(confirm("Delete this product?")) {
+  if(confirm("Удалить товар?")) {
     await deleteDoc(doc(db, "products", id));
     loadProducts();
   }
 };
 
-// SIMPLE CHART INIT
-function initChart() {
-    const ctx = document.getElementById('salesChart');
-    if (!ctx) return;
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-            datasets: [{ label: 'Sales', data: [10, 25, 15, 40, 30], borderColor: '#e67e22', tension: 0.3 }]
-        }
-    });
+async function loadProducts() {
+  const list = document.getElementById("products-list");
+  if (!list) return;
+  
+  const snap = await getDocs(collection(db, "products"));
+  list.innerHTML = "";
+  document.getElementById("productsCount").innerText = snap.size;
+
+  snap.forEach(docSnap => {
+    const p = docSnap.data();
+    const div = document.createElement("div");
+    div.style = "display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee";
+    div.innerHTML = `
+      <span>${p.name} — ${p.price} AED</span>
+      <button onclick="deleteProduct('${docSnap.id}')" style="color:red; cursor:pointer; background:none; border:none;">✕</button>
+    `;
+    list.appendChild(div);
+  });
 }
