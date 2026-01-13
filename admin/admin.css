@@ -1,0 +1,95 @@
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #0e0f12;
+  color: #fff;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #12141a;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+}
+
+.sidebar nav a {
+  display: block;
+  padding: 12px;
+  color: #aaa;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+  background: #1f3f38;
+  color: #fff;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.topbar button {
+  background: #1f3f38;
+  border: none;
+  padding: 10px 16px;
+  color: #fff;
+  border-radius: 8px;
+}
+
+/* STATS */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #16181f;
+  padding: 20px;
+  border-radius: 14px;
+}
+
+.card h4 {
+  margin: 0 0 10px;
+  color: #aaa;
+}
+
+.card strong {
+  font-size: 24px;
+}
+
+/* CHART */
+.charts {
+  margin-top: 30px;
+}
+
+.chart-box {
+  background: #16181f;
+  padding: 20px;
+  border-radius: 14px;
+}
