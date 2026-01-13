@@ -1,36 +1,34 @@
 const tg = window.Telegram?.WebApp;
 
-// БАЗА ДАННЫХ (50 товаров)
+// База данных
 const products = [];
-const categories = ['Christmas', 'Spring', 'Luxury', 'Vases', 'Box', 'Anniversary', 'Birthday'];
+const categories = ['Christmas', 'Spring', 'Luxury', 'Vases', 'Box'];
+const tags = ['new', 'sale', 'popular'];
 
-// Генерируем 50 товаров для теста
-for (let i = 1; i <= 55; i++) {
+for (let i = 1; i <= 60; i++) {
     products.push({
         id: i,
-        name: `Product ${i} ${categories[i % categories.length]}`,
-        price: 150 + (i * 10),
+        name: `Flower ${i}`,
+        price: 150 + (i * 5),
         cat: categories[i % categories.length],
-        tag: i < 10 ? 'new' : (i < 20 ? 'sale' : 'popular'),
-        img: `https://picsum.photos/seed/${i+50}/300/300` // Заглушка фото
+        tag: tags[i % tags.length],
+        img: `https://picsum.photos/seed/${i+100}/300/300`
     });
 }
 
+let cart = [];
+let wishlist = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     if (tg) { tg.ready(); tg.expand(); }
-    renderAll();
+    renderSliders();
+    renderGrid(products, 'all-products-grid');
 });
 
-function renderAll() {
-    // Рендерим табы (New Arrival по умолчанию)
-    showTab('new', document.querySelector('.tab-btn'));
-    
-    // Shop All
-    renderGrid(products, 'all-products-grid');
-    
-    // Luxury Section
-    const luxury = products.filter(p => p.cat === 'Luxury');
-    renderGrid(luxury, 'luxury-grid');
+function renderSliders() {
+    renderGrid(products.filter(p => p.tag === 'new').slice(0, 4), 'new-slider');
+    renderGrid(products.filter(p => p.tag === 'sale').slice(0, 4), 'sale-slider');
+    renderGrid(products.filter(p => p.tag === 'popular').slice(0, 4), 'popular-slider');
 }
 
 function renderGrid(list, gridId) {
@@ -38,52 +36,88 @@ function renderGrid(list, gridId) {
     if (!grid) return;
     grid.innerHTML = list.map(p => `
         <div class="card">
+            <button class="wish-btn" onclick="addToWishlist(${p.id})">❤</button>
             <img src="${p.img}">
             <h4>${p.name}</h4>
             <b>${p.price} AED</b>
-            <button onclick="addToCart(${p.id})" style="background:var(--green); color:#fff; border:none; padding:5px 10px; border-radius:3px; font-size:11px; margin-bottom:10px">Add</button>
+            <button class="add-btn" onclick="addToCart(${p.id})" style="background:var(--green); color:#fff; border:none; padding:8px; width:90%; border-radius:3px;">Add to Cart</button>
         </div>
     `).join('');
 }
 
-// Переключение табов
-function showTab(tag, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const filtered = products.filter(p => p.tag === tag);
-    renderGrid(filtered, 'tab-grid');
-}
-
-// Меню
-function toggleMenu() {
-    document.getElementById('side-menu').classList.toggle('open');
-}
-
-function toggleAcc(id) {
-    const el = document.getElementById(id);
-    el.style.display = el.style.display === 'block' ? 'none' : 'block';
-}
-
-function filterBy(cat) {
+// Категории (новая страница)
+function openCategoryPage(cat) {
+    document.getElementById('cat-title').innerText = cat;
     const filtered = products.filter(p => p.cat === cat);
-    renderGrid(filtered, 'all-products-grid');
-    document.querySelector('.shop-all .section-title').innerText = "Category: " + cat;
+    renderGrid(filtered, 'category-grid');
+    openPage('category-page');
     toggleMenu();
-    window.scrollTo({top: 500, behavior: 'smooth'});
 }
 
-// Системные функции
-function openPage(id) { document.getElementById(id).style.display = 'block'; }
-function closePage(id) { document.getElementById(id).style.display = 'none'; }
+function showInfoPage(id) {
+    openPage(id + '-page');
+    toggleMenu();
+}
 
-let cCount = 0;
+// Корзина (Drawer)
+function toggleCart() {
+    document.getElementById('cart-drawer').classList.toggle('open');
+    renderCart();
+}
+
 function addToCart(id) {
-    cCount++;
-    document.getElementById('c-count').innerText = cCount;
+    const p = products.find(x => x.id === id);
+    cart.push(p);
+    updateCounters();
     tg?.HapticFeedback.impactOccurred('medium');
 }
 
-function search(val) {
-    const filtered = products.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
-    renderGrid(filtered, 'search-grid');
+function renderCart() {
+    const list = document.getElementById('cart-items-list');
+    list.innerHTML = cart.map((item, idx) => `
+        <div class="wish-item">
+            <img src="${item.img}">
+            <div>
+                <p>${item.name}</p>
+                <b>${item.price} AED</b>
+            </div>
+            <button onclick="cart.splice(${idx},1); renderCart(); updateCounters();" style="margin-left:auto; background:none; border:none;">✕</button>
+        </div>
+    `).join('');
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    document.getElementById('cart-total-price').innerText = total;
 }
+
+// Wishlist
+function addToWishlist(id) {
+    if (!wishlist.find(x => x.id === id)) {
+        wishlist.push(products.find(x => x.id === id));
+        updateCounters();
+        alert('Added to wishlist!');
+    }
+}
+
+function renderWishlist() {
+    const container = document.getElementById('wish-list-container');
+    container.innerHTML = wishlist.map((p, idx) => `
+        <div class="wish-item">
+            <img src="${p.img}">
+            <div><p>${p.name}</p><b>${p.price} AED</b></div>
+            <button onclick="wishlist.splice(${idx},1); renderWishlist(); updateCounters();" style="margin-left:auto; background:none; border:none;">✕</button>
+        </div>
+    `).join('');
+}
+
+function updateCounters() {
+    document.getElementById('w-count').innerText = wishlist.length;
+    document.getElementById('c-count').innerText = cart.length;
+}
+
+// Системные
+function toggleMenu() { document.getElementById('side-menu').classList.toggle('open'); }
+function toggleAcc(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
+function openPage(id) { 
+    document.getElementById(id).style.display = 'block'; 
+    if(id === 'wish-page') renderWishlist();
+}
+function closePage(id) { document.getElementById(id).style.display = 'none'; }
