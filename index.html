@@ -92,26 +92,46 @@
         </div>
     </div>
 </footer>
-    </main>
 
+    </main>
     <div id="side-menu" class="side-menu">
-        <div class="menu-top"><button class="close-btn" onclick="window.toggleMenu()">✕</button></div>
-        <div class="menu-list">
-            <div class="accordion">
-                <div class="acc-header" onclick="window.toggleAcc('coll-items')">Collection <span>+</span></div>
-                <div id="coll-items" class="acc-body">
-                    <a onclick="window.openCategoryPage('Christmas')">Christmas Collection</a>
-                    <a onclick="window.openCategoryPage('Spring')">Spring</a>
-                    <a onclick="window.openCategoryPage('Luxury')">Luxury</a>
-                    <a onclick="window.openCategoryPage('Vases')">Vases</a>
-                    <a onclick="window.openCategoryPage('Box')">Box</a>
-                </div>
+    <div class="menu-top">
+        <button class="close-btn" onclick="window.toggleMenu()">✕</button>
+    </div>
+    <div class="menu-list">
+        <div class="accordion-item">
+            <div class="acc-header" onclick="window.toggleMenuAcc('coll-items')">Collection <span>+</span></div>
+            <div id="coll-items" class="acc-body">
+                <a onclick="window.openCategoryPage('Christmas Collection')">Christmas Collection</a>
+                <a onclick="window.openCategoryPage('Spring')">Spring</a>
+                <a onclick="window.openCategoryPage('New Arrivals')">New Arrivals</a>
+                <a onclick="window.openCategoryPage('Best Sellers')">Best Sellers</a>
+                <a onclick="window.openCategoryPage('Luxury')">Luxury</a>
+                <a onclick="window.openCategoryPage('Specialty')">Specialty</a>
+                <a onclick="window.openCategoryPage('Vases')">Vases</a>
+                <a onclick="window.openCategoryPage('Box')">Box</a>
             </div>
-            <div class="accordion">
-                <div class="acc-header" onclick="window.showInfoPage('about')">About Us <span>></span></div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="acc-header" onclick="window.toggleMenuAcc('occ-items')">Occasions <span>+</span></div>
+            <div id="occ-items" class="acc-body">
+                <a onclick="window.openCategoryPage('Anniversary')">Anniversary</a>
+                <a onclick="window.openCategoryPage('Birthday')">Birthday</a>
+                <a onclick="window.openCategoryPage('New Baby')">New Baby</a>
+                <a onclick="window.openCategoryPage('Forever Rose')">Forever Rose</a>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="acc-header" onclick="window.toggleMenuAcc('home-items')">Home <span>+</span></div>
+            <div id="home-items" class="acc-body">
+                <a onclick="window.showInfoPage('about')">About Us</a>
+                <a href="#">Privacy Policy</a>
             </div>
         </div>
     </div>
+</div>
 
     <div id="cart-drawer" class="cart-drawer">
         <div class="cart-header"><h3>Your Cart</h3><button onclick="window.toggleCart()">✕</button></div>
