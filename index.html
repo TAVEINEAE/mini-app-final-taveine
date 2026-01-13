@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TAVÉINE Flower Shop</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script type="module" src="script.js"></script>
 </head>
@@ -23,8 +24,11 @@
         </section>
 
         <section class="search-box" style="padding: 10px 15px;">
-            <input type="text" id="product-search" placeholder="Search roses, colors, tags..." 
-                   style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff;">
+            <div style="position: relative;">
+                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888;">🔍</span>
+                <input type="text" id="product-search" placeholder="Search roses, colors, tags..." 
+                       style="width: 100%; padding: 12px 12px 12px 35px; border-radius: 8px; border: 1px solid #eee; background: #fff; color: #333;">
+            </div>
         </section>
 
         <div id="default-content">
@@ -44,94 +48,99 @@
         </section>
 
         <footer class="main-footer">
-    <div class="footer-container">
-        <div class="footer-brand">
-            <div class="logo-text">TAVÉINE</div>
-            <div class="logo-icon">✨</div> </div>
-        
-        <div class="footer-info">
-            <p>Address: International City, Dubai, UAE</p>
-            <p>Email: <strong>support@taveine.com</strong></p>
-            <p>Phone:</p>
-            <p><strong>971 58 574 37 06</strong></p>
-            <a href="#" class="directions">Get direction ↗</a>
-        </div>
-
-        <div class="footer-socials">
-            <a href="https://www.facebook.com/share/15VBRvAB4ST/?mibextid=wwXIfr" target="_blank">f</a>
-            <a href="https://www.instagram.com/taveine.ae?igsh=MXY2eWs5ZW5rNjJ1OQ%3D%3D&utm_source=qr" target="_blank">i</a>
-            <a href="https://pin.it/6Mn8StFQr" target="_blank">p</a>
-        </div>
-
-        <div class="footer-accordion">
-            <div class="acc-item">
-                <div class="acc-btn" onclick="window.toggleFooterAcc('help-list')">Help <span>+</span></div>
-                <div id="help-list" class="acc-content">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Refund Policy</a>
-                    <a href="#">Care & Handling</a>
-                    <a href="#">Terms & Conditions</a>
-                    <a href="#">FAQ's</a>
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <div class="logo-text">TAVÉINE</div>
+                    <div class="logo-icon">✨</div> 
                 </div>
-            </div>
-
-            <div class="acc-item">
-                <div class="acc-btn" onclick="window.toggleFooterAcc('links-list')">Useful Links <span>+</span></div>
-                <div id="links-list" class="acc-content">
-                    <a href="#">Shop All</a>
-                    <a href="#">About Us</a>
+                
+                <div class="footer-info">
+                    <p>Address: International City, Dubai, UAE</p>
+                    <p>Email: <strong>support@taveine.com</strong></p>
+                    <p>Phone:</p>
+                    <p><strong>971 58 574 37 06</strong></p>
+                    <a href="https://maps.google.com" target="_blank" class="directions">Get direction ↗</a>
                 </div>
-            </div>
 
-            <div class="acc-item">
-                <div class="acc-btn" onclick="window.toggleFooterAcc('email-box')">Sign Up for Email <span>+</span></div>
-                <div id="email-box" class="acc-content">
-                    <input type="email" placeholder="Enter your email" style="width:100%; padding:10px; background:#f9f9f9; border:1px solid #ddd;">
+                <div class="footer-socials">
+                    <a href="https://www.facebook.com/share/15VBRvAB4ST/?mibextid=wwXIfr" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/taveine.ae?igsh=MXY2eWs5ZW5rNjJ1OQ%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://pin.it/6Mn8StFQr" target="_blank"><i class="fab fa-pinterest-p"></i></a>
                 </div>
-            </div>
-        </div>
-    </div>
-</footer>
 
+                <div class="footer-accordion">
+                    <div class="acc-item">
+                        <div class="acc-btn" onclick="window.toggleFooterAcc('help-list')">Help <span>+</span></div>
+                        <div id="help-list" class="acc-content">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Refund Policy</a>
+                            <a href="#">Care & Handling</a>
+                            <a href="#">Terms & Conditions</a>
+                            <a href="#">FAQ's</a>
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <div class="acc-btn" onclick="window.toggleFooterAcc('links-list')">Useful Links <span>+</span></div>
+                        <div id="links-list" class="acc-content">
+                            <a onclick="window.scrollTo(0,0)">Shop All</a>
+                            <a onclick="window.showInfoPage('about')">About Us</a>
+                        </div>
+                    </div>
+
+                    <div class="acc-item">
+                        <div class="acc-btn" onclick="window.toggleFooterAcc('email-box')">Sign Up for Email <span>+</span></div>
+                        <div id="email-box" class="acc-content">
+                            <input type="email" placeholder="Enter your email" style="width:100%; padding:10px; border:1px solid #ddd;">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </footer>
     </main>
+
     <div id="side-menu" class="side-menu">
-    <div class="menu-top">
-        <button class="close-btn" onclick="window.toggleMenu()">✕</button>
-    </div>
-    <div class="menu-list">
-        <div class="accordion-item">
-            <div class="acc-header" onclick="window.toggleMenuAcc('coll-items')">Collection <span>+</span></div>
-            <div id="coll-items" class="acc-body">
-                <a onclick="window.openCategoryPage('Christmas Collection')">Christmas Collection</a>
-                <a onclick="window.openCategoryPage('Spring')">Spring</a>
-                <a onclick="window.openCategoryPage('New Arrivals')">New Arrivals</a>
-                <a onclick="window.openCategoryPage('Best Sellers')">Best Sellers</a>
-                <a onclick="window.openCategoryPage('Luxury')">Luxury</a>
-                <a onclick="window.openCategoryPage('Specialty')">Specialty</a>
-                <a onclick="window.openCategoryPage('Vases')">Vases</a>
-                <a onclick="window.openCategoryPage('Box')">Box</a>
-            </div>
+        <div class="menu-top">
+            <button class="close-btn" onclick="window.toggleMenu()">✕</button>
         </div>
+        <div class="menu-list">
+            <div class="accordion-item">
+                <div class="acc-header" onclick="window.toggleMenuAcc('coll-items')">Collection <span>+</span></div>
+                <div id="coll-items" class="acc-body">
+                    <a onclick="window.openCategoryPage('Christmas Collection')">Christmas Collection</a>
+                    <a onclick="window.openCategoryPage('Spring')">Spring</a>
+                    <a onclick="window.openCategoryPage('New Arrivals')">New Arrivals</a>
+                    <a onclick="window.openCategoryPage('Best Sellers')">Best Sellers</a>
+                    <a onclick="window.openCategoryPage('Luxury')">Luxury</a>
+                    <a onclick="window.openCategoryPage('Specialty')">Specialty</a>
+                    <a onclick="window.openCategoryPage('Vases')">Vases</a>
+                    <a onclick="window.openCategoryPage('Box')">Box</a>
+                </div>
+            </div>
 
-        <div class="accordion-item">
-            <div class="acc-header" onclick="window.toggleMenuAcc('occ-items')">Occasions <span>+</span></div>
-            <div id="occ-items" class="acc-body">
-                <a onclick="window.openCategoryPage('Anniversary')">Anniversary</a>
-                <a onclick="window.openCategoryPage('Birthday')">Birthday</a>
-                <a onclick="window.openCategoryPage('New Baby')">New Baby</a>
-                <a onclick="window.openCategoryPage('Forever Rose')">Forever Rose</a>
+            <div class="accordion-item">
+                <div class="acc-header" onclick="window.toggleMenuAcc('occ-items')">Occasions <span>+</span></div>
+                <div id="occ-items" class="acc-body">
+                    <a onclick="window.openCategoryPage('Anniversary')">Anniversary</a>
+                    <a onclick="window.openCategoryPage('Birthday')">Birthday</a>
+                    <a onclick="window.openCategoryPage('New Baby')">New Baby</a>
+                    <a onclick="window.openCategoryPage('Forever Rose')">Forever Rose</a>
+                </div>
             </div>
-        </div>
 
-        <div class="accordion-item">
-            <div class="acc-header" onclick="window.toggleMenuAcc('home-items')">Home <span>+</span></div>
-            <div id="home-items" class="acc-body">
-                <a onclick="window.showInfoPage('about')">About Us</a>
-                <a href="#">Privacy Policy</a>
+            <div class="accordion-item">
+                <div class="acc-header" onclick="window.toggleMenuAcc('home-items')">Home <span>+</span></div>
+                <div id="home-items" class="acc-body">
+                    <a onclick="window.showInfoPage('about')">About Us</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <div id="cart-drawer" class="cart-drawer">
         <div class="cart-header"><h3>Your Cart</h3><button onclick="window.toggleCart()">✕</button></div>
@@ -154,8 +163,8 @@
 
     <div id="about-page" class="full-page">
         <div class="p-header"><button onclick="window.closePage('about-page')">← Back</button> <h3>About Us</h3></div>
-        <div class="p-content about-content">
-            <p>Handpicked flowers with passion.</p>
+        <div class="p-content about-content" style="padding: 20px;">
+            <p>Handpicked flowers with passion. We deliver nature's breath to your home.</p>
         </div>
     </div>
 
