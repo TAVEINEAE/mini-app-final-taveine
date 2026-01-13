@@ -626,3 +626,23 @@ body {
     display: none;
     flex-direction: column;
 }
+
+.submenu-title {
+    padding: 16px 20px;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+}
+
+.submenu-content {
+    display: none;
+    background: #fafafa;
+}
+
+.submenu-content a {
+    padding-left: 36px;
+}
+
+.submenu-content.open {
+    display: block;
+}
