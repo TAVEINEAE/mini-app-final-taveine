@@ -44,14 +44,54 @@
         </section>
 
         <footer class="main-footer">
-            <div class="footer-logo">TAVÉINE</div>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="logo-text">TAVÉINE</div>
+            <div class="logo-icon">✨</div> </div>
+        
+        <div class="footer-info">
             <p>Address: International City, Dubai, UAE</p>
-            <p>Email: support@taveine.com</p>
-            <p>Phone: 971 58 574 37 06</p>
-            <div class="footer-bottom">
-                <p>© TAVÉINE Flower Shop. All Rights Reserved.</p>
+            <p>Email: <strong>support@taveine.com</strong></p>
+            <p>Phone:</p>
+            <p><strong>971 58 574 37 06</strong></p>
+            <a href="#" class="directions">Get direction ↗</a>
+        </div>
+
+        <div class="footer-socials">
+            <a href="https://www.facebook.com/share/15VBRvAB4ST/?mibextid=wwXIfr" target="_blank">f</a>
+            <a href="https://www.instagram.com/taveine.ae?igsh=MXY2eWs5ZW5rNjJ1OQ%3D%3D&utm_source=qr" target="_blank">i</a>
+            <a href="https://pin.it/6Mn8StFQr" target="_blank">p</a>
+        </div>
+
+        <div class="footer-accordion">
+            <div class="acc-item">
+                <div class="acc-btn" onclick="window.toggleFooterAcc('help-list')">Help <span>+</span></div>
+                <div id="help-list" class="acc-content">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Refund Policy</a>
+                    <a href="#">Care & Handling</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">FAQ's</a>
+                </div>
             </div>
-        </footer>
+
+            <div class="acc-item">
+                <div class="acc-btn" onclick="window.toggleFooterAcc('links-list')">Useful Links <span>+</span></div>
+                <div id="links-list" class="acc-content">
+                    <a href="#">Shop All</a>
+                    <a href="#">About Us</a>
+                </div>
+            </div>
+
+            <div class="acc-item">
+                <div class="acc-btn" onclick="window.toggleFooterAcc('email-box')">Sign Up for Email <span>+</span></div>
+                <div id="email-box" class="acc-content">
+                    <input type="email" placeholder="Enter your email" style="width:100%; padding:10px; background:#f9f9f9; border:1px solid #ddd;">
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
     </main>
 
     <div id="side-menu" class="side-menu">
