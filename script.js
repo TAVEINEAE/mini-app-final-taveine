@@ -161,3 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     loadDataFromFirebase();
 });
+
+window.showInfoPage = (id) => {
+    window.openPage(id + '-page');
+    window.toggleMenu();
+};
