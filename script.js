@@ -2,277 +2,197 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebas
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
-  authDomain: "taveine-admin.firebaseapp.com",
-  projectId: "taveine-admin",
-  storageBucket: "taveine-admin.firebasestorage.app",
-  messagingSenderId: "916085731146",
-  appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
+    apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
+    authDomain: "taveine-admin.firebaseapp.com",
+    projectId: "taveine-admin",
+    storageBucket: "taveine-admin.firebasestorage.app",
+    messagingSenderId: "916085731146",
+    appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
 
-// Инициализация Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 const tg = window.Telegram?.WebApp;
+
 let products = [];
-let cart = [];
-let wishlist = [];
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 
-// ================= ФУНКЦИИ АККОРДЕОНОВ (МЕНЮ И ФУТЕР) =================
+// Инициализация
+async function initApp() {
+    tg?.expand();
+    await loadProducts();
+    renderMain();
+    updateCounters();
+    initSearchLogic();
+}
 
-window.toggleMenuAcc = (id) => {
-    const target = document.getElementById(id);
-    const parent = target.parentElement;
-    const isOpen = parent.classList.contains('active');
-
-    document.querySelectorAll('#side-menu .accordion-item').forEach(item => {
-        item.classList.remove('active');
-        const body = item.querySelector('.acc-body');
-        if (body) body.style.display = 'none';
-        const span = item.querySelector('.acc-header span');
-        if (span) span.innerText = '+';
-    });
-
-    if (!isOpen) {
-        parent.classList.add('active');
-        if (target) target.style.display = 'block';
-        const span = parent.querySelector('.acc-header span');
-        if (span) span.innerText = '-';
-    }
-};
-
-window.toggleFooterAcc = (id) => {
-    const targetContent = document.getElementById(id);
-    const parentItem = targetContent.parentElement;
-    const isNowActive = parentItem.classList.contains('active');
-
-    document.querySelectorAll('.footer-accordion .acc-item').forEach(item => {
-        item.classList.remove('active');
-        const content = item.querySelector('.acc-content');
-        if (content) content.style.display = 'none';
-        const span = item.querySelector('.acc-btn span');
-        if (span) span.innerText = '+';
-    });
-
-    if (!isNowActive) {
-        parentItem.classList.add('active');
-        if (targetContent) targetContent.style.display = 'block';
-        const span = parentItem.querySelector('.acc-btn span');
-        if (span) span.innerText = '-';
-    }
-};
-
-// ================= ЛОГИКА ТОВАРОВ И КАТЕГОРИЙ =================
-
-window.openCategoryPage = (catName) => {
-    const titleEl = document.getElementById('cat-title');
-    const gridEl = document.getElementById('category-grid');
-    
-    if (titleEl) titleEl.innerText = catName;
-    
-    const filteredProducts = products.filter(p => p.category === catName);
-    
-    if (gridEl) {
-        if (filteredProducts.length > 0) {
-            gridEl.innerHTML = filteredProducts.map(p => `
-                <div class="card">
-                    <button class="wish-btn" onclick="window.addToWishlist('${p.id}')">❤</button>
-                    <img src="${p.image || 'https://via.placeholder.com/300'}">
-                    <h4>${p.name}</h4>
-                    <b>${p.price} AED</b>
-                    <button class="add-btn" onclick="window.addToCart('${p.id}')">Add to Cart</button>
-                </div>
-            `).join('');
-        } else {
-            gridEl.innerHTML = "<p style='padding:20px; color:gray;'>No products in this category yet.</p>";
-        }
-    }
-    
-    window.openPage('category-page'); 
-    window.toggleMenu(); 
-};
-
-async function loadDataFromFirebase() {
+async function loadProducts() {
     try {
         const querySnapshot = await getDocs(collection(db, "products"));
-        products = [];
-        querySnapshot.forEach((doc) => {
-            products.push({ id: doc.id, ...doc.data() });
-        });
-        renderAll();
-        initSearch();
-    } catch (e) {
-        console.error("Firebase error:", e);
+        products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (e) { console.error("Firebase Error:", e); }
+}
+
+function renderMain() {
+    const slider = document.getElementById('new-arrivals-slider');
+    const grid = document.getElementById('all-products-grid');
+    
+    const newItems = products.filter(p => p.tags && p.tags.includes('new'));
+    
+    if(slider) renderGrid(newItems, 'new-arrivals-slider');
+    if(grid) renderGrid(products, 'all-products-grid');
+}
+
+function renderGrid(data, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (data.length === 0) {
+        container.innerHTML = `<p style="padding:20px; color:#888;">No products found...</p>`;
+        return;
     }
-}
 
-function renderAll() {
-    renderGrid(products.filter(p => p.tags?.includes('new')).slice(0, 4), 'new-slider');
-    renderGrid(products.filter(p => p.tags?.includes('sale')).slice(0, 4), 'sale-slider');
-    renderGrid(products.filter(p => p.tags?.includes('popular')).slice(0, 4), 'popular-slider');
-    renderGrid(products, 'all-products-grid');
-}
-
-function renderGrid(list, gridId) {
-    const grid = document.getElementById(gridId);
-    if (!grid) return;
-    grid.innerHTML = list.map(p => `
+    container.innerHTML = data.map(p => `
         <div class="card">
-            <button class="wish-btn" onclick="window.addToWishlist('${p.id}')">❤</button>
-            <img src="${p.image || 'https://via.placeholder.com/300'}">
-            <h4>${p.name}</h4>
-            <b>${p.price} AED</b>
-            <button class="add-btn" onclick="window.addToCart('${p.id}')">Add to Cart</button>
+            <button class="wish-btn" onclick="window.toggleWish('${p.id}')">
+                ${wishlist.some(item => item.id === p.id) ? '❤️' : '♡'}
+            </button>
+            <img src="${p.image}" alt="${p.name}">
+            <div class="card-body">
+                <h4>${p.name}</h4>
+                <b>${p.price} AED</b>
+                <button class="add-btn" onclick="window.addToCart('${p.id}')">Add to Cart</button>
+            </div>
         </div>
     `).join('');
 }
 
-function initSearch() {
-    document.getElementById('product-search')?.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const defContent = document.getElementById('default-content');
-        const gridTitle = document.getElementById('grid-title');
+// Поиск
+function initSearchLogic() {
+    const searchInput = document.getElementById('product-search');
+    searchInput?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        const resultsGrid = document.getElementById('search-results-grid');
+        const emptyState = document.getElementById('search-empty-state');
 
         if (term.length > 0) {
-            defContent.style.display = 'none';
-            gridTitle.innerText = "Search Results";
             const filtered = products.filter(p => 
                 p.name.toLowerCase().includes(term) || 
-                p.category?.toLowerCase().includes(term) ||
-                p.tags?.some(t => t.toLowerCase().includes(term))
+                (p.category && p.category.toLowerCase().includes(term))
             );
-            renderGrid(filtered, 'all-products-grid');
+            
+            if (filtered.length > 0) {
+                emptyState.innerHTML = '';
+                renderGrid(filtered, 'search-results-grid');
+            } else {
+                resultsGrid.innerHTML = '';
+                emptyState.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No results found</h2>
+                        <p>We couldn't find anything matching "${term}"</p>
+                    </div>`;
+            }
         } else {
-            defContent.style.display = 'block';
-            gridTitle.innerText = "Shop All";
-            renderAll();
+            resultsGrid.innerHTML = '';
+            emptyState.innerHTML = `<div class="empty-state"><p>Type something to search...</p></div>`;
         }
     });
 }
 
-// ================= ГЛОБАЛЬНЫЕ UI ФУНКЦИИ =================
-
-window.toggleMenu = () => {
-    const menu = document.getElementById('side-menu');
-    if(menu) menu.classList.toggle('open');
+// Wishlist Logic
+window.toggleWish = (id) => {
+    const index = wishlist.findIndex(i => i.id === id);
+    if (index === -1) {
+        wishlist.push(products.find(p => p.id === id));
+        tg?.HapticFeedback.impactOccurred('light');
+    } else {
+        wishlist.splice(index, 1);
+    }
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    updateCounters();
+    renderMain();
+    if(document.getElementById('wish-page').style.display === 'block') window.renderWishPage();
 };
 
-window.toggleCart = () => { 
-    const cartDrawer = document.getElementById('cart-drawer');
-    if(cartDrawer) {
-        cartDrawer.classList.toggle('open'); 
-        renderCart(); 
+window.renderWishPage = () => {
+    const container = document.getElementById('wish-container');
+    if (wishlist.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div style="font-size:60px; color:#eee;">♡</div>
+                <h2>Wishlist is empty.</h2>
+                <p>You don't have any products in the wishlist yet.</p>
+                <button class="black-btn" onclick="window.closePage('wish-page')">Return to shop</button>
+            </div>`;
+    } else {
+        renderGrid(wishlist, 'wish-container');
     }
 };
 
-window.openPage = (id) => { 
-    const page = document.getElementById(id);
-    if(page) {
-        page.style.display = 'block'; 
-        if(id === 'wish-page') renderWishlist();
-    }
-};
-
-window.closePage = (id) => {
-    const page = document.getElementById(id);
-    if(page) page.style.display = 'none';
-};
-
-window.toggleAcc = (id) => { 
-    const el = document.getElementById(id); 
-    if(el) el.style.display = el.style.display === 'block' ? 'none' : 'block'; 
-};
-
+// Cart Logic
 window.addToCart = (id) => {
-    const p = products.find(x => x.id === id);
-    if (p) { 
-        cart.push(p); 
-        updateCounters(); 
-        tg?.HapticFeedback.impactOccurred('medium'); 
+    const item = products.find(p => p.id === id);
+    cart.push(item);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCounters();
+    tg?.HapticFeedback.notificationOccurred('success');
+};
+
+window.renderCartPage = () => {
+    const container = document.getElementById('cart-container');
+    const actions = document.getElementById('cart-actions');
+    
+    if (cart.length === 0) {
+        actions.style.display = 'none';
+        container.innerHTML = `
+            <div class="empty-state">
+                <h2>Your cart is empty</h2>
+                <p>Check out our products and start shopping.</p>
+                <button class="black-btn" onclick="window.closePage('cart-drawer')">Return to shop ↗</button>
+            </div>`;
+    } else {
+        actions.style.display = 'block';
+        container.innerHTML = `
+            <div style="padding:15px;">
+                ${cart.map((item, index) => `
+                    <div class="wish-item" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
+                        <div>
+                            <b>${item.name}</b><br>
+                            <small>${item.price} AED</small>
+                        </div>
+                        <button onclick="window.removeFromCart(${index})" style="background:none; border:none; color:red;">Remove</button>
+                    </div>
+                `).join('')}
+            </div>`;
+        const total = cart.reduce((acc, item) => acc + (item.price || 0), 0);
+        document.getElementById('cart-total-sum').innerText = total;
     }
 };
 
-window.addToWishlist = (id) => {
-    if (!wishlist.find(x => x.id === id)) {
-        const p = products.find(x => x.id === id);
-        if(p) {
-            wishlist.push(p);
-            updateCounters();
-        }
-    }
+window.removeFromCart = (index) => {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCounters();
+    window.renderCartPage();
 };
 
-window.showInfoPage = (id) => { 
-    window.openPage(id + '-page'); 
-    window.toggleMenu(); 
+// UI Helpers
+window.openPage = (id) => {
+    document.getElementById(id).style.display = 'block';
+    if(id === 'wish-page') window.renderWishPage();
+    if(id === 'cart-drawer') window.renderCartPage();
+};
+window.closePage = (id) => document.getElementById(id).style.display = 'none';
+window.toggleMenu = () => document.getElementById('side-menu').classList.toggle('open');
+window.toggleMenuAcc = (id) => {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
 };
 
 function updateCounters() {
-    const wCount = document.getElementById('w-count');
-    const cCount = document.getElementById('c-count');
-    if(wCount) wCount.innerText = wishlist.length;
-    if(cCount) cCount.innerText = cart.length;
+    document.getElementById('w-count').innerText = wishlist.length;
+    document.getElementById('c-count').innerText = cart.length;
 }
 
-function renderCart() {
-    const list = document.getElementById('cart-items-list');
-    if(!list) return;
-    list.innerHTML = cart.map((p, i) => `
-        <div class="wish-item">
-            <img src="${p.image}">
-            <b>${p.name}</b>
-            <span>${p.price} AED</span>
-        </div>
-    `).join('');
-    const totalEl = document.getElementById('cart-total-price');
-    if(totalEl) totalEl.innerText = cart.reduce((s, p) => s + p.price, 0);
-}
-
-function renderWishlist() {
-    const container = document.getElementById('wish-list-container');
-    if(!container) return;
-    container.innerHTML = wishlist.map(p => `
-        <div class="wish-item">
-            <img src="${p.image}">
-            <p>${p.name}</p>
-        </div>
-    `).join('');
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    if (tg) {
-        tg.ready();
-        tg.expand();
-    }
-    loadDataFromFirebase();
-});
-
-window.toggleSearchPage = () => {
-    // Если страница поиска еще не открыта — открываем
-    const searchPage = document.getElementById('search-page');
-    if (searchPage) {
-        searchPage.style.display = 'block';
-        // Автоматически ставим курсор в поле поиска
-        setTimeout(() => document.getElementById('product-search').focus(), 100);
-    }
-};
-
-// Убедись, что функция initSearch теперь использует grid для результатов
-function initSearch() {
-    const searchInput = document.getElementById('product-search');
-    searchInput?.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const resultsGrid = document.getElementById('search-results-grid');
-        
-        if (term.length > 0) {
-            const filtered = products.filter(p => 
-                p.name.toLowerCase().includes(term) || 
-                p.category?.toLowerCase().includes(term)
-            );
-            renderGrid(filtered, 'search-results-grid');
-        } else {
-            resultsGrid.innerHTML = "";
-        }
-    });
-}
+document.addEventListener('DOMContentLoaded', initApp);
