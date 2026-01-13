@@ -125,3 +125,26 @@ async function loadProducts() {
     list.appendChild(div);
   });
 }
+
+// ================= NAVIGATION =================
+document.addEventListener("DOMContentLoaded", () => {
+  const links = document.querySelectorAll(".nav-link");
+  const pages = document.querySelectorAll(".page");
+
+  links.forEach(link => {
+    link.addEventListener("click", () => {
+
+      // active menu
+      links.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+
+      // show page
+      const page = link.dataset.page;
+      pages.forEach(p => p.classList.add("hidden"));
+
+      const target = document.getElementById(`${page}-page`);
+      if (target) target.classList.remove("hidden");
+
+    });
+  });
+});
