@@ -77,5 +77,20 @@
 </nav>
 
 <script type="module" src="script.js"></script>
+
+<div id="search-page" class="search-drawer">
+    <div class="drawer-header">
+        <span class="drawer-title">Search our site</span>
+        <button class="close-drawer" onclick="window.closeSearch()">✕</button>
+    </div>
+    <div class="drawer-content">
+        <div class="search-field-container">
+            <span class="search-input-icon">🔍</span>
+            <input type="text" id="product-search-input" placeholder="Search">
+        </div>
+        <div id="search-results-grid" class="grid"></div>
+    </div>
+</div>
+
 </body>
 </html>
