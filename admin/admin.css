@@ -93,3 +93,16 @@ body {
   padding: 20px;
   border-radius: 14px;
 }
+
+.hidden {
+  display: none;
+}
+
+.nav-link {
+  cursor: pointer;
+}
+
+.nav-link.active {
+  background: #1f3f38;
+  color: #fff;
+}
