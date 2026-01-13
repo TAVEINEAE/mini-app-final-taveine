@@ -1,44 +1,161 @@
-:root { --green: #1f3f38; --gray: #f4f4f4; --text: #333; }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Segoe UI', sans-serif; background: #fff; color: var(--text); }
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-.top-bar { background: var(--green); height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; position: sticky; top: 0; z-index: 1000; color: #fff; }
-.hero-img { width: 100%; height: auto; display: block; }
+const firebaseConfig = {
+    apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
+    authDomain: "taveine-admin.firebaseapp.com",
+    projectId: "taveine-admin",
+    storageBucket: "taveine-admin.firebasestorage.app",
+    messagingSenderId: "916085731146",
+    appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
+};
 
-.section-title { padding: 20px 15px 10px; font-size: 18px; font-weight: bold; color: var(--green); text-transform: uppercase; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const tg = window.Telegram?.WebApp;
 
-/* Карта товара в сетке */
-.card { border: 1px solid #eee; border-radius: 4px; overflow: hidden; position: relative; }
-.card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
-.card-info { padding: 10px; }
-.card-info h4 { font-size: 13px; color: #555; height: 32px; overflow: hidden; margin-bottom: 5px; }
-.card-info b { font-size: 14px; color: #000; }
-.add-btn { width: 100%; border: 1px solid #000; background: #fff; padding: 8px; margin-top: 10px; font-size: 12px; text-transform: uppercase; }
+let products = [];
+let cart = JSON.parse(localStorage.getItem('taveine_cart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('taveine_wishlist')) || [];
 
-/* Стили корзины со скриншота */
-.cart-item { display: flex; padding: 15px; border-bottom: 1px solid #eee; gap: 15px; }
-.cart-item img { width: 80px; height: 80px; object-fit: cover; }
-.cart-item-info { flex: 1; }
-.cart-item-info h4 { font-size: 14px; margin-bottom: 4px; }
-.cart-item-info p { font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+async function startApp() {
+    tg?.expand();
+    const querySnapshot = await getDocs(collection(db, "products"));
+    products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    renderMain();
+    updateCounters();
+    initSearch();
+}
 
-.qty-control { display: flex; align-items: center; border: 1px solid #ddd; width: fit-content; border-radius: 4px; }
-.qty-control button { border: none; background: none; padding: 5px 10px; font-size: 18px; }
-.qty-control span { padding: 0 10px; font-size: 14px; }
+function renderMain() {
+    const grid = document.getElementById('all-products-grid');
+    const slider = document.getElementById('new-arrivals-slider');
+    
+    if(grid) grid.innerHTML = products.map(p => renderCard(p)).join('');
+    if(slider) slider.innerHTML = products.filter(p => p.tags?.includes('new')).map(p => renderCard(p)).join('');
+}
 
-.remove-link { color: #666; font-size: 12px; text-decoration: underline; margin-left: 15px; border:none; background:none;}
+function renderCard(p) {
+    const isWished = wishlist.some(x => x.id === p.id);
+    return `
+        <div class="card">
+            <button onclick="window.toggleWish('${p.id}')" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; z-index:5;">
+                ${isWished ? '❤️' : '🤍'}
+            </button>
+            <img src="${p.image}">
+            <div class="card-info">
+                <h4>${p.name}</h4>
+                <b>${p.price}.00 AED</b>
+                <button class="add-btn" onclick="window.addToCart('${p.id}')">Add to Cart</button>
+            </div>
+        </div>`;
+}
 
-.cart-summary-fixed { position: fixed; bottom: 85px; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 15px; z-index: 4001; }
-.subtotal-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px; }
-.cart-btns { display: flex; gap: 10px; }
-.white-btn { flex: 1; border: 1px solid #000; background: #fff; padding: 12px; font-weight: bold; }
-.black-checkout-btn { flex: 1; background: #000; color: #fff; border: none; padding: 12px; font-weight: bold; }
+// ЛОГИКА КОРЗИНЫ (Как на скриншоте)
+window.renderCartPage = () => {
+    const container = document.getElementById('cart-container');
+    const footer = document.getElementById('cart-footer-logic');
+    
+    if (cart.length === 0) {
+        footer.style.display = 'none';
+        container.innerHTML = `
+            <div class="empty-state">
+                <h2>Your cart is empty</h2>
+                <p>You may check out all the available products and buy some in the shop</p>
+                <button class="black-btn" onclick="window.closePage('cart-drawer')">Return to shop ↗</button>
+            </div>`;
+    } else {
+        footer.style.display = 'block';
+        let total = 0;
+        container.innerHTML = cart.map((item, index) => {
+            total += item.price * (item.qty || 1);
+            return `
+                <div class="cart-item">
+                    <img src="${item.image}">
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.price}.00 AED</p>
+                        <div style="display:flex; align-items:center;">
+                            <div class="qty-control">
+                                <button onclick="window.updateQty(${index}, -1)">-</button>
+                                <span>${item.qty || 1}</span>
+                                <button onclick="window.updateQty(${index}, 1)">+</button>
+                            </div>
+                            <button class="remove-link" onclick="window.removeFromCart(${index})">Remove</button>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('') + `
+            <div class="section-title" style="margin-top:20px;">Customers also bought</div>
+            <div class="grid">${products.slice(0,2).map(p => renderCard(p)).join('')}</div>
+        `;
+        document.getElementById('cart-total-sum').innerText = total.toFixed(2);
+    }
+};
 
-/* Пустые состояния */
-.empty-state { text-align: center; padding: 100px 20px; }
-.empty-state h2 { font-size: 22px; margin-bottom: 15px; }
-.black-btn { background: #000; color: #fff; padding: 15px 30px; border: none; text-transform: uppercase; margin-top: 20px; }
+window.updateQty = (index, delta) => {
+    cart[index].qty = (cart[index].qty || 1) + delta;
+    if (cart[index].qty < 1) cart[index].qty = 1;
+    saveCart();
+    window.renderCartPage();
+};
 
-.full-page { position: fixed; inset: 0; background: #fff; z-index: 4000; display: none; overflow-y: auto; padding-bottom: 180px;}
-.p-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+// ЛОГИКА ВИШЛИСТА (Как на скриншоте)
+window.renderWishPage = () => {
+    const container = document.getElementById('wish-container');
+    if (wishlist.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div style="font-size:50px; color:#ccc;">♡</div>
+                <h2>Wishlist is empty.</h2>
+                <p>You don't have any products in the wishlist yet. You will find a lot of interesting products on our "Shop" page.</p>
+                <button class="black-btn" onclick="window.closePage('wish-page')">Return to shop</button>
+            </div>`;
+    } else {
+        container.innerHTML = `<div class="grid">${wishlist.map(p => renderCard(p)).join('')}</div>`;
+    }
+};
+
+window.toggleWish = (id) => {
+    const idx = wishlist.findIndex(x => x.id === id);
+    if (idx === -1) wishlist.push(products.find(p => p.id === id));
+    else wishlist.splice(idx, 1);
+    localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
+    updateCounters(); renderMain();
+    if(document.getElementById('wish-page').style.display === 'block') window.renderWishPage();
+};
+
+window.addToCart = (id) => {
+    const p = products.find(x => x.id === id);
+    const existing = cart.find(x => x.id === id);
+    if (existing) existing.qty = (existing.qty || 1) + 1;
+    else cart.push({...p, qty: 1});
+    saveCart();
+    tg?.HapticFeedback.notificationOccurred('success');
+};
+
+window.removeFromCart = (index) => { cart.splice(index, 1); saveCart(); window.renderCartPage(); };
+function saveCart() { localStorage.setItem('taveine_cart', JSON.stringify(cart)); updateCounters(); }
+
+function updateCounters() {
+    document.getElementById('w-count').innerText = wishlist.length;
+    document.getElementById('c-count').innerText = cart.length;
+}
+
+window.openPage = (id) => {
+    document.getElementById(id).style.display = 'block';
+    if(id === 'cart-drawer') window.renderCartPage();
+    if(id === 'wish-page') window.renderWishPage();
+};
+window.closePage = (id) => document.getElementById(id).style.display = 'none';
+
+function initSearch() {
+    document.getElementById('product-search')?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const res = products.filter(p => p.name.toLowerCase().includes(term));
+        document.getElementById('search-results-grid').innerHTML = res.map(p => renderCard(p)).join('');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', startApp);
