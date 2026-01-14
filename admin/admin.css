@@ -1,12 +1,22 @@
+:root {
+  --primary-teal: #006d5b; /* Твой основной цвет */
+  --bg-light: #f4f7f6;
+  --sidebar-white: #ffffff;
+  --text-main: #2d3436;
+  --text-muted: #636e72;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --border-radius: 16px;
+}
+
 * {
   box-sizing: border-box;
-  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
   margin: 0;
-  background: #f8fafc; /* Светлый фон как на референсе */
-  color: #334155;
+  background: var(--bg-light);
+  color: var(--text-main);
 }
 
 .layout {
@@ -14,51 +24,52 @@ body {
   min-height: 100vh;
 }
 
-/* SIDEBAR — Чистый белый стиль */
+/* SIDEBAR — Профессиональный чистый стиль */
 .sidebar {
   width: 260px;
-  background: #ffffff;
-  padding: 24px 16px;
-  border-right: 1px solid #f1f5f9;
+  background: var(--sidebar-white);
+  padding: 30px 20px;
+  border-right: 1px solid #eef2f1;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar h2 {
-  padding-left: 12px;
-  margin-bottom: 30px;
-  font-size: 22px;
-  color: #006d5b; /* Твой изумрудный */
-  font-weight: 700;
+  color: var(--primary-teal);
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  padding-left: 10px;
   letter-spacing: -0.5px;
 }
 
 .sidebar nav a {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  color: #64748b;
+  padding: 14px 18px;
+  color: var(--text-muted);
   text-decoration: none;
   border-radius: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .sidebar nav a:hover {
   background: #f0fdfa;
-  color: #006d5b;
+  color: var(--primary-teal);
 }
 
-/* Активный пункт меню как на референсе (Register patient) */
 .sidebar nav a.active {
-  background: #006d5b; /* Твой изумрудный */
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 109, 91, 0.25);
+  background: var(--primary-teal);
+  color: #fff;
+  box-shadow: 0 8px 15px rgba(0, 109, 91, 0.2);
 }
 
 /* MAIN AREA */
 .main {
   flex: 1;
-  padding: 32px 40px;
+  padding: 40px;
 }
 
 /* TOPBAR */
@@ -66,83 +77,90 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .topbar span {
-  font-size: 14px;
-  color: #64748b;
-  background: #ffffff;
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid #f1f5f9;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: #fff;
+  padding: 8px 20px;
+  border-radius: 30px;
+  box-shadow: var(--shadow);
 }
 
+/* Кнопка Logout — более аккуратная */
 .topbar button {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 10px 20px;
+  color: #ff7675;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 14px;
+  transition: 0.2s;
 }
 
 .topbar button:hover {
-  color: #ef4444;
+  background: #fff5f5;
+  border-color: #fab1a0;
 }
 
-/* STATS CARDS — Копируем стиль референса */
+/* STATS CARDS — Стиль «Professional Dashboard» */
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
 }
 
 .card {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 10px 15px -3px rgba(0,0,0,0.03);
-  border: 1px solid rgba(241, 245, 249, 0.5);
-  display: flex;
-  flex-direction: column;
+  background: #fff;
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0, 109, 91, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .card h4 {
-  margin: 0;
-  color: #94a3b8;
-  font-size: 13px;
-  font-weight: 600;
-  order: 2;
+  margin: 0 0 8px;
+  color: var(--text-muted);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
 .card strong {
-  font-size: 26px;
-  color: #1e293b;
+  font-size: 32px;
+  color: var(--text-main);
   font-weight: 700;
-  margin-bottom: 4px;
-  order: 1;
 }
 
 /* CHART BOX */
 .charts {
-  margin-top: 32px;
+  margin-top: 40px;
 }
 
 .chart-box {
-  background: #ffffff;
-  padding: 32px;
+  background: #fff;
+  padding: 35px;
   border-radius: 20px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
-  border: 1px solid #f1f5f9;
+  box-shadow: var(--shadow);
+  border: 1px solid #eef2f1;
 }
 
 .chart-box h3 {
-  font-size: 18px;
-  color: #1e293b;
-  margin-bottom: 24px;
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 20px;
+  color: var(--text-main);
 }
 
-.nav-link {
-  cursor: pointer;
+/* Скрытые элементы */
+.hidden {
+  display: none;
 }
