@@ -1,158 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAVÉINE AE | Telegram Admin Control</title>
-    <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TAVÉINE AE • Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
 <div class="layout">
-    <aside class="sidebar">
-        <div class="logo-area">
-            <img src="https://i.ibb.co/vz0Lz9S/logo.png" class="logo-img" alt="Logo">
-            <span class="logo-text">TAVÉINE AE</span>
+  <aside class="sidebar">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo" class="logo-img">
+      <strong>TAVÉINE AE</strong>
+    </div>
+
+    <div class="nav-label">Control</div>
+    <a class="nav-link active" data-page="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a class="nav-link" data-page="product"><i class="fa-solid fa-plus"></i> Add Product</a>
+    <a class="nav-link" data-page="inventory"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a>
+    <a class="nav-link" data-page="customers"><i class="fa-solid fa-users"></i> Customers</a>
+    <a class="nav-link" data-page="messages"><i class="fa-solid fa-comment-dots"></i> Telegram Chat</a>
+
+    <a class="nav-link logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+  </aside>
+
+  <main class="main">
+    <header class="header">
+      <h1 id="page-title">Dashboard</h1>
+      <div id="auth-status">Loading...</div>
+    </header>
+
+    <!-- Dashboard -->
+    <section class="page" id="dashboard-page">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <p>Products</p>
+          <h4 id="dash-products">0</h4>
+        </div>
+        <div class="stat-card">
+          <p>Bot Users</p>
+          <h4 id="dash-users">0</h4>
+        </div>
+        <div class="stat-card">
+          <p>Revenue</p>
+          <h4 id="dash-revenue">— AED</h4>
+        </div>
+        <div class="stat-card">
+          <p>Status</p>
+          <h4 style="color:#10b981">Active</h4>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:16px">Products added per day</h3>
+        <div style="position:relative; height:340px;">
+          <canvas id="productsChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add Product -->
+    <section class="page hidden" id="product-page">
+      <div class="card" style="max-width:640px;">
+        <h2 style="margin-bottom:28px">Add New Product</h2>
+        <div class="form-group">
+          <input id="p-name" class="form-input" placeholder="Product Name *" required>
+        </div>
+        <div class="form-group">
+          <input id="p-price" class="form-input" type="number" step="0.01" placeholder="Price (AED) *" required>
+        </div>
+        <div class="form-group">
+          <input id="p-category" class="form-input" placeholder="Category">
+        </div>
+        <div class="form-group">
+          <input id="p-image" class="form-input" placeholder="Image URL (https...)" type="url">
+        </div>
+        <div class="form-group">
+          <input id="p-tags" class="form-input" placeholder="Tags (comma separated)">
         </div>
 
-        <div class="nav-label">General</div>
-        <a class="nav-link active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
-        <a class="nav-link" data-page="product"><i class="fas fa-plus-circle"></i> Add Product</a>
-        <a class="nav-link" data-page="inventory"><i class="fas fa-boxes"></i> Inventory</a>
-        <a class="nav-link" data-page="customers"><i class="fas fa-users"></i> Bot Customers</a>
-        <a class="nav-link" data-page="messages"><i class="fas fa-comment-dots"></i> TG Messages</a>
+        <button onclick="addProduct()" class="btn btn-primary" style="width:100%; margin-top:12px;">
+          <i class="fa-solid fa-plus"></i> Add Product
+        </button>
+      </div>
+    </section>
 
-        <div class="nav-label">Account</div>
-        <a class="nav-link" onclick="logout()" style="margin-top: auto; color: #ff5e5e;">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
-    </aside>
+    <!-- Inventory -->
+    <section class="page hidden" id="inventory-page">
+      <h2 style="margin-bottom:24px">Inventory</h2>
+      <div class="inventory-container" id="inventory-list">
+        <!-- карточки продуктов -->
+      </div>
+    </section>
 
-    <main class="main">
-        <header>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <i class="fab fa-telegram" style="color:#0088cc; font-size:24px;"></i>
-                <h2 id="page-title" style="margin:0;">DASHBOARD</h2>
-            </div>
-            <div id="auth-status" style="font-weight:600;">Connecting to Bot...</div>
-        </header>
+    <!-- Customers -->
+    <section class="page hidden" id="customers-page">
+      <div class="card" style="text-align:center; padding:60px 20px;">
+        <h2>Real Telegram Mini App Users</h2>
+        <div style="font-size:5.5rem; font-weight:800; color:var(--primary); margin:32px 0;">
+          <span id="real-users-count">0</span>
+        </div>
+        <p style="color:var(--text-secondary); font-size:1.1rem;">
+          unique users who interacted with the bot
+        </p>
+      </div>
+    </section>
 
-        <section class="page" id="dashboard-page">
-            <div class="stats-grid">
-                <div class="stat-card orange">
-                    <p>Total Revenue</p>
-                    <h4 id="dash-rev">0 AED</h4>
-                </div>
-                <div class="stat-card green">
-                    <p>Bot Unique Users</p>
-                    <h4 id="dash-users">0</h4>
-                </div>
-                <div class="stat-card blue">
-                    <p>Active Inventory</p>
-                    <h4 id="dash-inv">0</h4>
-                </div>
-                <div class="stat-card pink">
-                    <p>Sync Status</p>
-                    <h4 id="dash-trend">Encrypted</h4>
-                </div>
-            </div>
+    <!-- Messages -->
+    <section class="page hidden" id="messages-page">
+      <div class="messenger">
+        <div id="chat-list"></div>
 
-            <div class="chart-box" style="margin-top: 20px;">
-                <h3 style="margin-bottom: 20px;">Product Addition Stats (Daily)</h3>
-                <div style="height: 280px;">
-                    <canvas id="dailyChart"></canvas>
-                </div>
-            </div>
-        </section>
+        <div style="flex:1; display:flex; flex-direction:column;">
+          <div id="active-chat-header" style="padding:16px 24px; border-bottom:1px solid var(--border); font-weight:600;">
+            Select a chat to start messaging
+          </div>
 
-        <section class="page hidden" id="product-page">
-            <div class="input-card">
-                <h2>Add Product to Mini App</h2>
-                <p style="color: var(--text-sub); margin-bottom: 20px;">All items added here will appear instantly in the Telegram Bot catalog.</p>
-                
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <label style="font-weight:600;">Product Title</label>
-                    <input id="p-name" class="form-input" placeholder="Enter product name...">
-                    
-                    <label style="font-weight:600;">Price (AED)</label>
-                    <input id="p-price" class="form-input" type="number" placeholder="0.00">
-                    
-                    <label style="font-weight:600;">Category</label>
-                    <input id="p-category" class="form-input" placeholder="e.g. Footwear, Electronics...">
-                    
-                    <label style="font-weight:600;">Image Link (URL)</label>
-                    <input id="p-image" class="form-input" placeholder="https://image-link.com/photo.jpg">
-                    
-                    <label style="font-weight:600;">Tags / Badges</label>
-                    <input id="p-tags" class="form-input" placeholder="e.g. NEW, -20%, Trending">
-                    
-                    <button onclick="addProduct()" class="btn-main" style="margin-top:10px;">
-                        <i class="fas fa-cloud-upload-alt"></i> SYNC WITH TELEGRAM
-                    </button>
-                </div>
-            </div>
-        </section>
+          <div id="chat-box"></div>
 
-        <section class="page hidden" id="inventory-page">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom:15px;">
-                <div>
-                    <h2 style="margin:0;">Live Inventory Slider</h2>
-                    <p style="color:gray; margin:5px 0;">Swipe left/right to view all items</p>
-                </div>
-            </div>
-            <div class="inventory-grid" id="inventory-list">
-                </div>
-        </section>
-
-        <section class="page hidden" id="customers-page">
-            <div class="customer-card">
-                <div style="background: var(--p-green); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                    <i class="fas fa-user-friends" style="font-size: 32px; color: var(--primary);"></i>
-                </div>
-                <h2>Live Bot Database</h2>
-                <p>Number of unique users who have accessed your Telegram Mini App:</p>
-                <div id="real-users-count">0</div>
-                <div style="background: #f1f1f1; padding: 10px; border-radius: 10px; font-size: 12px; display: inline-block;">
-                    Status: <span style="color: green; font-weight: bold;">Connected to RTDB</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="page hidden" id="messages-page">
-            <div class="messenger">
-                <div class="chat-sidebar" id="chat-list">
-                    </div>
-                <div class="chat-area">
-                    <div id="active-chat-user" style="padding:15px; border-bottom:1px solid #eee; font-weight:700; background:#fff;">
-                        Select a customer to reply
-                    </div>
-                    <div class="msgs" id="chat-box">
-                        </div>
-                    <div style="padding:15px; display:flex; gap:10px; background:#fff; border-top:1px solid #eee;">
-                        <input id="reply-input" placeholder="Send message to Telegram..." style="flex:1; padding:12px; border-radius:10px; border:1px solid #ddd;">
-                        <button onclick="sendMessage()" class="btn-main" style="width:50px; padding:0; display:flex; align-items:center; justify-content:center;">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+          <div class="input-area">
+            <input id="reply-input" class="form-input" placeholder="Type your message..." autocomplete="off"/>
+            <button class="btn btn-primary" onclick="sendMessage()">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
 
 <script type="module" src="admin.js"></script>
-
-<script>
-    // Инициализация Telegram Mini App если открыто в ТГ
-    if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.headerColor = '#111315';
-    }
-</script>
-
 </body>
 </html>
