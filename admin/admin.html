@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TAVÉINE • Admin</title>
+  <title>TAVÉINE</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,97 +16,96 @@
 </head>
 <body>
 
-<div class="app-container">
+<div class="app">
+  <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="logo-area">
-      <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo" class="logo-img">
-      <strong>TAVÉINE</strong>
+    <div class="logo">
+      <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="TAVÉINE">
+      <span>TAVÉINE</span>
     </div>
-
-    <nav class="nav-menu">
-      <a class="nav-item active" data-screen="dashboard"><i class="fas fa-gauge"></i> Дашборд</a>
-      <a class="nav-item" data-screen="add-product"><i class="fas fa-plus"></i> Добавить товар</a>
-      <a class="nav-item" data-screen="inventory"><i class="fas fa-boxes-stacked"></i> Инвентарь</a>
-      <a class="nav-item" data-screen="customers"><i class="fas fa-users"></i> Клиенты</a>
-      <a class="nav-item" data-screen="messages"><i class="fas fa-comment-dots"></i> Чат</a>
-      <a class="nav-item logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Выход</a>
+    
+    <nav>
+      <a href="#" class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i> Дашборд</a>
+      <a href="#" class="nav-link" data-page="add-product"><i class="fas fa-plus-circle"></i> Новый товар</a>
+      <a href="#" class="nav-link" data-page="inventory"><i class="fas fa-boxes"></i> Инвентарь</a>
+      <a href="#" class="nav-link" data-page="customers"><i class="fas fa-users"></i> Клиенты</a>
+      <a href="#" class="nav-link" data-page="messages"><i class="fas fa-comments"></i> Чат</a>
+      <a href="#" class="nav-link logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Выход</a>
     </nav>
   </aside>
 
-  <main class="main-content">
-    <div id="loading-overlay">
-      <div class="loader">
-        <i class="fas fa-spinner fa-spin"></i>
-        <span>Загрузка...</span>
-      </div>
-    </div>
+  <!-- Main -->
+  <main class="main">
+    <div id="loading" class="loading">Загрузка...</div>
 
-    <div class="screen active" id="screen-dashboard">
-      <h1 class="page-title">Дашборд</h1>
-      <div class="stats-grid">
+    <!-- Dashboard -->
+    <section id="dashboard" class="page active">
+      <h1>Дашборд</h1>
+      
+      <div class="stats">
         <div class="stat-card">
-          <div class="stat-label">Товары</div>
-          <div class="stat-value" id="dash-products">—</div>
+          <div class="label">Товары</div>
+          <div class="value" id="stat-products">—</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Клиенты</div>
-          <div class="stat-value" id="dash-users">—</div>
+          <div class="label">Клиенты</div>
+          <div class="value" id="stat-users">—</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Доход</div>
-          <div class="stat-value" id="dash-revenue">— AED</div>
+          <div class="label">Доход</div>
+          <div class="value" id="stat-revenue">— AED</div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Добавление товаров</h2>
-        <div class="chart-container">
-          <canvas id="productsChart"></canvas>
-        </div>
+        <h2>Добавлено товаров по дням</h2>
+        <canvas id="productsChart" height="160"></canvas>
       </div>
-    </div>
+    </section>
 
-    <div class="screen" id="screen-add-product">
-      <h1 class="page-title">Добавить товар</h1>
-      <div class="form-card">
-        <input id="p-name" class="input" placeholder="Название *" required>
-        <input id="p-price" class="input" type="number" step="0.01" placeholder="Цена (AED) *" required>
-        <input id="p-category" class="input" placeholder="Категория">
-        <input id="p-image" class="input" placeholder="URL изображения">
-        <input id="p-tags" class="input" placeholder="Теги через запятую">
-        <button class="btn primary" onclick="addProduct()">Добавить</button>
-      </div>
-    </div>
+    <!-- Add product -->
+    <section id="add-product" class="page">
+      <h1>Новый товар</h1>
+      <form class="product-form">
+        <input id="name" placeholder="Название *" required>
+        <input id="price" type="number" step="0.01" placeholder="Цена (AED) *" required>
+        <input id="category" placeholder="Категория">
+        <input id="image" placeholder="Ссылка на фото">
+        <input id="tags" placeholder="Теги через запятую">
+        <button type="button" class="btn" onclick="addProduct()">Добавить</button>
+      </form>
+    </section>
 
-    <div class="screen" id="screen-inventory">
-      <h1 class="page-title">Инвентарь</h1>
+    <!-- Inventory -->
+    <section id="inventory" class="page">
+      <h1>Инвентарь</h1>
       <div class="inventory-grid" id="inventory-list"></div>
-    </div>
+    </section>
 
-    <div class="screen" id="screen-customers">
-      <h1 class="page-title">Клиенты</h1>
+    <!-- Customers -->
+    <section id="customers" class="page">
+      <h1>Клиенты</h1>
       <div class="big-stat">
-        <div class="big-number" id="real-users-count">0</div>
-        <div class="big-label">активных пользователей</div>
+        <div id="users-count" class="number">0</div>
+        <div class="label">активных пользователей</div>
       </div>
-    </div>
+    </section>
 
-    <div class="screen" id="screen-messages">
-      <h1 class="page-title">Чат с клиентами</h1>
-      <div class="chat-container">
-        <div class="chat-list" id="chat-list"></div>
-        <div class="chat-window">
-          <div class="chat-header" id="active-chat-header">Выберите чат</div>
-          <div class="chat-messages" id="chat-box"></div>
-          <div class="chat-footer">
-            <input id="reply-input" class="chat-input" placeholder="Напишите сообщение..."/>
-            <button class="send-btn" onclick="sendMessage()">
-              <i class="fas fa-paper-plane"></i>
-            </button>
+    <!-- Messages -->
+    <section id="messages" class="page">
+      <h1>Чат</h1>
+      <div class="chat-layout">
+        <div id="chat-list" class="chat-list"></div>
+        <div class="chat-area">
+          <div id="chat-header" class="chat-header">Выберите чат</div>
+          <div id="chat-messages" class="chat-messages"></div>
+          <div class="chat-input">
+            <input id="message-input" placeholder="Сообщение...">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </main>
 </div>
 
