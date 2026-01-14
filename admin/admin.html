@@ -2,8 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
+  <title>TAVÉINE Admin</title>
   <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,76 +12,83 @@
 <div class="layout">
   <aside class="sidebar">
     <div class="logo-area">
-      <img src="your-logo-url.jpg" alt="Logo" class="logo-img">
-      <span style="font-weight: 800; font-size: 18px;">subcom</span>
+      <img src="https://cdn-icons-png.flaticon.com/512/8843/8843183.png" class="logo-img"> <span style="font-weight: 800; font-size: 20px; letter-spacing: -1px;">subcom</span>
     </div>
 
-    <div class="nav-group">
-      <div class="nav-label">General</div>
-      <a class="nav-link active" data-page="dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
-      <a class="nav-link" data-page="products"><i class="fas fa-box"></i> Product</a>
-      <a class="nav-link" data-page="inventory"><i class="fas fa-warehouse"></i> Inventory</a>
+    <div class="nav-label">General</div>
+    <nav>
+      <a class="nav-link active" data-page="dashboard"><i class="fas fa-grid-2"></i> Dashboard</a>
+      <a class="nav-link" data-page="products"><i class="fas fa-shopping-bag"></i> Product</a>
+      <a class="nav-link" data-page="inventory"><i class="fas fa-boxes"></i> Inventory</a>
       <a class="nav-link" data-page="customers"><i class="fas fa-users"></i> Customers</a>
-    </div>
+      <a class="nav-link" data-page="messages"><i class="fas fa-comment-dots"></i> Messages <span id="msg-badge" class="hidden">●</span></a>
+    </nav>
 
-    <div class="nav-group" style="margin-top: auto;">
-       <a class="nav-link" onclick="logout()" style="color: #ff6b6b;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <div style="margin-top: auto;">
+      <a class="nav-link" onclick="logout()" style="color: #ff6b6b;"><i class="fas fa-power-off"></i> Logout</a>
     </div>
   </aside>
 
   <main class="main">
     <header class="header">
-      <div id="auth-status">Loading...</div>
-      <div class="header-tools"><i class="fas fa-bell"></i></div>
+      <div style="font-weight: 600; font-size: 16px;">Welcome Back!</div>
+      <div id="auth-status" style="color: var(--text-sub);">...</div>
     </header>
 
     <section class="page" id="dashboard-page">
       <div class="stats-grid">
-        <div class="stat-card orange"><p>Income</p><h4 id="revenue">0 AED</h4></div>
-        <div class="stat-card green"><p>New Bot Users</p><h4 id="usersCount">0</h4></div>
-        <div class="stat-card blue"><p>Avg Order Value</p><h4>0 AED</h4></div>
-        <div class="stat-card pink"><p>Conv. Rate</p><h4>0%</h4></div>
+        <div class="stat-card orange"><p>Income</p><h4 id="revenue">245,450 AED</h4></div>
+        <div class="stat-card green"><p>New Bot Users</p><h4 id="usersCount">684</h4></div>
+        <div class="stat-card blue"><p>Avg Order Value</p><h4>2,412.23 AED</h4></div>
+        <div class="stat-card pink"><p>Conv. Rate</p><h4>32.65%</h4></div>
       </div>
 
-      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 15px;">
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px;">
         <div class="card">
-          <p style="font-weight:bold; margin-bottom:10px;">Summary (Income Growth)</p>
+          <h3 style="margin-top:0">Summary (Income Growth)</h3>
           <div class="chart-container"><canvas id="salesChart"></canvas></div>
         </div>
         <div class="card">
-          <p style="font-weight:bold; margin-bottom:10px;">Most Selling</p>
-          <div id="top-products" style="font-size: 12px;">No data</div>
+          <h3 style="margin-top:0">Most Selling</h3>
+          <div id="top-products-list">
+             <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Water Bottle</span><b>1K+ Sales</b></div>
+             <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Iphone 15 Pro</span><b>401 Sales</b></div>
+          </div>
         </div>
       </div>
 
-      <div class="card" style="margin-top: 15px;">
-        <p style="font-weight:bold; margin-bottom:10px;">Recent Orders</p>
-        <div id="recent-orders-list"></div>
+      <div class="card" style="margin-top:20px;">
+        <h3 style="margin-top:0">Recent Orders</h3>
+        <div id="recent-orders-table">
+          </div>
       </div>
     </section>
 
     <section class="page hidden" id="products-page">
       <div class="card">
-        <h3>Quick Add</h3>
-        <div style="display: flex; gap: 10px;">
-           <input id="p-name" class="form-input" placeholder="Name">
-           <input id="p-price" class="form-input" placeholder="Price" type="number">
-           <button class="btn-save" style="width: 120px;" onclick="addProduct()">Add</button>
+        <h3 style="margin-top:0">Add New Product</h3>
+        <div style="display: flex; gap: 15px;">
+          <input id="p-name" class="form-input" placeholder="Product Name">
+          <input id="p-price" class="form-input" placeholder="Price (AED)" type="number">
+          <button class="nav-link active" onclick="addProduct()" style="border:none; height:44px; padding:0 30px;">Add</button>
         </div>
       </div>
-      <div id="products-list" style="margin-top: 15px;"></div>
+      <div id="products-list" class="card" style="margin-top:20px; padding:0;">
+        </div>
     </section>
   </main>
 </div>
 
 <div id="edit-modal">
   <div class="modal-content">
-    <h3 style="margin-top:0">Edit Product</h3>
+    <h2 style="margin-top:0">Edit Product</h2>
     <input id="edit-id" type="hidden">
-    <input id="edit-name" class="form-input" placeholder="Name">
-    <input id="edit-price" class="form-input" placeholder="Price">
-    <button class="btn-save" onclick="updateProduct()">Save & Close</button>
-    <button onclick="closeEditModal()" style="background:none; border:none; width:100%; margin-top:10px; color:gray;">Cancel</button>
+    <label>Name</label>
+    <input id="edit-name" class="form-input">
+    <label>Price (AED)</label>
+    <input id="edit-price" class="form-input" type="number">
+    <button class="nav-link active" onclick="updateProduct()" style="border:none; width:100%; justify-content:center; height:45px;">Save Changes</button>
+    <button onclick="closeEditModal()" style="background:none; border:none; width:100%; margin-top:15px; color:gray; cursor:pointer;">Cancel</button>
   </div>
 </div>
 
