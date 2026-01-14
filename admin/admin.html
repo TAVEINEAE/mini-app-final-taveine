@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>TAVÉINE Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
   <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,87 +12,80 @@
 
 <div class="layout">
   <aside class="sidebar">
-    <h2>subcom</h2>
-    <nav id="main-nav">
-      <a class="nav-link active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
-      <a class="nav-link" data-page="products"><i class="fas fa-box"></i> Products</a>
-      <a class="nav-link" data-page="messages"><i class="fas fa-comment-alt"></i> Messages <span id="msg-badge" class="badge hidden">●</span></a>
-    </nav>
+    <div class="logo-area">
+      <img src="your-logo-url.jpg" alt="Logo" class="logo-img">
+      <span style="font-weight: 800; font-size: 18px;">subcom</span>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">General</div>
+      <a class="nav-link active" data-page="dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a class="nav-link" data-page="products"><i class="fas fa-box"></i> Product</a>
+      <a class="nav-link" data-page="inventory"><i class="fas fa-warehouse"></i> Inventory</a>
+      <a class="nav-link" data-page="customers"><i class="fas fa-users"></i> Customers</a>
+    </div>
+
+    <div class="nav-group" style="margin-top: auto;">
+       <a class="nav-link" onclick="logout()" style="color: #ff6b6b;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
   </aside>
 
   <main class="main">
-    <header class="topbar">
-      <div class="user"><i class="fas fa-user-circle"></i> <span id="auth-status">...</span></div>
-      <button onclick="logout()" style="background:none; border:none; color:red; cursor:pointer;">Logout</button>
+    <header class="header">
+      <div id="auth-status">Loading...</div>
+      <div class="header-tools"><i class="fas fa-bell"></i></div>
     </header>
 
     <section class="page" id="dashboard-page">
       <div class="stats-grid">
-        <div class="stat-card">
-          <p>Total Revenue</p>
-          <h4 id="revenue">0 AED</h4>
+        <div class="stat-card orange"><p>Income</p><h4 id="revenue">0 AED</h4></div>
+        <div class="stat-card green"><p>New Bot Users</p><h4 id="usersCount">0</h4></div>
+        <div class="stat-card blue"><p>Avg Order Value</p><h4>0 AED</h4></div>
+        <div class="stat-card pink"><p>Conv. Rate</p><h4>0%</h4></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 15px;">
+        <div class="card">
+          <p style="font-weight:bold; margin-bottom:10px;">Summary (Income Growth)</p>
+          <div class="chart-container"><canvas id="salesChart"></canvas></div>
         </div>
-        <div class="stat-card">
-          <p>Orders</p>
-          <h4 id="ordersCount">0</h4>
-        </div>
-        <div class="stat-card">
-          <p>Inventory</p>
-          <h4 id="productsCount">0</h4>
+        <div class="card">
+          <p style="font-weight:bold; margin-bottom:10px;">Most Selling</p>
+          <div id="top-products" style="font-size: 12px;">No data</div>
         </div>
       </div>
-      <div class="card" style="margin-top:20px; height: 350px;">
-        <h3>Sales Overview</h3>
-        <canvas id="salesChart"></canvas>
+
+      <div class="card" style="margin-top: 15px;">
+        <p style="font-weight:bold; margin-bottom:10px;">Recent Orders</p>
+        <div id="recent-orders-list"></div>
       </div>
     </section>
 
     <section class="page hidden" id="products-page">
       <div class="card">
-        <h3>Add New Product</h3>
-        <div class="form-grid">
-          <input id="p-name" type="text" placeholder="Product Name">
-          <input id="p-price" type="number" placeholder="Price (AED)">
-          <input id="p-category" type="text" placeholder="Category">
-          <input id="p-image" type="text" placeholder="Image URL">
-          <button class="nav-link active full" onclick="addProduct()" style="border:none; justify-content:center;">Add to Inventory</button>
+        <h3>Quick Add</h3>
+        <div style="display: flex; gap: 10px;">
+           <input id="p-name" class="form-input" placeholder="Name">
+           <input id="p-price" class="form-input" placeholder="Price" type="number">
+           <button class="btn-save" style="width: 120px;" onclick="addProduct()">Add</button>
         </div>
       </div>
-      <div id="products-list" class="products-grid"></div>
-    </section>
-
-    <section class="page hidden" id="messages-page">
-      <div class="messenger-card card">
-        <div class="chats-sidebar">
-          <div class="chats-list" id="chats-list"></div>
-        </div>
-        <div class="chat-main">
-          <div class="chat-header" style="padding:15px; border-bottom:1px solid #eee"><h3 id="current-chat-name">Select Chat</h3></div>
-          <div class="chat-history" id="chat-box"></div>
-          <div style="padding:20px; display:flex; gap:10px;">
-            <input type="text" id="reply-input" style="flex:1; padding:10px; border-radius:10px; border:1px solid #ddd;" placeholder="Message...">
-            <button onclick="sendReply()" class="nav-link active" style="border:none;"><i class="fas fa-paper-plane"></i></button>
-          </div>
-        </div>
-      </div>
+      <div id="products-list" style="margin-top: 15px;"></div>
     </section>
   </main>
 </div>
 
 <div id="edit-modal">
   <div class="modal-content">
-    <h3>Edit Product</h3>
-    <div class="form-grid">
-      <input id="edit-id" type="hidden">
-      <input id="edit-name" type="text" placeholder="Name" class="full">
-      <input id="edit-price" type="number" placeholder="Price">
-      <input id="edit-category" type="text" placeholder="Category">
-      <button class="nav-link active full" onclick="updateProduct()" style="border:none; justify-content:center;">Save Changes</button>
-      <button onclick="document.getElementById('edit-modal').style.display='none'" class="full" style="background:none; border:none; color:gray; cursor:pointer;">Cancel</button>
-    </div>
+    <h3 style="margin-top:0">Edit Product</h3>
+    <input id="edit-id" type="hidden">
+    <input id="edit-name" class="form-input" placeholder="Name">
+    <input id="edit-price" class="form-input" placeholder="Price">
+    <button class="btn-save" onclick="updateProduct()">Save & Close</button>
+    <button onclick="closeEditModal()" style="background:none; border:none; width:100%; margin-top:10px; color:gray;">Cancel</button>
   </div>
 </div>
 
-<script type="module" src="./admin.js"></script>
+<script type="module" src="admin.js"></script>
 </body>
 </html>
