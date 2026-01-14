@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
@@ -8,139 +9,168 @@ const firebaseConfig = {
   projectId: "taveine-admin",
   storageBucket: "taveine-admin.firebasestorage.app",
   messagingSenderId: "916085731146",
-  appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
+  appId: "1:916085731146:web:764187ed408e8c4fdfdbb3",
+  databaseURL: "https://taveine-admin-default-rtdb.firebaseio.com"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const rtdb = getDatabase(app);
 
-// --- NAVIGATION ---
-document.querySelectorAll(".nav-link").forEach(link => {
-  link.onclick = () => {
-    const page = link.dataset.page;
-    if(!page) return;
-    document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-    link.classList.add("active");
-    document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-    document.getElementById(`${page}-page`).classList.remove("hidden");
-  };
-});
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz7z0ZRjek0gTPWf4FG55mWSh1uBEpgrsgx0B6WUw6xvbjs9T04dWnTVZI-vaJA6BctDw/exec";
 
-// --- AUTH ---
+let currentChatId = null;
+const allMessages = {};
+
+// --- AUTH & INIT ---
 onAuthStateChanged(auth, (user) => {
   if (user) {
     document.getElementById("auth-status").innerText = user.email;
     loadProducts();
+    initChat();
     initChart();
-  } else {
-    window.location.href = "./login.html";
-  }
+  } else { window.location.href = "login.html"; }
 });
 
 window.logout = () => signOut(auth);
 
-// --- PRODUCT LOGIC ---
+// --- PRODUCT MAGIC (Categories & Groups) ---
 window.addProduct = async () => {
-  const name = document.getElementById("p-name").value;
-  const price = document.getElementById("p-price").value;
-  if(!name || !price) return alert("Please fill all fields");
-  
-  await addDoc(collection(db, "products"), {
-    name, 
-    price: Number(price),
+  const p = {
+    name: document.getElementById("p-name").value,
+    price: Number(document.getElementById("p-price").value),
+    category: document.getElementById("p-category").value || "Other",
+    image: document.getElementById("p-image").value || "https://via.placeholder.com/200",
+    tags: document.getElementById("p-tags").value,
     createdAt: Date.now()
-  });
-  
-  document.getElementById("p-name").value = "";
-  document.getElementById("p-price").value = "";
+  };
+  if(!p.name || !p.price) return alert("Fill Name and Price!");
+  await addDoc(collection(db, "products"), p);
   loadProducts();
+  ["p-name","p-price","p-category","p-image","p-tags"].forEach(id => document.getElementById(id).value="");
 };
 
 async function loadProducts() {
-  const list = document.getElementById("products-list");
-  if(!list) return;
+  const container = document.getElementById("products-container");
+  const snap = await getDocs(query(collection(db, "products"), orderBy("createdAt", "desc")));
+  const groups = {};
   
-  const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-  const snap = await getDocs(q);
-  
-  list.innerHTML = "";
   snap.forEach(d => {
-    const p = d.data();
-    const item = document.createElement("div");
-    item.className = "product-item";
-    item.innerHTML = `
-      <div>
-        <span style="font-weight:600">${p.name}</span>
-        <span style="color:var(--primary); margin-left:15px;">${p.price} AED</span>
+    const data = d.data();
+    if(!groups[data.category]) groups[data.category] = [];
+    groups[data.category].push({id: d.id, ...data});
+  });
+
+  document.getElementById("total-p-count").innerText = snap.size;
+  container.innerHTML = Object.keys(groups).map(cat => `
+    <div class="category-block">
+      <div class="category-header"><i class="fas fa-tag"></i> ${cat}</div>
+      <div class="product-grid">
+        ${groups[cat].map(p => `
+          <div class="product-card">
+            <img src="${p.image}" class="p-img">
+            <div class="p-body">
+              ${p.tags ? `<span class="p-tag">${p.tags}</span>` : ''}
+              <div style="font-weight:700; font-size:14px; margin-top:5px;">${p.name}</div>
+              <div style="color:var(--primary); font-weight:800; margin:5px 0;">${p.price} AED</div>
+              <div style="display:flex; gap:10px;">
+                <button onclick="openEdit('${p.id}','${p.name}',${p.price})" style="flex:1; padding:5px; border-radius:5px; border:1px solid #ddd; background:#fff; cursor:pointer;"><i class="fa fa-edit"></i></button>
+                <button onclick="deleteP('${p.id}')" style="flex:1; padding:5px; border-radius:5px; border:none; background:#fff0f0; color:red; cursor:pointer;"><i class="fa fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
       </div>
-      <div>
-        <button class="btn-action btn-edit" onclick="openEditModal('${d.id}', '${p.name}', ${p.price})"><i class="fas fa-edit"></i></button>
-        <button class="btn-action btn-delete" onclick="deleteProduct('${d.id}')"><i class="fas fa-trash-alt"></i></button>
-      </div>
-    `;
-    list.appendChild(item);
+    </div>
+  `).join('');
+}
+
+window.deleteP = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "products", id)); loadProducts(); } };
+
+// --- MODAL FIX ---
+window.openEdit = (id, n, p) => {
+  document.getElementById("edit-id").value = id;
+  document.getElementById("edit-name").value = n;
+  document.getElementById("edit-price").value = p;
+  document.getElementById("edit-modal").style.display = "flex";
+};
+window.closeModal = () => document.getElementById("edit-modal").style.display = "none";
+window.updateProduct = async () => {
+  const id = document.getElementById("edit-id").value;
+  await updateDoc(doc(db, "products", id), {
+    name: document.getElementById("edit-name").value,
+    price: Number(document.getElementById("edit-price").value)
+  });
+  closeModal(); loadProducts();
+};
+
+// --- TELEGRAM CHAT (Original) ---
+function initChat() {
+  onChildAdded(ref(rtdb, 'messages'), (snap) => {
+    const m = snap.val();
+    if(!allMessages[m.chat_id]) {
+      allMessages[m.chat_id] = { name: m.name, msgs: [] };
+      renderChatSidebar();
+    }
+    allMessages[m.chat_id].msgs.push(m);
+    if(currentChatId === m.chat_id) renderMessages();
   });
 }
 
-window.deleteProduct = async (id) => {
-  if(confirm("Delete this product?")) {
-    await deleteDoc(doc(db, "products", id));
-    loadProducts();
-  }
+function renderChatSidebar() {
+  const list = document.getElementById("chat-list");
+  list.innerHTML = Object.keys(allMessages).map(id => `
+    <div onclick="selectChat('${id}')" style="padding:15px; border-bottom:1px solid #eee; cursor:pointer; background:${currentChatId===id?'#f0f7f6':''}">
+      <b>${allMessages[id].name}</b><br><small style="color:gray;">ID: ${id}</small>
+    </div>
+  `).join('');
+}
+
+window.selectChat = (id) => {
+  currentChatId = id;
+  document.getElementById("active-chat-user").innerText = "Chat with: " + allMessages[id].name;
+  renderMessages(); renderChatSidebar();
 };
 
-// --- EDIT MODAL ---
-window.openEditModal = (id, name, price) => {
-  document.getElementById("edit-id").value = id;
-  document.getElementById("edit-name").value = name;
-  document.getElementById("edit-price").value = price;
-  document.getElementById("edit-modal").style.display = "flex";
-};
+function renderMessages() {
+  const box = document.getElementById("chat-box");
+  box.innerHTML = allMessages[currentChatId].msgs.map(m => `
+    <div class="${m.sender === 'admin' ? 'm-admin' : 'm-bot'}">${m.text}</div>
+  `).join('');
+  box.scrollTop = box.scrollHeight;
+}
 
-window.closeEditModal = () => {
-  document.getElementById("edit-modal").style.display = "none";
-};
-
-window.updateProduct = async () => {
-  const id = document.getElementById("edit-id").value;
-  const name = document.getElementById("edit-name").value;
-  const price = Number(document.getElementById("edit-price").value);
-  
-  await updateDoc(doc(db, "products", id), { name, price });
-  closeEditModal(); // Окно исчезает после сохранения
-  loadProducts();
+window.sendMessage = async () => {
+  const input = document.getElementById("reply-input");
+  if(!input.value || !currentChatId) return;
+  const text = input.value;
+  fetch(`${GAS_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, { mode: 'no-cors' });
+  await push(ref(rtdb, 'messages'), { chat_id: currentChatId, text, sender: 'admin', timestamp: Date.now() });
+  input.value = "";
 };
 
 // --- CHART ---
 function initChart() {
-  const ctx = document.getElementById('salesChart').getContext('2d');
+  const ctx = document.getElementById('mainChart').getContext('2d');
   new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Sep 07', 'Sep 08', 'Sep 09', 'Sep 10', 'Sep 11', 'Sep 12', 'Sep 13'],
-      datasets: [
-        { 
-          label: 'Order', 
-          data: [5, 8, 4, 7, 3, 6, 5], 
-          borderColor: '#006d5b', 
-          tension: 0.4, 
-          fill: true, 
-          backgroundColor: 'rgba(0,109,91,0.1)' 
-        },
-        { 
-          label: 'Income Growth', 
-          data: [3, 5, 7, 5, 8, 4, 9], 
-          borderColor: '#808191', 
-          borderDash: [5, 5], 
-          tension: 0.4 
-        }
-      ]
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{ label: 'Sales', data: [1200, 1900, 1500, 2500, 2200, 3000, 2800], borderColor: '#006d5b', tension: 0.4, fill: true, backgroundColor: 'rgba(0,109,91,0.05)' }]
     },
-    options: {
-      maintainAspectRatio: false,
-      plugins: { legend: { position: 'top' } },
-      scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
-    }
+    options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
   });
 }
+
+// --- NAVIGATION ---
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.onclick = () => {
+    const page = link.dataset.page; if(!page) return;
+    document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+    document.querySelectorAll(".nav-link").forEach(n => n.classList.remove("active"));
+    document.getElementById(page + "-page").classList.remove("hidden");
+    link.classList.add("active");
+    document.getElementById("page-title").innerText = page.charAt(0).toUpperCase() + page.slice(1);
+  };
+});
