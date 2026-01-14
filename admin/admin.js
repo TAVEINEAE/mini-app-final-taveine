@@ -12,14 +12,18 @@ const firebaseConfig = {
   appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
 
+// Инициализация
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const rtdb = getDatabase(app);
 
+// Константы и переменные состояния
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXGK8Ob7DsOqh9vj8vqOx5BNGUyxGpEBgF0vYn-JI8ZOhfv5YNhlEXNhYcPA0CC2y6Yg/exec";
 let salesChart = null;
 let currentChatId = null;
 const chats = {}; 
+window.chatStarted = false; // Флаг для предотвращения двойной инициализации
 
 // --- АВТОРИЗАЦИЯ И ЗАПУСК ---
 onAuthStateChanged(auth, (user) => {
@@ -28,7 +32,12 @@ onAuthStateChanged(auth, (user) => {
     if (statusEl) statusEl.innerText = user.email;
     loadProducts();
     initChart();
-    initChatListener(); // Запускаем чат только здесь
+    
+    // Инициализируем чат только ОДИН раз
+    if (!window.chatStarted) {
+      initChatListener();
+      window.chatStarted = true;
+    }
   } else {
     window.location.href = "./login.html";
   }
@@ -57,10 +66,11 @@ window.addProduct = async () => {
 async function loadProducts() {
   const list = document.getElementById("products-list");
   const countDisplay = document.getElementById("productsCount");
+  if (!list) return;
+
   const snap = await getDocs(query(collection(db, "products"), orderBy("createdAt", "desc")));
   
   if (countDisplay) countDisplay.innerText = snap.size;
-  if (!list) return;
   list.innerHTML = "";
 
   snap.forEach(docSnap => {
@@ -128,7 +138,8 @@ document.querySelectorAll(".nav-link").forEach(link => {
     if (targetPage) targetPage.classList.remove("hidden");
 
     if (link.dataset.page === "messages") {
-      document.getElementById("msg-badge").classList.add("hidden");
+      const badge = document.getElementById("msg-badge");
+      if (badge) badge.classList.add("hidden");
     }
   });
 });
@@ -146,6 +157,8 @@ function initChatListener() {
       chats[cid] = { name: data.name, messages: [] };
       renderChatList();
     }
+    
+    // Проверка на дублирование сообщения по времени или тексту (опционально)
     chats[cid].messages.push(data);
 
     // Уведомление (красная точка)
@@ -192,7 +205,8 @@ function renderChatList() {
 function renderMessages(cid) {
   const box = document.getElementById("chat-box");
   if (!box) return;
-  box.innerHTML = "";
+  box.innerHTML = ""; // Важно: полная очистка перед перерисовкой
+  
   chats[cid].messages.forEach(m => {
     const div = document.createElement("div");
     div.className = `msg ${m.sender === 'client' ? 'client' : 'admin'}`;
@@ -212,7 +226,6 @@ window.sendReply = async () => {
   const text = input.value.trim();
   if (!text) return;
 
-  // 1. Сохраняем в Firebase (чтобы видеть в чате админки)
   const msgData = {
     chat_id: currentChatId,
     name: "TAVÉINE",
@@ -222,14 +235,18 @@ window.sendReply = async () => {
   };
 
   try {
+    // 1. Сохраняем в Firebase
     await push(ref(rtdb, 'messages'), msgData);
     
-    // 2. ОТПРАВКА В TELEGRAM через ваш Google Script
-    const scriptUrl = "ВАШ_НОВЫЙ_URL_ПОСЛЕ_DEPLOY"; 
-    fetch(`${scriptUrl}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, { mode: 'no-cors' });
+    // 2. ОТПРАВКА В TELEGRAM через Google Script
+    fetch(`${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, { 
+        method: 'GET',
+        mode: 'no-cors' 
+    });
 
     input.value = "";
   } catch (e) {
     console.error("Error sending message:", e);
+    alert("Ошибка при отправке сообщения");
   }
-};;
+};
