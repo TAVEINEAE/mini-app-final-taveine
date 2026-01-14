@@ -12,28 +12,24 @@ const firebaseConfig = {
   appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
 
-// Инициализация
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const rtdb = getDatabase(app);
 
-// Константы и переменные состояния
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXGK8Ob7DsOqh9vj8vqOx5BNGUyxGpEBgF0vYn-JI8ZOhfv5YNhlEXNhYcPA0CC2y6Yg/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxl_qizobr0heTcLZH3mbrEEPfdu4Hp7eZsJCDuSAJaXILittVArv6jx1SbFR-co0C_Kg/exec";
 let salesChart = null;
 let currentChatId = null;
 const chats = {}; 
-window.chatStarted = false; // Флаг для предотвращения двойной инициализации
+window.chatStarted = false;
 
-// --- АВТОРИЗАЦИЯ И ЗАПУСК ---
+// --- АВТОРИЗАЦИЯ ---
 onAuthStateChanged(auth, (user) => {
   const statusEl = document.getElementById("auth-status");
   if (user) {
     if (statusEl) statusEl.innerText = user.email;
     loadProducts();
     initChart();
-    
-    // Инициализируем чат только ОДИН раз
     if (!window.chatStarted) {
       initChatListener();
       window.chatStarted = true;
@@ -55,9 +51,7 @@ window.addProduct = async () => {
   const category = document.getElementById("p-category").value.trim();
   const image = document.getElementById("p-image").value.trim();
   const tags = document.getElementById("p-tags").value.split(",").map(t => t.trim()).filter(Boolean);
-
   if (!name || !price || !category) return alert("Fill fields!");
-
   await addDoc(collection(db, "products"), { name, price, category, image, tags, createdAt: Date.now() });
   ["p-name", "p-price", "p-category", "p-image", "p-tags"].forEach(id => document.getElementById(id).value = "");
   loadProducts();
@@ -67,23 +61,16 @@ async function loadProducts() {
   const list = document.getElementById("products-list");
   const countDisplay = document.getElementById("productsCount");
   if (!list) return;
-
   const snap = await getDocs(query(collection(db, "products"), orderBy("createdAt", "desc")));
-  
   if (countDisplay) countDisplay.innerText = snap.size;
   list.innerHTML = "";
-
   snap.forEach(docSnap => {
     const p = docSnap.data();
     const div = document.createElement("div");
     div.className = "product-item";
-    div.innerHTML = `
-      <div><strong>${p.name}</strong> <br> <small>${p.category}</small></div>
-      <div>
-        <span style="color:var(--primary); font-weight:700; margin-right:15px;">${p.price} AED</span>
-        <button onclick="deleteProduct('${docSnap.id}')" style="color:#cbd5e1; border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
-      </div>
-    `;
+    div.innerHTML = `<div><strong>${p.name}</strong><br><small>${p.category}</small></div>
+      <div><span style="color:var(--primary); font-weight:700; margin-right:15px;">${p.price} AED</span>
+      <button onclick="deleteProduct('${docSnap.id}')" style="color:#cbd5e1; border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button></div>`;
     list.appendChild(div);
   });
 }
@@ -98,32 +85,16 @@ function initChart() {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   if (salesChart) salesChart.destroy();
-  
   const gradient = ctx.createLinearGradient(0, 0, 0, 400);
   gradient.addColorStop(0, 'rgba(0, 109, 91, 0.2)');
   gradient.addColorStop(1, 'rgba(0, 109, 91, 0)');
-
   salesChart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      datasets: [{
-        label: 'Revenue',
-        data: [12, 19, 13, 25, 22, 30, 25],
-        borderColor: '#006d5b',
-        backgroundColor: gradient,
-        fill: true,
-        tension: 0.4,
-        borderWidth: 3,
-        pointRadius: 0
-      }]
+      datasets: [{ label: 'Revenue', data: [12, 19, 13, 25, 22, 30, 25], borderColor: '#006d5b', backgroundColor: gradient, fill: true, tension: 0.4, borderWidth: 3, pointRadius: 0 }]
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
-    }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true } } }
   });
 }
 
@@ -133,25 +104,20 @@ document.querySelectorAll(".nav-link").forEach(link => {
     document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
     link.classList.add("active");
     document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-    
     const targetPage = document.getElementById(`${link.dataset.page}-page`);
     if (targetPage) targetPage.classList.remove("hidden");
-
-    if (link.dataset.page === "messages") {
-      const badge = document.getElementById("msg-badge");
-      if (badge) badge.classList.add("hidden");
-    }
+    if (link.dataset.page === "messages") document.getElementById("msg-badge")?.classList.add("hidden");
   });
 });
 
-// --- ЛОГИКА ЧАТА ---
+// --- ЧАТ ---
 function initChatListener() {
   const msgBadge = document.getElementById("msg-badge");
   const messagesRef = dbQuery(ref(rtdb, 'messages'), limitToLast(100));
 
   onChildAdded(messagesRef, (snapshot) => {
     const data = snapshot.val();
-    const msgId = snapshot.key; // Используем уникальный ключ Firebase
+    const msgId = snapshot.key; 
     const cid = data.chat_id;
 
     if (!chats[cid]) {
@@ -159,24 +125,20 @@ function initChatListener() {
       renderChatList();
     }
     
-    // ПРОВЕРКА НА ДУБЛИ: если ID сообщения уже есть, пропускаем его
+    // Защита от дублей
     if (!chats[cid].msgIds.has(msgId)) {
       chats[cid].messages.push(data);
       chats[cid].msgIds.add(msgId);
 
-      // Уведомление
       const msgPage = document.getElementById("messages-page");
       const isMessagesPageOpen = msgPage && !msgPage.classList.contains("hidden");
       
       if (data.sender === "client") {
-          if (!isMessagesPageOpen || currentChatId !== cid) {
-              if (msgBadge) msgBadge.classList.remove("hidden");
-          }
+        if (!isMessagesPageOpen || currentChatId !== cid) {
+          msgBadge?.classList.remove("hidden");
+        }
       }
-
-      if (currentChatId === cid) {
-        renderMessages(cid);
-      }
+      if (currentChatId === cid) renderMessages(cid);
     }
   });
 }
@@ -188,17 +150,11 @@ function renderChatList() {
   Object.keys(chats).forEach(cid => {
     const div = document.createElement("div");
     div.className = `chat-item ${currentChatId === cid ? 'active' : ''}`;
-    div.innerHTML = `
-      <div class="chat-avatar"></div>
-      <div class="chat-info">
-        <strong>${chats[cid].name}</strong>
-        <p style="font-size:12px; color:#64748b; margin:0">ID: ${cid}</p>
-      </div>
-    `;
+    div.innerHTML = `<div class="chat-avatar"></div><div class="chat-info"><strong>${chats[cid].name}</strong><p style="font-size:12px; color:#64748b; margin:0">ID: ${cid}</p></div>`;
     div.onclick = () => {
       currentChatId = cid;
-      const nameHeader = document.getElementById("current-chat-name");
-      if (nameHeader) nameHeader.innerText = chats[cid].name;
+      const header = document.getElementById("current-chat-name");
+      if (header) header.innerText = chats[cid].name;
       renderChatList();
       renderMessages(cid);
     };
@@ -209,21 +165,16 @@ function renderChatList() {
 function renderMessages(cid) {
   const box = document.getElementById("chat-box");
   if (!box) return;
-  box.innerHTML = ""; // Важно: полная очистка перед перерисовкой
-  
+  box.innerHTML = ""; 
   chats[cid].messages.forEach(m => {
     const div = document.createElement("div");
     div.className = `msg ${m.sender === 'client' ? 'client' : 'admin'}`;
-    div.innerHTML = `
-      <div>${m.text}</div>
-      <small style="font-size:10px; opacity:0.6">${new Date(m.timestamp).toLocaleTimeString()}</small>
-    `;
+    div.innerHTML = `<div>${m.text}</div><small style="font-size:10px; opacity:0.6">${new Date(m.timestamp).toLocaleTimeString()}</small>`;
     box.appendChild(div);
   });
   box.scrollTop = box.scrollHeight;
 }
 
-// ФУНКЦИЯ ОТВЕТА
 window.sendReply = async () => {
   const input = document.getElementById("reply-input");
   if (!input || !currentChatId) return;
@@ -239,20 +190,18 @@ window.sendReply = async () => {
   };
 
   try {
-    // 1. Сначала отправляем в Telegram
-    console.log("Отправка в TG...");
-    const scriptUrl = `${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`;
-    
-    // Используем простой Image ping или fetch с mode no-cors
-    await fetch(scriptUrl, { method: 'GET', mode: 'no-cors' });
-    console.log("Запрос к скрипту отправлен");
+    // 1. Отправка в TG через ваш Google Script
+    fetch(`${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, {
+      method: 'GET',
+      mode: 'no-cors'
+    });
 
-    // 2. Только потом сохраняем в Firebase
+    // 2. Сохранение в Firebase
     await push(ref(rtdb, 'messages'), msgData);
     
     input.value = "";
   } catch (e) {
-    console.error("ОШИБКА ОТПРАВКИ:", e);
-    alert("Ошибка: " + e.message);
+    console.error("Error:", e);
+    alert("Ошибка отправки");
   }
 };
