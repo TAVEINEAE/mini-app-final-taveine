@@ -2,100 +2,99 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TAVEINE Admin</title>
+  <title>TAVÉINE Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    .hidden { display: none !important; }
-    .nav-link { cursor: pointer; }
-  </style>
 </head>
 <body>
 
 <div class="layout">
   <aside class="sidebar">
-    <h2> TAVÉINE</h2>
+    <div class="sidebar-header">
+      <h2>TAVÉINE</h2>
+    </div>
+    
     <nav id="main-nav">
-      <a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a>
-      <a class="nav-link" data-page="products"><i class="fas fa-box"></i> Products</a>
-      <a class="nav-link" data-page="orders"><i class="fas fa-shopping-cart"></i> Orders</a>
-      <a class="nav-link" data-page="customers"><i class="fas fa-users"></i> Customers</a>
+      <a class="nav-link active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+      <a class="nav-link" data-page="products"><i class="fas fa-tag"></i> Products</a>
+      <a class="nav-link" data-page="orders"><i class="fas fa-shopping-bag"></i> Orders</a>
+      <a class="nav-link" data-page="customers"><i class="fas fa-user-friends"></i> Customers</a>
     </nav>
+
+    <div class="sidebar-footer">
+      <button class="add-product-shortcut" onclick="document.querySelector('[data-page=products]').click()">
+        <i class="fas fa-plus"></i> Add Product
+      </button>
+    </div>
   </aside>
 
   <main class="main">
     <header class="topbar">
-      <span id="auth-status">Checking login...</span>
-      <button class="btn-logout" onclick="logout()">Logout</button>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span id="auth-status">Checking...</span>
+      </div>
+      <button class="btn-logout" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
     </header>
 
     <section class="page" id="dashboard-page">
-      <section class="stats">
-        <div class="card"><h4>Total Orders</h4><strong id="ordersCount">0</strong></div>
-        <div class="card"><h4>Revenue</h4><strong id="revenue">0 AED</strong></div>
-        <div class="card"><h4>Products</h4><strong id="productsCount">0</strong></div>
-      </section>
-      <section class="charts">
-        <div class="chart-box">
-          <h3>Sales Overview</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="icon-box"><i class="fas fa-shopping-cart"></i></div>
+          <div class="stat-info">
+            <h4 id="ordersCount">0</h4>
+            <p>Total Orders</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-box"><i class="fas fa-wallet"></i></div>
+          <div class="stat-info">
+            <h4 id="revenue">0 AED</h4>
+            <p>Revenue</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-box"><i class="fas fa-boxes"></i></div>
+          <div class="stat-info">
+            <h4 id="productsCount">0</h4>
+            <p>Products</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container card">
+        <h3>Sales Overview</h3>
+        <div class="canvas-wrapper">
           <canvas id="salesChart"></canvas>
         </div>
-      </section>
+      </div>
     </section>
 
     <section class="page hidden" id="products-page">
-      <section class="form-section">
-        <h3>Add New Product</h3>
+      <div class="card form-section">
+        <h3>Create New Product</h3>
         <div class="form-grid">
           <input id="p-name" type="text" placeholder="Product Name">
           <input id="p-price" type="number" placeholder="Price (AED)">
           <input id="p-category" type="text" placeholder="Category">
           <input id="p-image" type="text" placeholder="Image URL">
           <input id="p-tags" type="text" placeholder="Tags (comma separated)" class="full">
-          <button class="btn-add" onclick="addProduct()">➕ Add Product</button>
+          <button class="btn-add" onclick="addProduct()">Add to Inventory</button>
         </div>
-      </section>
-      <section class="charts">
-        <div class="chart-box">
-          <h3>Products in Store</h3>
-          <div id="products-list"></div>
-        </div>
-      </section>
+      </div>
+      <div id="products-list" class="products-grid"></div>
     </section>
 
-    <section class="page hidden" id="orders-page">
-        <div class="chart-box"><h3>Orders</h3><p>Coming soon...</p></div>
-    </section>
-    <section class="page hidden" id="customers-page">
-        <div class="chart-box"><h3>Customers</h3><p>Coming soon...</p></div>
-    </section>
+    <section class="page hidden" id="orders-page"><div class="card"><h3>Orders</h3><p>No orders yet.</p></div></section>
+    <section class="page hidden" id="customers-page"><div class="card"><h3>Customers</h3><p>Customer list is empty.</p></div></section>
   </main>
 </div>
 
 <script type="module" src="./admin.js"></script>
-
-<script>
-  // Инициализация графика (простая заглушка)
-  window.onload = () => {
-    const ctx = document.getElementById("salesChart");
-    if (ctx) {
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-          datasets: [{
-            label: "Sales",
-            data: [5,20,15,25,10,14,11],
-            borderColor: "#1f3f38",
-            tension: 0.4,
-            fill: true
-          }]
-        }
-      });
-    }
-  };
-</script>
 </body>
 </html>
