@@ -34,26 +34,27 @@ async function startApp() {
 // --- Рендеринг ---
 function renderMain() {
     const grid = document.getElementById('all-products-grid');
-    const newSlider = document.getElementById('new-arrivals-slider');
-    const birthdaySlider = document.getElementById('birthday-slider');
+    
+    // Список всех слайдеров и их тегов
+    const sliderConfigs = [
+        { id: 'new-arrivals-slider', tag: 'new' },
+        { id: 'birthday-slider', tag: 'birthday' },
+        { id: 'best-sellers-slider', tag: 'bestseller' },
+        { id: 'luxury-slider', tag: 'luxury' }
+    ];
 
-    // 1. Фильтруем товары для New Arrivals (тег 'new')
-    const newProducts = products.filter(p => p.tags && p.tags.includes('new'));
-    if (newSlider) {
-        newSlider.innerHTML = newProducts.length > 0 
-            ? newProducts.map(p => renderCard(p)).join('') 
-            : "<p style='padding:20px;'>Coming soon...</p>";
-    }
+    // Отрисовка каждого слайдера
+    sliderConfigs.forEach(config => {
+        const container = document.getElementById(config.id);
+        if (container) {
+            const filteredProducts = products.filter(p => p.tags && p.tags.includes(config.tag));
+            container.innerHTML = filteredProducts.length > 0 
+                ? filteredProducts.map(p => renderCard(p)).join('') 
+                : "<p style='padding:20px;'>Coming soon...</p>";
+        }
+    });
 
-    // 2. Фильтруем товары для Birthday (тег 'birthday')
-    const birthdayProducts = products.filter(p => p.tags && p.tags.includes('birthday'));
-    if (birthdaySlider) {
-        birthdaySlider.innerHTML = birthdayProducts.length > 0 
-            ? birthdayProducts.map(p => renderCard(p)).join('') 
-            : "<p style='padding:20px;'>Coming soon...</p>";
-    }
-
-    // 3. Основная сетка (все остальные товары)
+    // Основная сетка (все товары снизу)
     if (grid) {
         grid.innerHTML = products.map(p => renderCard(p)).join('');
     }
