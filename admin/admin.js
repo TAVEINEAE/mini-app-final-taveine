@@ -116,11 +116,47 @@ document.querySelectorAll(".nav-link").forEach(link => {
 
 function initChatListener() {
   const chatBox = document.getElementById("chat-box");
-  const messagesRef = dbQuery(ref(rtdb, 'messages'), limitToLast(50));
+  const msgBadge = document.getElementById("msg-badge");
+  const messagesRef = dbQuery(ref(rtdb, 'messages'), limitToLast(100));
 
   onChildAdded(messagesRef, (snapshot) => {
     const data = snapshot.val();
-    const messageDiv = document.createElement("div");
+    const cid = data.chat_id;
+
+    // 1. Группировка сообщений
+    if (!chats[cid]) {
+      chats[cid] = { name: data.name, messages: [] };
+      renderChatList();
+    }
+    chats[cid].messages.push(data);
+
+    // 2. Логика уведомления
+    // Проверяем: если мы НЕ на странице сообщений ИЛИ если пришло сообщение в неактивный чат
+    const isMessagesPageOpen = !document.getElementById("messages-page").classList.contains("hidden");
+    
+    if (data.sender === "client") {
+        if (!isMessagesPageOpen || currentChatId !== cid) {
+            msgBadge.classList.remove("hidden"); // Показываем красную точку
+            // Опционально: можно добавить звук уведомления
+            // new Audio('notification.mp3').play();
+        }
+    }
+
+    // 3. Обновление текущего окна, если оно открыто
+    if (currentChatId === cid) {
+      renderMessages(cid);
+    }
+  });
+}
+
+// Добавим сброс уведомления при клике на вкладку "Messages"
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.addEventListener("click", () => {
+    if (link.dataset.page === "messages") {
+      document.getElementById("msg-badge").classList.add("hidden"); // Скрываем точку
+    }
+  });
+});
     
     // Определяем класс в зависимости от отправителя (из вашего GAS скрипта это "client")
     const isClient = data.sender === "client";
