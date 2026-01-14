@@ -212,6 +212,7 @@ window.sendReply = async () => {
   const text = input.value.trim();
   if (!text) return;
 
+  // 1. Сохраняем в Firebase (чтобы видеть в чате админки)
   const msgData = {
     chat_id: currentChatId,
     name: "TAVÉINE",
@@ -222,8 +223,13 @@ window.sendReply = async () => {
 
   try {
     await push(ref(rtdb, 'messages'), msgData);
+    
+    // 2. ОТПРАВКА В TELEGRAM через ваш Google Script
+    const scriptUrl = "ВАШ_НОВЫЙ_URL_ПОСЛЕ_DEPLOY"; 
+    fetch(`${scriptUrl}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, { mode: 'no-cors' });
+
     input.value = "";
   } catch (e) {
     console.error("Error sending message:", e);
   }
-};
+};;
