@@ -179,3 +179,20 @@ body {
 .btn-send {
   background: var(--primary); color: #fff; border: none; width: 45px; border-radius: 8px; cursor: pointer;
 }
+
+.nav-link { position: relative; } /* Нужно для позиционирования точки */
+
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444; /* Красный цвет */
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.badge.hidden {
+  display: none;
+}
