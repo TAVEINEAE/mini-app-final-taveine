@@ -18,193 +18,97 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const rtdb = getDatabase(app);
 
-let productsChart = null;
-const messagesStore = {};
 let activeChatId = null;
+const messagesStore = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Навигация
-  document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const page = link.dataset.page;
-      
+  document.querySelectorAll('[data-page]').forEach(el => {
+    el.addEventListener('click', () => {
+      const page = el.dataset.page;
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(page).classList.add('active');
-      
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
+
+      document.querySelectorAll('.category, .nav-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll(`[data-page="${page}"]`).forEach(i => i.classList.add('active'));
     });
+  });
+
+  // Анимация сердечка
+  document.addEventListener('click', e => {
+    if (e.target.closest('.favorite')) {
+      const heart = e.target.closest('.favorite');
+      heart.classList.toggle('liked');
+    }
   });
 });
 
 onAuthStateChanged(auth, user => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
-  
-  document.getElementById('loading').style.display = 'none';
-  loadData();
+  if (!user) return window.location.href = "login.html";
+  loadProducts();
+  initChat();
 });
 
-function logout() {
-  signOut(auth);
-}
-
-async function loadData() {
-  await loadProducts();
-  initChat();
-}
-
 async function loadProducts() {
-  try {
-    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-    const snap = await getDocs(q);
-    
-    document.getElementById("stat-products").textContent = snap.size;
-    
-    const container = document.getElementById("inventory-list");
-    container.innerHTML = "";
-    
-    const byDay = {};
-    
-    snap.forEach(doc => {
-      const p = doc.data();
-      const date = p.createdAt?.toDate?.() || new Date();
-      const day = date.toISOString().split('T')[0];
-      byDay[day] = (byDay[day] || 0) + 1;
-      
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.innerHTML = `
-        <img class="product-img" src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
-        <div class="product-info">
-          <div class="product-name">${p.name}</div>
-          <div class="product-price">${p.price} AED</div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-    
-    updateChart(byDay);
-  } catch (e) {
-    console.error("Ошибка продуктов:", e);
-  }
-}
+  const snap = await getDocs(query(collection(db, "products"), orderBy("createdAt", "desc")));
 
-function updateChart(byDay) {
-  const days = Object.keys(byDay).sort();
-  const labels = days.map(d => new Date(d).toLocaleDateString('ru', {day:'numeric', month:'short'}));
-  
-  if (productsChart) productsChart.destroy();
-  
-  productsChart = new Chart(document.getElementById('productsChart'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Товары',
-        data: days.map(d => byDay[d]),
-        backgroundColor: 'rgba(0,109,91,0.6)',
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-    }
+  document.getElementById("dash-products").textContent = snap.size;
+
+  const popular = document.getElementById("popular-products");
+  popular.innerHTML = "";
+
+  snap.forEach((doc, index) => {
+    const p = doc.data();
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.animationDelay = `${index * 0.1}s`;
+    card.innerHTML = `
+      <img class="product-img" src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
+      <div class="favorite"><i class="far fa-heart"></i></div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">${p.price} AED</div>
+      </div>
+    `;
+    popular.appendChild(card);
   });
 }
 
-function addProduct() {
-  const name = document.getElementById('name').value.trim();
-  const price = Number(document.getElementById('price').value);
-  
-  if (!name || isNaN(price) || price <= 0) {
-    alert("Заполните название и корректную цену");
-    return;
-  }
-  
-  addDoc(collection(db, "products"), {
-    name,
-    price,
-    createdAt: serverTimestamp()
-  }).then(() => {
-    alert("Товар добавлен!");
-    document.getElementById('name').value = '';
-    document.getElementById('price').value = '';
-    loadProducts();
-  }).catch(e => alert("Ошибка: " + e.message));
-}
+window.addProduct = async () => {
+  const name = document.getElementById('p-name').value.trim();
+  const price = Number(document.getElementById('p-price').value);
 
-// Чат
+  if (!name || !price) return alert("Fill name and price");
+
+  await addDoc(collection(db, "products"), { name, price, createdAt: serverTimestamp() });
+  alert("Added!");
+  loadProducts();
+};
+
 function initChat() {
   onChildAdded(ref(rtdb, 'messages'), snap => {
     const m = snap.val();
     if (!m?.chat_id) return;
-    
-    if (!messagesStore[m.chat_id]) {
-      messagesStore[m.chat_id] = { name: m.name || 'Клиент', msgs: [] };
-    }
-    
+
+    if (!messagesStore[m.chat_id]) messagesStore[m.chat_id] = { name: m.name || 'Customer', msgs: [] };
     messagesStore[m.chat_id].msgs.push(m);
-    
-    renderChatList();
-    if (activeChatId === m.chat_id) renderMessages();
-    
-    document.getElementById('stat-users').textContent = Object.keys(messagesStore).length;
-    document.getElementById('users-count').textContent = Object.keys(messagesStore).length;
+
+    document.getElementById('dash-users').textContent = Object.keys(messagesStore).length;
+
+    // Можно добавить рендер чатов в стиле Airbnb (список сообщений)
   });
 }
 
-function renderChatList() {
-  const list = document.getElementById('chat-list');
-  list.innerHTML = '';
-  
-  Object.entries(messagesStore).forEach(([id, chat]) => {
-    const item = document.createElement('div');
-    item.className = 'chat-item' + (activeChatId === id ? ' active' : '');
-    item.innerHTML = `<strong>${chat.name}</strong>`;
-    item.onclick = () => {
-      activeChatId = id;
-      document.getElementById('chat-header').textContent = chat.name;
-      renderMessages();
-      renderChatList();
-    };
-    list.appendChild(item);
-  });
-}
-
-function renderMessages() {
-  const box = document.getElementById('chat-messages');
-  box.innerHTML = '';
-  
-  if (!activeChatId) return;
-  
-  messagesStore[activeChatId].msgs.forEach(m => {
-    const div = document.createElement('div');
-    div.className = `message ${m.sender === 'admin' ? 'admin' : 'user'}`;
-    div.textContent = m.text;
-    box.appendChild(div);
-  });
-  
-  box.scrollTop = box.scrollHeight;
-}
-
-function sendMessage() {
+window.sendMessage = () => {
   const input = document.getElementById('message-input');
   const text = input.value.trim();
-  if (!text || !activeChatId) return;
-  
+  if (!text) return;
+
   push(ref(rtdb, 'messages'), {
-    chat_id: activeChatId,
+    chat_id: "test-chat",
     text,
     sender: 'admin',
     timestamp: Date.now()
   });
-  
+
   input.value = '';
-}
+};
