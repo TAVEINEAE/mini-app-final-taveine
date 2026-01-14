@@ -300,3 +300,62 @@ body {
     margin-top: 20px; 
     font-size: 14px;
 }
+
+/* Боковое меню */
+.side-drawer {
+    position: fixed;
+    top: 0;
+    left: -100%; /* Скрыто слева */
+    width: 80%;
+    height: 100%;
+    background: #fff;
+    z-index: 8000;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+}
+
+.side-drawer.active {
+    left: 0; /* Появляется */
+}
+
+/* Затемнение фона */
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 7999;
+}
+
+.menu-overlay.active {
+    display: block;
+}
+
+/* Аккордеон */
+.menu-item { border-bottom: 1px solid #eee; }
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submenu {
+    display: none; /* Скрыто по умолчанию */
+    flex-direction: column;
+    padding: 0 20px 10px 40px;
+    background: #fafafa;
+}
+
+.submenu a {
+    text-decoration: none;
+    color: #333;
+    padding: 10px 0;
+    font-size: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Когда открыто */
+.menu-item.open .submenu { display: flex; }
+
