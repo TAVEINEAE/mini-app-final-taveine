@@ -8,6 +8,58 @@
 </head>
 <body>
 
+<div id="side-menu" class="side-drawer">
+    <div class="drawer-header">
+        <button class="close-drawer" onclick="window.toggleMenu()">✕</button>
+    </div>
+    <div class="menu-content">
+        <div class="menu-item">
+            <div class="menu-header" onclick="window.toggleAccordion(this)">
+                <span>Collection</span>
+                <span class="icon">+</span>
+            </div>
+            <div class="submenu">
+                <a href="#">Christmas Collection</a>
+                <a href="#">Spring</a>
+                <a href="#">New Arrivals</a>
+                <a href="#">Best Sellers</a>
+                <a href="#">Luxury</a>
+                <a href="#">Specialty</a>
+                <a href="#">Je t'aime Collection</a>
+                <a href="#">Vases</a>
+                <a href="#">Box</a>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="menu-header" onclick="window.toggleAccordion(this)">
+                <span>Occasions</span>
+                <span class="icon">+</span>
+            </div>
+            <div class="submenu">
+                <a href="#">Anniversary</a>
+                <a href="#">Birthday</a>
+                <a href="#">I’m Sorry</a>
+                <a href="#">New Baby</a>
+                <a href="#">Event Design Services</a>
+                <a href="#">Forever Rose</a>
+                <a href="#">Balloons</a>
+            </div>
+        </div>
+        <div class="menu-item">
+            <div class="menu-header" onclick="window.toggleAccordion(this)">
+                <span>Home</span>
+                <span class="icon">+</span>
+            </div>
+            <div class="submenu">
+                <a href="#">About Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="menu-overlay" class="menu-overlay" onclick="window.toggleMenu()"></div>
+
 <header class="top-bar">
     <button class="burger-menu" onclick="window.toggleMenu()"><span class="wave-icon">≈</span></button>
     <div class="logo">TAVÉINE</div>
