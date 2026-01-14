@@ -138,3 +138,62 @@ function initChatListener() {
 
 // Запускаем прослушивание чата при загрузке
 initChatListener();
+
+let currentChatId = null;
+const chats = {}; // Объект для хранения сообщений по чатам
+
+function initChatListener() {
+  const messagesRef = dbQuery(ref(rtdb, 'messages'), limitToLast(100));
+
+  onChildAdded(messagesRef, (snapshot) => {
+    const data = snapshot.val();
+    const cid = data.chat_id;
+
+    // Группируем сообщения по пользователям
+    if (!chats[cid]) {
+      chats[cid] = { name: data.name, messages: [] };
+      renderChatList();
+    }
+    chats[cid].messages.push(data);
+
+    // Если этот чат сейчас открыт — обновляем окно
+    if (currentChatId === cid) {
+      renderMessages(cid);
+    }
+  });
+}
+
+function renderChatList() {
+  const list = document.getElementById("chats-list");
+  list.innerHTML = "";
+  Object.keys(chats).forEach(cid => {
+    const div = document.createElement("div");
+    div.className = `chat-item ${currentChatId === cid ? 'active' : ''}`;
+    div.innerHTML = `
+      <div class="chat-avatar"></div>
+      <div class="chat-info">
+        <strong>${chats[cid].name}</strong>
+        <p style="font-size:12px; color:#64748b; margin:0">ID: ${cid}</p>
+      </div>
+    `;
+    div.onclick = () => {
+      currentChatId = cid;
+      document.getElementById("current-chat-name").innerText = chats[cid].name;
+      renderChatList();
+      renderMessages(cid);
+    };
+    list.appendChild(div);
+  });
+}
+
+function renderMessages(cid) {
+  const box = document.getElementById("chat-box");
+  box.innerHTML = "";
+  chats[cid].messages.forEach(m => {
+    const div = document.createElement("div");
+    div.className = `msg ${m.sender === 'client' ? 'client' : 'admin'}`;
+    div.innerHTML = `<div>${m.text}</div><small style="font-size:10px; opacity:0.6">${new Date(m.timestamp).toLocaleTimeString()}</small>`;
+    box.appendChild(div);
+  });
+  box.scrollTop = box.scrollHeight;
+}
