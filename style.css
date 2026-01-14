@@ -359,3 +359,40 @@ body {
 /* Когда открыто */
 .menu-item.open .submenu { display: flex; }
 
+/* Контейнер, который обрезает лишнее по бокам */
+.slider-wrapper {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+/* Сама лента с товарами */
+.slider-container {
+    display: flex;             /* Выстраивает товары в ряд */
+    overflow-x: auto;          /* Включает горизонтальную прокрутку */
+    scroll-snap-type: x mandatory; /* Магнитный эффект при перелистывании */
+    gap: 15px;                 /* Расстояние между букетами */
+    padding: 0 15px 10px;      /* Отступы по краям */
+    scrollbar-width: none;     /* Скрывает полосу прокрутки (Firefox) */
+}
+
+/* Скрывает полосу прокрутки (Chrome, Safari) */
+.slider-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Размер карточки именно внутри слайдера */
+.slider-container .card {
+    min-width: 180px;          /* Ширина как на твоем скриншоте */
+    max-width: 180px;
+    flex: 0 0 auto;            /* Чтобы карточки не сжимались */
+    scroll-snap-align: start;  /* Чтобы карточка прилипала к левому краю */
+}
+
+/* Делаем фото в слайдере чуть выше */
+.slider-container .card img {
+    height: 220px;
+    object-fit: cover;
+}
+
+
