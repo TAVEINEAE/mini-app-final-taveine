@@ -1,3 +1,4 @@
+import { getDatabase, ref, onChildAdded, query as dbQuery, limitToLast } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
@@ -14,6 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const rtdb = getDatabase(app);
 let salesChart = null;
 
 onAuthStateChanged(auth, (user) => {
@@ -111,3 +113,28 @@ document.querySelectorAll(".nav-link").forEach(link => {
     document.getElementById(`${link.dataset.page}-page`).classList.remove("hidden");
   });
 });
+
+function initChatListener() {
+  const chatBox = document.getElementById("chat-box");
+  const messagesRef = dbQuery(ref(rtdb, 'messages'), limitToLast(50));
+
+  onChildAdded(messagesRef, (snapshot) => {
+    const data = snapshot.val();
+    const messageDiv = document.createElement("div");
+    
+    // Определяем класс в зависимости от отправителя (из вашего GAS скрипта это "client")
+    const isClient = data.sender === "client";
+    messageDiv.className = `msg ${isClient ? 'client' : 'admin'}`;
+    
+    messageDiv.innerHTML = `
+      <span class="msg-info">${data.name} • ${new Date(data.timestamp).toLocaleTimeString()}</span>
+      <div class="msg-text">${data.text}</div>
+    `;
+    
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight; // Авто-скролл вниз
+  });
+}
+
+// Запускаем прослушивание чата при загрузке
+initChatListener();
