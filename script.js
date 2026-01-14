@@ -34,21 +34,26 @@ async function startApp() {
 // --- Рендеринг ---
 function renderMain() {
     const grid = document.getElementById('all-products-grid');
-    const slider = document.getElementById('new-arrivals-slider');
+    const newSlider = document.getElementById('new-arrivals-slider');
+    const birthdaySlider = document.getElementById('birthday-slider');
 
-    // 1. Фильтруем только новинки для слайдера
+    // 1. Фильтруем товары для New Arrivals (тег 'new')
     const newProducts = products.filter(p => p.tags && p.tags.includes('new'));
-
-    // 2. Рендерим слайдер (горизонтальный)
-    if (slider) {
-        if (newProducts.length > 0) {
-            slider.innerHTML = newProducts.map(p => renderCard(p)).join('');
-        } else {
-            slider.innerHTML = "<p style='padding:20px;'>No new arrivals found</p>";
-        }
+    if (newSlider) {
+        newSlider.innerHTML = newProducts.length > 0 
+            ? newProducts.map(p => renderCard(p)).join('') 
+            : "<p style='padding:20px;'>Coming soon...</p>";
     }
 
-    // 3. Рендерим основную сетку (вертикальную)
+    // 2. Фильтруем товары для Birthday (тег 'birthday')
+    const birthdayProducts = products.filter(p => p.tags && p.tags.includes('birthday'));
+    if (birthdaySlider) {
+        birthdaySlider.innerHTML = birthdayProducts.length > 0 
+            ? birthdayProducts.map(p => renderCard(p)).join('') 
+            : "<p style='padding:20px;'>Coming soon...</p>";
+    }
+
+    // 3. Основная сетка (все остальные товары)
     if (grid) {
         grid.innerHTML = products.map(p => renderCard(p)).join('');
     }
