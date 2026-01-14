@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TAVÉINE AE • Admin Panel</title>
+  <title>TAVÉINE • Admin</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,122 +17,91 @@
 <body>
 
 <div class="app-container">
-  <!-- Боковое меню -->
   <aside class="sidebar">
     <div class="logo-area">
       <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo" class="logo-img">
-      <strong>TAVÉINE AE</strong>
+      <strong>TAVÉINE</strong>
     </div>
 
     <nav class="nav-menu">
-      <a class="nav-item active" data-screen="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-      <a class="nav-item" data-screen="add-product"><i class="fa-solid fa-plus"></i> Add Product</a>
-      <a class="nav-item" data-screen="inventory"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a>
-      <a class="nav-item" data-screen="customers"><i class="fa-solid fa-users"></i> Customers</a>
-      <a class="nav-item" data-screen="messages"><i class="fa-solid fa-comment-dots"></i> Messages</a>
-      <a class="nav-item logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      <a class="nav-item active" data-screen="dashboard"><i class="fas fa-gauge"></i> Дашборд</a>
+      <a class="nav-item" data-screen="add-product"><i class="fas fa-plus"></i> Добавить товар</a>
+      <a class="nav-item" data-screen="inventory"><i class="fas fa-boxes-stacked"></i> Инвентарь</a>
+      <a class="nav-item" data-screen="customers"><i class="fas fa-users"></i> Клиенты</a>
+      <a class="nav-item" data-screen="messages"><i class="fas fa-comment-dots"></i> Чат</a>
+      <a class="nav-item logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Выход</a>
     </nav>
   </aside>
 
-  <!-- Основная область -->
   <main class="main-content">
-    <!-- Индикатор загрузки -->
-    <div id="loading" style="position:fixed; inset:0; background:rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; z-index:9999;">
-      <div style="text-align:center;">
-        <i class="fa-solid fa-spinner fa-spin" style="font-size:3rem; color:var(--primary);"></i>
-        <p style="margin-top:16px; color:#333;">Загрузка...</p>
+    <div id="loading-overlay">
+      <div class="loader">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Загрузка...</span>
       </div>
     </div>
 
-    <!-- Экран Dashboard -->
     <div class="screen active" id="screen-dashboard">
-      <div class="greeting">Hello, Admin!</div>
-      <p class="subtitle">Управляй бизнесом с заботой</p>
-
-      <div class="quick-stats">
+      <h1 class="page-title">Дашборд</h1>
+      <div class="stats-grid">
         <div class="stat-card">
-          <h3>Товары</h3>
-          <div class="value" id="dash-products">0</div>
+          <div class="stat-label">Товары</div>
+          <div class="stat-value" id="dash-products">—</div>
         </div>
         <div class="stat-card">
-          <h3>Пользователи</h3>
-          <div class="value" id="dash-users">0</div>
+          <div class="stat-label">Клиенты</div>
+          <div class="stat-value" id="dash-users">—</div>
         </div>
-        <div class="stat-card highlight">
-          <h3>Доход</h3>
-          <div class="value" id="dash-revenue">— AED</div>
+        <div class="stat-card">
+          <div class="stat-label">Доход</div>
+          <div class="stat-value" id="dash-revenue">— AED</div>
         </div>
       </div>
 
-      <div class="card chart-card">
-        <h3>Добавление товаров по дням</h3>
-        <div style="height:260px; position:relative;">
+      <div class="card">
+        <h2>Добавление товаров</h2>
+        <div class="chart-container">
           <canvas id="productsChart"></canvas>
         </div>
       </div>
-
-      <div class="quick-actions">
-        <div class="action-card" onclick="goToScreen('add-product')">
-          <i class="fa-solid fa-plus-circle"></i>
-          <span>Добавить товар</span>
-        </div>
-        <div class="action-card" onclick="goToScreen('inventory')">
-          <i class="fa-solid fa-box-open"></i>
-          <span>Инвентарь</span>
-        </div>
-        <div class="action-card" onclick="goToScreen('messages')">
-          <i class="fa-solid fa-envelope"></i>
-          <span>Сообщения</span>
-        </div>
-      </div>
     </div>
 
-    <!-- Добавление товара -->
     <div class="screen" id="screen-add-product">
-      <h2>Добавить новый товар</h2>
-      <div class="form-container">
-        <input id="p-name" class="input" placeholder="Название товара *" required>
+      <h1 class="page-title">Добавить товар</h1>
+      <div class="form-card">
+        <input id="p-name" class="input" placeholder="Название *" required>
         <input id="p-price" class="input" type="number" step="0.01" placeholder="Цена (AED) *" required>
         <input id="p-category" class="input" placeholder="Категория">
-        <input id="p-image" class="input" placeholder="Ссылка на изображение">
+        <input id="p-image" class="input" placeholder="URL изображения">
         <input id="p-tags" class="input" placeholder="Теги через запятую">
-        <button class="btn primary" onclick="addProduct()">Добавить товар</button>
+        <button class="btn primary" onclick="addProduct()">Добавить</button>
       </div>
     </div>
 
-    <!-- Инвентарь -->
     <div class="screen" id="screen-inventory">
-      <h2>Инвентарь</h2>
-      <div class="inventory-grid" id="inventory-list">
-        <div style="padding:80px; text-align:center; color:#999; width:100%;">
-          Загрузка товаров...
-        </div>
+      <h1 class="page-title">Инвентарь</h1>
+      <div class="inventory-grid" id="inventory-list"></div>
+    </div>
+
+    <div class="screen" id="screen-customers">
+      <h1 class="page-title">Клиенты</h1>
+      <div class="big-stat">
+        <div class="big-number" id="real-users-count">0</div>
+        <div class="big-label">активных пользователей</div>
       </div>
     </div>
 
-    <!-- Пользователи -->
-    <div class="screen" id="screen-customers">
-      <h2>Клиенты</h2>
-      <div class="big-number" id="real-users-count">0</div>
-      <p class="subtitle">уникальных пользователей, взаимодействовавших с мини-приложением</p>
-    </div>
-
-    <!-- Сообщения -->
     <div class="screen" id="screen-messages">
-      <h2>Чат с клиентами</h2>
-      <div class="chat-layout">
-        <div class="chat-sidebar" id="chat-list">
-          <div style="padding:40px; text-align:center; color:#999;">
-            Загрузка чатов...
-          </div>
-        </div>
-        <div class="chat-main">
+      <h1 class="page-title">Чат с клиентами</h1>
+      <div class="chat-container">
+        <div class="chat-list" id="chat-list"></div>
+        <div class="chat-window">
           <div class="chat-header" id="active-chat-header">Выберите чат</div>
           <div class="chat-messages" id="chat-box"></div>
-          <div class="chat-input-area">
-            <input id="reply-input" class="input" placeholder="Напишите сообщение..."/>
-            <button class="btn send-btn" onclick="sendMessage()">
-              <i class="fa-solid fa-paper-plane"></i>
+          <div class="chat-footer">
+            <input id="reply-input" class="chat-input" placeholder="Напишите сообщение..."/>
+            <button class="send-btn" onclick="sendMessage()">
+              <i class="fas fa-paper-plane"></i>
             </button>
           </div>
         </div>
@@ -141,17 +110,6 @@
   </main>
 </div>
 
-<!-- Скрипт -->
 <script type="module" src="admin.js"></script>
-
-<!-- Скрываем загрузку после инициализации -->
-<script>
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const loading = document.getElementById('loading');
-      if (loading) loading.style.display = 'none';
-    }, 800);
-  });
-</script>
 </body>
 </html>
