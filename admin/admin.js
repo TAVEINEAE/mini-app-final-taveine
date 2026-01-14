@@ -239,18 +239,20 @@ window.sendReply = async () => {
   };
 
   try {
-    // 1. Сохраняем в Firebase
+    // 1. Сначала отправляем в Telegram
+    console.log("Отправка в TG...");
+    const scriptUrl = `${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`;
+    
+    // Используем простой Image ping или fetch с mode no-cors
+    await fetch(scriptUrl, { method: 'GET', mode: 'no-cors' });
+    console.log("Запрос к скрипту отправлен");
+
+    // 2. Только потом сохраняем в Firebase
     await push(ref(rtdb, 'messages'), msgData);
     
-    // 2. ОТПРАВКА В TELEGRAM через Google Script
-    fetch(`${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, { 
-        method: 'GET',
-        mode: 'no-cors' 
-    });
-
     input.value = "";
   } catch (e) {
-    console.error("Error sending message:", e);
-    alert("Ошибка при отправке сообщения");
+    console.error("ОШИБКА ОТПРАВКИ:", e);
+    alert("Ошибка: " + e.message);
   }
 };
