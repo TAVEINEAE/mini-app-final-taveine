@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TAVÉINE AE • Admin Panel</title>
+  <title>TAVÉINE AE • Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,126 +13,105 @@
 </head>
 <body>
 
-<div class="layout">
+<div class="app-container">
+  <!-- Sidebar (постоянная слева на десктопе, снизу на мобиле) -->
   <aside class="sidebar">
     <div class="logo-area">
       <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo" class="logo-img">
       <strong>TAVÉINE AE</strong>
     </div>
 
-    <div class="nav-label">Control</div>
-    <a class="nav-link active" data-page="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-    <a class="nav-link" data-page="product"><i class="fa-solid fa-plus"></i> Add Product</a>
-    <a class="nav-link" data-page="inventory"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a>
-    <a class="nav-link" data-page="customers"><i class="fa-solid fa-users"></i> Customers</a>
-    <a class="nav-link" data-page="messages"><i class="fa-solid fa-comment-dots"></i> Telegram Chat</a>
-
-    <a class="nav-link logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    <nav class="nav-menu">
+      <a class="nav-item active" data-screen="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <a class="nav-item" data-screen="add-product"><i class="fa-solid fa-plus"></i> Add Product</a>
+      <a class="nav-item" data-screen="inventory"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a>
+      <a class="nav-item" data-screen="customers"><i class="fa-solid fa-users"></i> Customers</a>
+      <a class="nav-item" data-screen="messages"><i class="fa-solid fa-comment-dots"></i> Messages</a>
+      <a class="nav-item logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </nav>
   </aside>
 
-  <main class="main">
-    <header class="header">
-      <h1 id="page-title">Dashboard</h1>
-      <div id="auth-status">Loading...</div>
-    </header>
+  <!-- Main content area -->
+  <main class="main-content">
+    <div class="screen active" id="screen-dashboard">
+      <div class="greeting">Hello, Admin!</div>
+      <p class="subtitle">Keep your business under control</p>
 
-    <!-- Dashboard -->
-    <section class="page" id="dashboard-page">
-      <div class="stats-grid">
+      <div class="quick-stats">
         <div class="stat-card">
-          <p>Products</p>
-          <h4 id="dash-products">0</h4>
+          <h3>Products</h3>
+          <div class="value" id="dash-products">0</div>
         </div>
         <div class="stat-card">
-          <p>Bot Users</p>
-          <h4 id="dash-users">0</h4>
+          <h3>Users</h3>
+          <div class="value" id="dash-users">0</div>
         </div>
-        <div class="stat-card">
-          <p>Revenue</p>
-          <h4 id="dash-revenue">— AED</h4>
-        </div>
-        <div class="stat-card">
-          <p>Status</p>
-          <h4 style="color:#10b981">Active</h4>
+        <div class="stat-card highlight">
+          <h3>Revenue</h3>
+          <div class="value" id="dash-revenue">— AED</div>
         </div>
       </div>
 
-      <div class="card">
-        <h3 style="margin-bottom:16px">Products added per day</h3>
-        <div style="position:relative; height:340px;">
-          <canvas id="productsChart"></canvas>
+      <div class="card chart-card">
+        <h3>Products added per day</h3>
+        <canvas id="productsChart" height="180"></canvas>
+      </div>
+
+      <div class="quick-actions">
+        <div class="action-card" onclick="goToScreen('add-product')">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span>Add New Product</span>
+        </div>
+        <div class="action-card" onclick="goToScreen('inventory')">
+          <i class="fa-solid fa-box-open"></i>
+          <span>View Inventory</span>
+        </div>
+        <div class="action-card" onclick="goToScreen('messages')">
+          <i class="fa-solid fa-envelope"></i>
+          <span>Open Messages</span>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Add Product -->
-    <section class="page hidden" id="product-page">
-      <div class="card" style="max-width:640px;">
-        <h2 style="margin-bottom:28px">Add New Product</h2>
-        <div class="form-group">
-          <input id="p-name" class="form-input" placeholder="Product Name *" required>
-        </div>
-        <div class="form-group">
-          <input id="p-price" class="form-input" type="number" step="0.01" placeholder="Price (AED) *" required>
-        </div>
-        <div class="form-group">
-          <input id="p-category" class="form-input" placeholder="Category">
-        </div>
-        <div class="form-group">
-          <input id="p-image" class="form-input" placeholder="Image URL (https...)" type="url">
-        </div>
-        <div class="form-group">
-          <input id="p-tags" class="form-input" placeholder="Tags (comma separated)">
-        </div>
-
-        <button onclick="addProduct()" class="btn btn-primary" style="width:100%; margin-top:12px;">
-          <i class="fa-solid fa-plus"></i> Add Product
-        </button>
+    <div class="screen" id="screen-add-product">
+      <h2>Add New Product</h2>
+      <div class="form-container">
+        <input id="p-name" class="input" placeholder="Product Name *" required>
+        <input id="p-price" class="input" type="number" step="0.01" placeholder="Price (AED) *" required>
+        <input id="p-category" class="input" placeholder="Category">
+        <input id="p-image" class="input" placeholder="Image URL">
+        <input id="p-tags" class="input" placeholder="Tags (comma separated)">
+        <button class="btn primary" onclick="addProduct()">Add Product</button>
       </div>
-    </section>
+    </div>
 
-    <!-- Inventory -->
-    <section class="page hidden" id="inventory-page">
-      <h2 style="margin-bottom:24px">Inventory</h2>
-      <div class="inventory-container" id="inventory-list">
-        <!-- карточки продуктов -->
-      </div>
-    </section>
+    <div class="screen" id="screen-inventory">
+      <h2>Inventory</h2>
+      <div class="inventory-grid" id="inventory-list"></div>
+    </div>
 
-    <!-- Customers -->
-    <section class="page hidden" id="customers-page">
-      <div class="card" style="text-align:center; padding:60px 20px;">
-        <h2>Real Telegram Mini App Users</h2>
-        <div style="font-size:5.5rem; font-weight:800; color:var(--primary); margin:32px 0;">
-          <span id="real-users-count">0</span>
-        </div>
-        <p style="color:var(--text-secondary); font-size:1.1rem;">
-          unique users who interacted with the bot
-        </p>
-      </div>
-    </section>
+    <div class="screen" id="screen-customers">
+      <h2>Customers</h2>
+      <div class="big-number" id="real-users-count">0</div>
+      <p class="subtitle">Unique users who interacted with your mini app</p>
+    </div>
 
-    <!-- Messages -->
-    <section class="page hidden" id="messages-page">
-      <div class="messenger">
-        <div id="chat-list"></div>
-
-        <div style="flex:1; display:flex; flex-direction:column;">
-          <div id="active-chat-header" style="padding:16px 24px; border-bottom:1px solid var(--border); font-weight:600;">
-            Select a chat to start messaging
-          </div>
-
-          <div id="chat-box"></div>
-
-          <div class="input-area">
-            <input id="reply-input" class="form-input" placeholder="Type your message..." autocomplete="off"/>
-            <button class="btn btn-primary" onclick="sendMessage()">
+    <div class="screen" id="screen-messages">
+      <h2>Messages</h2>
+      <div class="chat-layout">
+        <div class="chat-sidebar" id="chat-list"></div>
+        <div class="chat-main">
+          <div class="chat-header" id="active-chat-header">Select a conversation</div>
+          <div class="chat-messages" id="chat-box"></div>
+          <div class="chat-input-area">
+            <input id="reply-input" class="input" placeholder="Type a message..."/>
+            <button class="btn send-btn" onclick="sendMessage()">
               <i class="fa-solid fa-paper-plane"></i>
             </button>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </main>
 </div>
 
