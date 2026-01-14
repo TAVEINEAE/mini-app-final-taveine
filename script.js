@@ -35,8 +35,23 @@ async function startApp() {
 function renderMain() {
     const grid = document.getElementById('all-products-grid');
     const slider = document.getElementById('new-arrivals-slider');
-    if(grid) grid.innerHTML = products.map(p => renderCard(p)).join('');
-    if(slider) slider.innerHTML = products.filter(p => p.tags?.includes('new')).map(p => renderCard(p)).join('');
+
+    // 1. Фильтруем только новинки для слайдера
+    const newProducts = products.filter(p => p.tags && p.tags.includes('new'));
+
+    // 2. Рендерим слайдер (горизонтальный)
+    if (slider) {
+        if (newProducts.length > 0) {
+            slider.innerHTML = newProducts.map(p => renderCard(p)).join('');
+        } else {
+            slider.innerHTML = "<p style='padding:20px;'>No new arrivals found</p>";
+        }
+    }
+
+    // 3. Рендерим основную сетку (вертикальную)
+    if (grid) {
+        grid.innerHTML = products.map(p => renderCard(p)).join('');
+    }
 }
 
 function renderCard(p) {
