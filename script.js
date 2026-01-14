@@ -178,4 +178,49 @@ document.getElementById('product-search-input')?.addEventListener('input', (e) =
     document.getElementById('view-all-link').style.display = results.length > 0 ? 'block' : 'none';
 });
 
+// Открытие/Закрытие меню
+window.toggleMenu = () => {
+    document.getElementById('side-menu').classList.toggle('active');
+    document.getElementById('menu-overlay').classList.toggle('active');
+};
+
+// Логика аккордеона
+window.toggleAccordion = (element) => {
+    const parent = element.parentElement;
+    const icon = element.querySelector('.icon');
+    
+    // Закрываем другие, если нужно (как на видео/фото)
+    document.querySelectorAll('.menu-item').forEach(item => {
+        if (item !== parent) {
+            item.classList.remove('open');
+            if(item.querySelector('.icon')) item.querySelector('.icon').innerText = '+';
+        }
+    });
+
+    parent.classList.toggle('open');
+    icon.innerText = parent.classList.contains('open') ? '−' : '+';
+};
+
+// Исправленная функция Add to Cart
+window.addToCart = (id) => {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+
+    const existing = cart.find(x => x.id === id);
+    if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+    } else {
+        cart.push({...p, qty: 1});
+    }
+    
+    // Сохраняем и обновляем цифры на иконках
+    localStorage.setItem('taveine_cart', JSON.stringify(cart));
+    if (typeof updateCounters === 'function') updateCounters();
+    
+    // Обратная связь
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    alert('Added: ' + p.name);
+};
+
 document.addEventListener('DOMContentLoaded', startApp);
+
