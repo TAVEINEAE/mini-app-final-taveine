@@ -151,28 +151,32 @@ function initChatListener() {
 
   onChildAdded(messagesRef, (snapshot) => {
     const data = snapshot.val();
+    const msgId = snapshot.key; // Используем уникальный ключ Firebase
     const cid = data.chat_id;
 
     if (!chats[cid]) {
-      chats[cid] = { name: data.name, messages: [] };
+      chats[cid] = { name: data.name, messages: [], msgIds: new Set() };
       renderChatList();
     }
     
-    // Проверка на дублирование сообщения по времени или тексту (опционально)
-    chats[cid].messages.push(data);
+    // ПРОВЕРКА НА ДУБЛИ: если ID сообщения уже есть, пропускаем его
+    if (!chats[cid].msgIds.has(msgId)) {
+      chats[cid].messages.push(data);
+      chats[cid].msgIds.add(msgId);
 
-    // Уведомление (красная точка)
-    const msgPage = document.getElementById("messages-page");
-    const isMessagesPageOpen = msgPage && !msgPage.classList.contains("hidden");
-    
-    if (data.sender === "client") {
-        if (!isMessagesPageOpen || currentChatId !== cid) {
-            if (msgBadge) msgBadge.classList.remove("hidden");
-        }
-    }
+      // Уведомление
+      const msgPage = document.getElementById("messages-page");
+      const isMessagesPageOpen = msgPage && !msgPage.classList.contains("hidden");
+      
+      if (data.sender === "client") {
+          if (!isMessagesPageOpen || currentChatId !== cid) {
+              if (msgBadge) msgBadge.classList.remove("hidden");
+          }
+      }
 
-    if (currentChatId === cid) {
-      renderMessages(cid);
+      if (currentChatId === cid) {
+        renderMessages(cid);
+      }
     }
   });
 }
