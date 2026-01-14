@@ -17,7 +17,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const rtdb = getDatabase(app);
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxl_qizobr0heTcLZH3mbrEEPfdu4Hp7eZsJCDuSAJaXILittVArv6jx1SbFR-co0C_Kg/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7z0ZRjek0gTPWf4FG55mWSh1uBEpgrsgx0B6WUw6xvbjs9T04dWnTVZI-vaJA6BctDw/exec";
 let salesChart = null;
 let currentChatId = null;
 const chats = {}; 
