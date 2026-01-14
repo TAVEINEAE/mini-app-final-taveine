@@ -125,7 +125,7 @@ function initChatListener() {
       renderChatList();
     }
     
-    // Защита от дублей
+    // Защита от дублей (проверка по уникальному ключу Firebase)
     if (!chats[cid].msgIds.has(msgId)) {
       chats[cid].messages.push(data);
       chats[cid].msgIds.add(msgId);
@@ -191,6 +191,7 @@ window.sendReply = async () => {
 
   try {
     // 1. Отправка в TG через ваш Google Script
+    // Мы не ждем ответа (no-cors), чтобы не тормозить интерфейс
     fetch(`${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, {
       method: 'GET',
       mode: 'no-cors'
