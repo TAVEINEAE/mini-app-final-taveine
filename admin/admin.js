@@ -1,7 +1,7 @@
-import { getDatabase, ref, onChildAdded, query as dbQuery, limitToLast, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getDatabase, ref, onChildAdded, push, limitToLast, query as dbQuery } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
@@ -18,191 +18,136 @@ const db = getFirestore(app);
 const rtdb = getDatabase(app);
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7z0ZRjek0gTPWf4FG55mWSh1uBEpgrsgx0B6WUw6xvbjs9T04dWnTVZI-vaJA6BctDw/exec";
-let salesChart = null;
 let currentChatId = null;
-const chats = {}; 
-window.chatStarted = false;
+const chats = {};
 
-// --- АВТОРИЗАЦИЯ ---
+// --- AUTH ---
 onAuthStateChanged(auth, (user) => {
-  const statusEl = document.getElementById("auth-status");
   if (user) {
-    if (statusEl) statusEl.innerText = user.email;
+    document.getElementById("auth-status").innerText = user.email;
     loadProducts();
     initChart();
-    if (!window.chatStarted) {
-      initChatListener();
-      window.chatStarted = true;
-    }
+    initChatListener();
   } else {
     window.location.href = "./login.html";
   }
 });
 
-window.logout = async () => { 
-  await signOut(auth); 
-  window.location.href = "./login.html"; 
-};
+window.logout = () => signOut(auth).then(() => window.location.href = "./login.html");
 
-// --- ТОВАРЫ ---
+// --- PRODUCTS LOGIC (Add, Delete, Edit) ---
 window.addProduct = async () => {
-  const name = document.getElementById("p-name").value.trim();
+  const name = document.getElementById("p-name").value;
   const price = Number(document.getElementById("p-price").value);
-  const category = document.getElementById("p-category").value.trim();
-  const image = document.getElementById("p-image").value.trim();
-  const tags = document.getElementById("p-tags").value.split(",").map(t => t.trim()).filter(Boolean);
-  if (!name || !price || !category) return alert("Fill fields!");
-  await addDoc(collection(db, "products"), { name, price, category, image, tags, createdAt: Date.now() });
-  ["p-name", "p-price", "p-category", "p-image", "p-tags"].forEach(id => document.getElementById(id).value = "");
+  const category = document.getElementById("p-category").value;
+  const image = document.getElementById("p-image").value;
+  if(!name || !price) return alert("Fill name and price");
+  await addDoc(collection(db, "products"), { name, price, category, image, createdAt: Date.now() });
   loadProducts();
+  ["p-name", "p-price", "p-category", "p-image"].forEach(id => document.getElementById(id).value = "");
 };
 
 async function loadProducts() {
   const list = document.getElementById("products-list");
-  const countDisplay = document.getElementById("productsCount");
-  if (!list) return;
   const snap = await getDocs(query(collection(db, "products"), orderBy("createdAt", "desc")));
-  if (countDisplay) countDisplay.innerText = snap.size;
+  document.getElementById("productsCount").innerText = snap.size;
   list.innerHTML = "";
   snap.forEach(docSnap => {
     const p = docSnap.data();
+    const id = docSnap.id;
     const div = document.createElement("div");
     div.className = "product-item";
-    div.innerHTML = `<div><strong>${p.name}</strong><br><small>${p.category}</small></div>
-      <div><span style="color:var(--primary); font-weight:700; margin-right:15px;">${p.price} AED</span>
-      <button onclick="deleteProduct('${docSnap.id}')" style="color:#cbd5e1; border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button></div>`;
+    div.innerHTML = `
+      <div><strong>${p.name}</strong><br><small>${p.category}</small></div>
+      <div>
+        <span style="font-weight:bold; margin-right:15px;">${p.price} AED</span>
+        <button onclick="openEditModal('${id}', '${p.name}', ${p.price}, '${p.category}')" style="color:var(--primary); border:none; background:none; cursor:pointer; margin-right:10px;"><i class="fas fa-edit"></i></button>
+        <button onclick="deleteProduct('${id}')" style="color:red; border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
+      </div>`;
     list.appendChild(div);
   });
 }
 
-window.deleteProduct = async (id) => {
-  if(confirm("Delete?")) { await deleteDoc(doc(db, "products", id)); loadProducts(); }
+window.deleteProduct = async (id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, "products", id)); loadProducts(); } };
+
+// --- EDIT FUNCTION ---
+window.openEditModal = (id, name, price, category) => {
+  document.getElementById("edit-id").value = id;
+  document.getElementById("edit-name").value = name;
+  document.getElementById("edit-price").value = price;
+  document.getElementById("edit-category").value = category;
+  document.getElementById("edit-modal").style.display = "flex";
 };
 
-// --- ГРАФИК ---
-function initChart() {
-  const canvas = document.getElementById('salesChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  if (salesChart) salesChart.destroy();
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, 'rgba(0, 109, 91, 0.2)');
-  gradient.addColorStop(1, 'rgba(0, 109, 91, 0)');
-  salesChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      datasets: [{ label: 'Revenue', data: [12, 19, 13, 25, 22, 30, 25], borderColor: '#006d5b', backgroundColor: gradient, fill: true, tension: 0.4, borderWidth: 3, pointRadius: 0 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true } } }
-  });
-}
+window.updateProduct = async () => {
+  const id = document.getElementById("edit-id").value;
+  const data = {
+    name: document.getElementById("edit-name").value,
+    price: Number(document.getElementById("edit-price").value),
+    category: document.getElementById("edit-category").value
+  };
+  await updateDoc(doc(db, "products", id), data);
+  document.getElementById("edit-modal").style.display = "none";
+  loadProducts();
+};
 
-// --- НАВИГАЦИЯ ---
-document.querySelectorAll(".nav-link").forEach(link => {
-  link.addEventListener("click", () => {
-    document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-    link.classList.add("active");
-    document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-    const targetPage = document.getElementById(`${link.dataset.page}-page`);
-    if (targetPage) targetPage.classList.remove("hidden");
-    if (link.dataset.page === "messages") document.getElementById("msg-badge")?.classList.add("hidden");
-  });
-});
-
-// --- ЧАТ ---
+// --- CHAT LOGIC ---
 function initChatListener() {
-  const msgBadge = document.getElementById("msg-badge");
-  const messagesRef = dbQuery(ref(rtdb, 'messages'), limitToLast(100));
-
-  onChildAdded(messagesRef, (snapshot) => {
-    const data = snapshot.val();
-    const msgId = snapshot.key; 
+  onChildAdded(dbQuery(ref(rtdb, 'messages'), limitToLast(50)), (snap) => {
+    const data = snap.val();
     const cid = data.chat_id;
-
-    if (!chats[cid]) {
-      chats[cid] = { name: data.name, messages: [], msgIds: new Set() };
-      renderChatList();
-    }
-    
-    // Защита от дублей (проверка по уникальному ключу Firebase)
-    if (!chats[cid].msgIds.has(msgId)) {
-      chats[cid].messages.push(data);
-      chats[cid].msgIds.add(msgId);
-
-      const msgPage = document.getElementById("messages-page");
-      const isMessagesPageOpen = msgPage && !msgPage.classList.contains("hidden");
-      
-      if (data.sender === "client") {
-        if (!isMessagesPageOpen || currentChatId !== cid) {
-          msgBadge?.classList.remove("hidden");
-        }
-      }
-      if (currentChatId === cid) renderMessages(cid);
-    }
+    if (!chats[cid]) { chats[cid] = { name: data.name, messages: [] }; renderChatList(); }
+    chats[cid].messages.push(data);
+    if (currentChatId === cid) renderMessages(cid);
   });
 }
 
 function renderChatList() {
   const list = document.getElementById("chats-list");
-  if (!list) return;
   list.innerHTML = "";
   Object.keys(chats).forEach(cid => {
     const div = document.createElement("div");
     div.className = `chat-item ${currentChatId === cid ? 'active' : ''}`;
-    div.innerHTML = `<div class="chat-avatar"></div><div class="chat-info"><strong>${chats[cid].name}</strong><p style="font-size:12px; color:#64748b; margin:0">ID: ${cid}</p></div>`;
-    div.onclick = () => {
-      currentChatId = cid;
-      const header = document.getElementById("current-chat-name");
-      if (header) header.innerText = chats[cid].name;
-      renderChatList();
-      renderMessages(cid);
-    };
+    div.style.padding = "15px"; div.style.cursor = "pointer";
+    div.innerHTML = `<strong>${chats[cid].name}</strong>`;
+    div.onclick = () => { currentChatId = cid; renderMessages(cid); document.getElementById("current-chat-name").innerText = chats[cid].name; };
     list.appendChild(div);
   });
 }
 
 function renderMessages(cid) {
   const box = document.getElementById("chat-box");
-  if (!box) return;
-  box.innerHTML = ""; 
-  chats[cid].messages.forEach(m => {
-    const div = document.createElement("div");
-    div.className = `msg ${m.sender === 'client' ? 'client' : 'admin'}`;
-    div.innerHTML = `<div>${m.text}</div><small style="font-size:10px; opacity:0.6">${new Date(m.timestamp).toLocaleTimeString()}</small>`;
-    box.appendChild(div);
-  });
+  box.innerHTML = chats[cid].messages.map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join("");
   box.scrollTop = box.scrollHeight;
 }
 
 window.sendReply = async () => {
   const input = document.getElementById("reply-input");
-  if (!input || !currentChatId) return;
-  const text = input.value.trim();
-  if (!text) return;
-
-  const msgData = {
-    chat_id: currentChatId,
-    name: "TAVÉINE",
-    text: text,
-    sender: "admin",
-    timestamp: Date.now()
-  };
-
-  try {
-    // 1. Отправка в TG через ваш Google Script
-    // Мы не ждем ответа (no-cors), чтобы не тормозить интерфейс
-    fetch(`${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(text)}`, {
-      method: 'GET',
-      mode: 'no-cors'
-    });
-
-    // 2. Сохранение в Firebase
-    await push(ref(rtdb, 'messages'), msgData);
-    
-    input.value = "";
-  } catch (e) {
-    console.error("Error:", e);
-    alert("Ошибка отправки");
-  }
+  if (!input.value || !currentChatId) return;
+  const msg = { chat_id: currentChatId, name: "Admin", text: input.value, sender: "admin", timestamp: Date.now() };
+  fetch(`${GOOGLE_SCRIPT_URL}?chatId=${currentChatId}&text=${encodeURIComponent(input.value)}`, { mode: 'no-cors' });
+  await push(ref(rtdb, 'messages'), msg);
+  input.value = "";
 };
+
+// --- NAVIGATION & CHART ---
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.onclick = () => {
+    document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+    link.classList.add("active");
+    document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+    document.getElementById(`${link.dataset.page}-page`).classList.remove("hidden");
+  }
+});
+
+function initChart() {
+  const ctx = document.getElementById('salesChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{ data: [12, 19, 15, 25, 22, 30, 28], borderColor: '#006d5b', tension: 0.4, fill: true, backgroundColor: 'rgba(0,109,91,0.1)' }]
+    },
+    options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+}
