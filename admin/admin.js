@@ -1,4 +1,5 @@
-// Firebase imports (версия 10 — более стабильная и меньше размер)
+// admin.js — финальная версия (15 января 2026)
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
@@ -21,54 +22,68 @@ const rtdb = getDatabase(app);
 
 const GAS_URL = "https://script.google.com/macros/s/AKfycbz7z0ZRjek0gTPWf4FG55mWSh1uBEpgrsgx0B6WUw6xvbjs9T04dWnTVZI-vaJA6BctDw/exec";
 
+// ================================================
 // State
+// ================================================
 let productsChart = null;
 const messagesStore = {};
 let activeChatId = null;
 
-// Auth & Navigation
+// ================================================
+// Навигация между экранами
+// ================================================
+function goToScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${screenId}`).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  const navItem = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
+  if (navItem) navItem.classList.add('active');
+}
+
+// ================================================
+// Auth & Init
+// ================================================
 onAuthStateChanged(auth, user => {
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
-  document.getElementById("auth-status").innerHTML = `<small>Signed in as</small><br>${user.email}`;
+  // Можно добавить имя админа, если нужно
+  // document.querySelector('.greeting').textContent = `Hello, ${user.displayName || 'Admin'}!`;
+
   loadAllData();
+  goToScreen('dashboard'); // стартовая страница
 });
 
-document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-  link.addEventListener('click', () => {
-    const page = link.dataset.page;
-
-    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-    document.getElementById(page + '-page').classList.remove('hidden');
-
-    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-    link.classList.add('active');
-
-    document.getElementById('page-title').textContent = link.textContent.trim();
+// Клик по пунктам меню
+document.querySelectorAll('.nav-item[data-screen]').forEach(item => {
+  item.addEventListener('click', () => {
+    goToScreen(item.dataset.screen);
   });
 });
 
 window.logout = () => signOut(auth).then(() => location.href = "login.html");
 
-// Products
+// ================================================
+// Продукты
+// ================================================
 window.addProduct = async () => {
-  const name     = document.getElementById("p-name").value.trim();
-  const priceStr = document.getElementById("p-price").value.trim();
-  const category = document.getElementById("p-category").value.trim();
-  const image    = document.getElementById("p-image").value.trim();
-  const tags     = document.getElementById("p-tags").value.trim();
+  const name     = document.getElementById("p-name")?.value?.trim();
+  const priceStr = document.getElementById("p-price")?.value?.trim();
+  const category = document.getElementById("p-category")?.value?.trim();
+  const image    = document.getElementById("p-image")?.value?.trim();
+  const tagsStr  = document.getElementById("p-tags")?.value?.trim();
 
   if (!name || !priceStr) {
-    alert("Name and Price are required!");
+    alert("Название и цена — обязательные поля!");
     return;
   }
 
   const price = Number(priceStr);
   if (isNaN(price) || price <= 0) {
-    alert("Enter correct price!");
+    alert("Введите корректную цену!");
     return;
   }
 
@@ -78,22 +93,24 @@ window.addProduct = async () => {
       price,
       category: category || null,
       image: image || null,
-      tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : null,
+      tags: tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : null,
       createdAt: serverTimestamp()
     });
 
-    alert("Product added successfully!");
+    alert("Товар успешно добавлен!");
     clearProductForm();
     loadProducts();
+    goToScreen('inventory'); // после добавления сразу переходим в инвентарь — удобно
   } catch (err) {
-    console.error(err);
-    alert("Error: " + err.message);
+    console.error("Ошибка добавления:", err);
+    alert("Не удалось добавить товар: " + err.message);
   }
 };
 
 function clearProductForm() {
-  ["p-name","p-price","p-category","p-image","p-tags"].forEach(id => {
-    document.getElementById(id).value = "";
+  ["p-name", "p-price", "p-category", "p-image", "p-tags"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
   });
 }
 
@@ -105,10 +122,12 @@ async function loadProducts() {
     document.getElementById("dash-products").textContent = snap.size;
 
     const container = document.getElementById("inventory-list");
+    if (!container) return;
+
     container.innerHTML = "";
 
     if (snap.empty) {
-      container.innerHTML = '<div style="padding:40px; color:#64748b; text-align:center; width:100%;">No products yet</div>';
+      container.innerHTML = '<div style="padding:60px; text-align:center; color:#64748b; width:100%;">Пока нет товаров...</div>';
       return;
     }
 
@@ -118,14 +137,15 @@ async function loadProducts() {
       const p = doc.data();
       const date = p.createdAt?.toDate?.() || new Date(p.createdAt || Date.now());
       const dayKey = date.toISOString().split('T')[0];
-
       productsByDay[dayKey] = (productsByDay[dayKey] || 0) + 1;
 
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
-        <img class="product-img" src="${p.image || 'https://via.placeholder.com/300x220?text=No+Image'}" 
-             onerror="this.src='https://via.placeholder.com/300x220?text=Error'" alt="${p.name}">
+        <img class="product-img" 
+             src="${p.image || 'https://via.placeholder.com/400x260?text=No+Image'}" 
+             onerror="this.src='https://via.placeholder.com/400x260?text=Ошибка+изображения'"
+             alt="${p.name}">
         <div class="product-info">
           <div class="product-name">${p.name}</div>
           <div class="product-price">${p.price.toLocaleString('ru-RU')} AED</div>
@@ -136,13 +156,13 @@ async function loadProducts() {
 
     updateProductsChart(productsByDay);
   } catch (err) {
-    console.error("Products load error:", err);
+    console.error("Ошибка загрузки продуктов:", err);
   }
 }
 
 function updateProductsChart(byDay) {
   const sortedDays = Object.keys(byDay).sort();
-  const labels = sortedDays.map(d => new Date(d).toLocaleDateString('ru-RU', {day:'numeric', month:'short'}));
+  const labels = sortedDays.map(d => new Date(d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }));
   const data = sortedDays.map(d => byDay[d]);
 
   if (productsChart) productsChart.destroy();
@@ -152,12 +172,12 @@ function updateProductsChart(byDay) {
     data: {
       labels,
       datasets: [{
-        label: 'Products added',
+        label: 'Добавлено товаров',
         data,
-        backgroundColor: 'rgba(0, 109, 91, 0.65)',
+        backgroundColor: 'rgba(0, 109, 91, 0.7)',
         borderColor: 'rgba(0, 109, 91, 0.9)',
         borderWidth: 1,
-        borderRadius: 6
+        borderRadius: 8
       }]
     },
     options: {
@@ -171,7 +191,9 @@ function updateProductsChart(byDay) {
   });
 }
 
-// Chat & Customers
+// ================================================
+// Чат (WhatsApp-style)
+// ================================================
 function initChat() {
   onChildAdded(ref(rtdb, 'messages'), snap => {
     const msg = snap.val();
@@ -179,7 +201,7 @@ function initChat() {
 
     if (!messagesStore[msg.chat_id]) {
       messagesStore[msg.chat_id] = {
-        name: msg.name || "Unknown",
+        name: msg.name || "Unknown User",
         username: msg.username || null,
         msgs: []
       };
@@ -190,6 +212,7 @@ function initChat() {
     if (activeChatId === msg.chat_id) {
       renderMessages();
     } else {
+      // Просто обновляем список, если новый чат
       updateChatList();
     }
 
@@ -199,6 +222,8 @@ function initChat() {
 
 function updateChatList() {
   const container = document.getElementById("chat-list");
+  if (!container) return;
+
   container.innerHTML = "";
 
   Object.entries(messagesStore)
@@ -210,11 +235,16 @@ function updateChatList() {
       if (id === activeChatId) item.classList.add("active");
 
       item.innerHTML = `
-        <strong>${chat.name}</strong>
-        ${chat.username ? `<small>@${chat.username}</small>` : ''}
-        ${lastMsg ? `<div style="margin-top:4px; font-size:0.82rem; color:#64748b;">
-          ${lastMsg.sender === 'admin' ? 'You: ' : ''}${lastMsg.text.substring(0,40)}${lastMsg.text.length>40?'...':''}
-        </div>` : ''}
+        <div class="chat-avatar-placeholder"></div>
+        <div class="chat-preview">
+          <strong>${chat.name}</strong>
+          ${chat.username ? `<small>@${chat.username}</small>` : ''}
+          ${lastMsg ? `
+            <div class="last-message-preview">
+              ${lastMsg.sender === 'admin' ? 'Вы: ' : ''}${lastMsg.text.substring(0, 45)}${lastMsg.text.length > 45 ? '...' : ''}
+            </div>
+          ` : ''}
+        </div>
       `;
 
       item.onclick = () => selectChat(id);
@@ -222,25 +252,35 @@ function updateChatList() {
     });
 }
 
-window.selectChat = id => {
+window.selectChat = (id) => {
   activeChatId = id;
   document.getElementById("active-chat-header").textContent = 
-    messagesStore[id]?.name || "Chat #" + id;
+    messagesStore[id]?.name || "Чат #" + id;
 
-  updateChatList();
+  updateChatList(); // обновляем подсветку
   renderMessages();
 };
 
 function renderMessages() {
-  if (!activeChatId || !messagesStore[activeChatId]) return;
-
   const container = document.getElementById("chat-box");
+  if (!container || !activeChatId || !messagesStore[activeChatId]) return;
+
   container.innerHTML = "";
 
   messagesStore[activeChatId].msgs.forEach(m => {
     const div = document.createElement("div");
     div.className = `message ${m.sender === 'admin' ? 'admin' : 'user'}`;
     div.textContent = m.text;
+
+    // Можно добавить время
+    const time = document.createElement("small");
+    time.textContent = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    time.style.display = "block";
+    time.style.fontSize = "0.75rem";
+    time.style.opacity = "0.7";
+    time.style.marginTop = "4px";
+    div.appendChild(time);
+
     container.appendChild(div);
   });
 
@@ -249,6 +289,8 @@ function renderMessages() {
 
 window.sendMessage = async () => {
   const input = document.getElementById("reply-input");
+  if (!input) return;
+
   const text = input.value.trim();
   if (!text || !activeChatId) return;
 
@@ -261,11 +303,16 @@ window.sendMessage = async () => {
   };
 
   try {
+    // Отправка через Google Apps Script (уведомление пользователю)
     fetch(`${GAS_URL}?chatId=${activeChatId}&text=${encodeURIComponent(text)}`, { mode: 'no-cors' });
+
+    // Сохраняем в базу
     await push(ref(rtdb, 'messages'), msg);
+
     input.value = "";
+    // renderMessages() придёт через onChildAdded автоматически
   } catch (err) {
-    console.error("Send failed", err);
+    console.error("Ошибка отправки:", err);
   }
 };
 
@@ -275,11 +322,14 @@ function updateCustomerCount() {
   document.getElementById("real-users-count").textContent = count;
 }
 
-// Init
+// ================================================
+// Инициализация всего при загрузке
+// ================================================
 async function loadAllData() {
   await Promise.all([
-    loadProducts()
+    loadProducts(),
   ]);
+
   initChat();
   updateCustomerCount();
 }
