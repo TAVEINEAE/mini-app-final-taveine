@@ -6,7 +6,7 @@
   <title>Taveine AE • Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <link rel="stylesheet" href="admin.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,13 +14,12 @@
 <body>
 
 <div class="layout">
-  <!-- Sidebar (для компьютера) -->
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="logo">
       <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo">
       <span>Taveine AE</span>
     </div>
-
     <nav>
       <a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a>
       <a class="nav-link" data-page="add-product"><i class="fas fa-plus-circle"></i> Add Product</a>
@@ -31,7 +30,7 @@
     </nav>
   </aside>
 
-  <!-- Mobile Bottom Nav (для телефона) -->
+  <!-- Mobile Bottom Nav -->
   <nav class="mobile-nav">
     <a class="nav-item active" data-page="dashboard"><i class="fas fa-home"></i></a>
     <a class="nav-item" data-page="add-product"><i class="fas fa-plus-circle"></i></a>
@@ -47,7 +46,7 @@
       <div id="user-info">Admin</div>
     </header>
 
-    <!-- Все страницы теперь с классом page и анимацией -->
+    <!-- Pages -->
     <section id="dashboard-page" class="page active">
       <div class="stats">
         <div class="stat-card">
@@ -63,45 +62,54 @@
           <div class="value" id="dash-revenue">— AED</div>
         </div>
       </div>
-
-      <div class="chart-card">
-        <h3>Products Added</h3>
-        <canvas id="productsChart" height="160"></canvas>
+      <div class="card">
+        <h3 style="margin-bottom: 28px;">Products Trend</h3>
+        <div class="chart-container">
+          <canvas id="productsChart"></canvas>
+        </div>
       </div>
     </section>
 
     <section id="add-product-page" class="page">
-      <h2>Add New Product</h2>
-      <div class="form">
-        <input id="p-name" placeholder="Product Name *" required>
-        <input id="p-price" type="number" placeholder="Price (AED) *" required>
-        <input id="p-category" placeholder="Category">
-        <input id="p-image" placeholder="Image URL">
-        <button onclick="addProduct()" class="btn">Add Product</button>
+      <div class="card">
+        <h2>Add New Product</h2>
+        <div class="form" style="margin-top:28px; display:grid; gap:20px; max-width:540px;">
+          <input id="p-name" placeholder="Product Name *" required>
+          <input id="p-price" type="number" placeholder="Price (AED) *" required>
+          <input id="p-category" placeholder="Category">
+          <input id="p-image" placeholder="Image URL">
+          <button onclick="addProduct()" class="btn">Add Product</button>
+        </div>
       </div>
     </section>
 
     <section id="inventory-page" class="page">
-      <h2>Inventory by Category</h2>
-      <div id="inventory-categories"></div>
+      <div class="card">
+        <h2>Inventory by Category</h2>
+        <div id="inventory-categories" style="margin-top:28px;"></div>
+      </div>
     </section>
 
     <section id="customers-page" class="page">
-      <h2>Customers</h2>
-      <div class="big-number" id="real-users-count">0</div>
-      <p>active users from Telegram</p>
+      <div class="card" style="text-align:center; padding:80px 30px;">
+        <div class="big-number" id="real-users-count" style="font-size:8rem; font-weight:800; color:var(--primary);">0</div>
+        <p style="margin-top:20px; font-size:1.4rem; color:var(--gray);">active users from Telegram</p>
+      </div>
     </section>
 
     <section id="messages-page" class="page">
-      <h2>Messages</h2>
-      <div class="chat">
-        <div class="chat-list" id="chat-list"></div>
-        <div class="chat-main">
-          <div class="chat-header" id="chat-header">Select chat</div>
-          <div class="chat-messages" id="chat-messages"></div>
-          <div class="chat-input">
-            <input id="reply-input" placeholder="Type message...">
-            <button onclick="sendMessage()" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <h2 style="padding:32px 32px 0;">Messages</h2>
+        <div class="chat" style="height:72vh;">
+          <!-- Your original chat structure goes here -->
+          <div class="chat-list" id="chat-list"></div>
+          <div class="chat-main">
+            <div class="chat-header" id="chat-header">Select chat</div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input">
+              <input id="reply-input" placeholder="Type message...">
+              <button onclick="sendMessage()" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+            </div>
           </div>
         </div>
       </div>
