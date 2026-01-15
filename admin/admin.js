@@ -58,31 +58,52 @@ async function loadProducts() {
 
     document.getElementById("dash-products").textContent = snap.size;
 
-    const list = document.getElementById("inventory-list");
-    list.innerHTML = "";
+    const categoriesContainer = document.getElementById("inventory-categories");
+    categoriesContainer.innerHTML = "";
 
-    const byDay = {};
+    const productsByCategory = {};
 
     snap.forEach(doc => {
       const p = doc.data();
-      const date = p.createdAt?.toDate?.() || new Date();
-      const day = date.toISOString().split('T')[0];
-      byDay[day] = (byDay[day] || 0) + 1;
+      const category = p.category || "Uncategorized";
 
-      list.innerHTML += `
-        <div class="product-card">
-          <img src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
-          <div class="product-info">
-            <div class="product-name">${p.name}</div>
-            <div class="product-price">${p.price || '—'} AED</div>
-          </div>
-        </div>
-      `;
+      if (!productsByCategory[category]) {
+        productsByCategory[category] = [];
+      }
+      productsByCategory[category].push(p);
     });
 
-    updateChart(byDay);
+    Object.entries(productsByCategory).forEach(([category, products]) => {
+      const section = document.createElement("div");
+      section.className = "category-section";
+
+      section.innerHTML = `<div class="category-title">${category} (${products.length})</div>`;
+
+      const slider = document.createElement("div");
+      slider.className = "category-slider";
+
+      products.forEach(p => {
+        slider.innerHTML += `
+          <div class="product-card">
+            <img class="product-img" src="${p.image || 'https://via.placeholder.com/300x140'}" alt="${p.name}">
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-price">${p.price || '—'} AED</div>
+            </div>
+          </div>
+        `;
+      });
+
+      section.appendChild(slider);
+      categoriesContainer.appendChild(section);
+    });
+
+    if (Object.keys(productsByCategory).length === 0) {
+      categoriesContainer.innerHTML = '<p style="text-align:center; color:var(--gray);">No products yet</p>';
+    }
+
   } catch (e) {
-    console.error("Products error:", e);
+    console.error("Products load error:", e);
   }
 }
 
@@ -114,6 +135,7 @@ function updateChart(byDay) {
 window.addProduct = async () => {
   const name = document.getElementById('p-name').value.trim();
   const price = Number(document.getElementById('p-price').value);
+  const category = document.getElementById('p-category').value.trim();
 
   if (!name || isNaN(price) || price <= 0) {
     alert("Name and valid price required");
@@ -124,6 +146,8 @@ window.addProduct = async () => {
     await addDoc(collection(db, "products"), {
       name,
       price,
+      category: category || null,
+      image: document.getElementById('p-image').value.trim() || null,
       createdAt: serverTimestamp()
     });
     alert("Product added!");
@@ -138,14 +162,7 @@ function initChat() {
     const m = snap.val();
     if (!m?.chat_id) return;
 
-    if (!messagesStore[m.chat_id]) {
-      messagesStore[m.chat_id] = {
-        name: m.name || 'Telegram User',
-        username: m.username || null,
-        msgs: []
-      };
-    }
-
+    if (!messagesStore[m.chat_id]) messagesStore[m.chat_id] = { name: m.name || 'Customer', msgs: [] };
     messagesStore[m.chat_id].msgs.push(m);
 
     updateChatList();
@@ -161,20 +178,13 @@ function updateChatList() {
   const list = document.getElementById('chat-list');
   list.innerHTML = "";
 
-  Object.entries(messagesStore).sort(([,a], [,b]) => b.msgs.at(-1)?.timestamp - a.msgs.at(-1)?.timestamp).forEach(([id, chat]) => {
-    const lastMsg = chat.msgs.at(-1);
+  Object.entries(messagesStore).forEach(([id, chat]) => {
     const item = document.createElement('div');
     item.className = `chat-item${activeChatId === id ? ' active' : ''}`;
-    item.innerHTML = `
-      <strong>${chat.name}</strong>
-      ${chat.username ? `<small>@${chat.username}</small>` : ''}
-      ${lastMsg ? `<div style="margin-top:4px; font-size:0.85rem; color:var(--gray);">
-        ${lastMsg.sender === 'admin' ? 'You: ' : ''}${lastMsg.text.substring(0,40)}${lastMsg.text.length>40?'...':''}
-      </div>` : ''}
-    `;
+    item.textContent = chat.name;
     item.onclick = () => {
       activeChatId = id;
-      document.getElementById('chat-header').textContent = chat.name + (chat.username ? ` (@${chat.username})` : '');
+      document.getElementById('chat-header').textContent = chat.name;
       renderMessages();
       updateChatList();
     };
@@ -186,21 +196,12 @@ function renderMessages() {
   const box = document.getElementById('chat-messages');
   box.innerHTML = "";
 
-  if (!activeChatId || !messagesStore[activeChatId]) return;
+  if (!activeChatId) return;
 
   messagesStore[activeChatId].msgs.forEach(m => {
     const div = document.createElement('div');
     div.className = `message ${m.sender === 'admin' ? 'admin' : 'user'}`;
     div.textContent = m.text;
-
-    const time = document.createElement('small');
-    time.textContent = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    time.style.display = "block";
-    time.style.fontSize = "0.75rem";
-    time.style.opacity = "0.7";
-    time.style.marginTop = "4px";
-    div.appendChild(time);
-
     box.appendChild(div);
   });
 
@@ -216,8 +217,7 @@ window.sendMessage = () => {
     chat_id: activeChatId,
     text,
     sender: 'admin',
-    timestamp: Date.now(),
-    name: "Admin"
+    timestamp: Date.now()
   });
 
   input.value = '';
