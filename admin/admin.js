@@ -1,6 +1,5 @@
-// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
@@ -19,66 +18,118 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const rtdb = getDatabase(app);
 
-let activeChatId = null;
+let chart = null;
 const messagesStore = {};
+let activeChatId = null;
 
 // Navigation
-document.querySelectorAll('[data-page]').forEach(el => {
-  el.addEventListener('click', () => {
-    const page = el.dataset.page;
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(page).classList.add('active');
+document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const page = link.dataset.page;
 
-    document.querySelectorAll('.category, .nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelectorAll(`[data-page="${page}"]`).forEach(i => i.classList.add('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page + '-page').classList.add('active');
+
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+
+    document.getElementById('page-title').textContent = link.textContent.trim();
   });
 });
 
 onAuthStateChanged(auth, user => {
   if (!user) return window.location.href = "login.html";
-  loadProducts();
-  initChat();
+  loadAll();
 });
 
+window.logout = () => signOut(auth);
+
+async function loadAll() {
+  await loadProducts();
+  initChat();
+}
+
 async function loadProducts() {
-  const snap = await getDocs(query(collection(db, "products"), orderBy("createdAt", "desc")));
+  try {
+    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
 
-  document.getElementById("dash-products").textContent = snap.size;
+    document.getElementById("dash-products").textContent = snap.size;
 
-  const popular = document.getElementById("popular-products");
-  popular.innerHTML = "";
+    const list = document.getElementById("inventory-list");
+    list.innerHTML = "";
 
-  snap.forEach(doc => {
-    const p = doc.data();
-    popular.innerHTML += `
-      <div class="product-card">
-        <img class="product-img" src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
-        <div class="favorite"><i class="far fa-heart"></i></div>
-        <div class="product-info">
-          <div class="product-name">${p.name}</div>
-          <div class="product-price">${p.price} AED</div>
+    const byDay = {};
+
+    snap.forEach(doc => {
+      const p = doc.data();
+      const date = p.createdAt?.toDate?.() || new Date();
+      const day = date.toISOString().split('T')[0];
+      byDay[day] = (byDay[day] || 0) + 1;
+
+      list.innerHTML += `
+        <div class="product-card">
+          <img src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
+          <div class="product-info">
+            <div class="product-name">${p.name}</div>
+            <div class="product-price">${p.price} AED</div>
+          </div>
         </div>
-      </div>
-    `;
-  });
+      `;
+    });
 
-  const inventory = document.getElementById("inventory-list");
-  inventory.innerHTML = popular.innerHTML; // пока одинаковый список
+    updateChart(byDay);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function updateChart(byDay) {
+  const days = Object.keys(byDay).sort();
+  const labels = days.map(d => new Date(d).toLocaleDateString('en', { day: 'numeric', month: 'short' }));
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(document.getElementById('productsChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Products',
+        data: days.map(d => byDay[d]),
+        backgroundColor: 'rgba(0,109,91,0.6)',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
 }
 
 window.addProduct = async () => {
   const name = document.getElementById('p-name').value.trim();
   const price = Number(document.getElementById('p-price').value);
 
-  if (!name || !price) return alert("Name and price required");
+  if (!name || isNaN(price) || price <= 0) {
+    alert("Name and valid price required");
+    return;
+  }
 
-  await addDoc(collection(db, "products"), {
-    name, price,
-    createdAt: serverTimestamp()
-  });
-
-  alert("Product added!");
-  loadProducts();
+  try {
+    await addDoc(collection(db, "products"), {
+      name,
+      price,
+      createdAt: serverTimestamp()
+    });
+    alert("Product added!");
+    loadProducts();
+  } catch (e) {
+    alert("Error: " + e.message);
+  }
 };
 
 function initChat() {
@@ -89,18 +140,56 @@ function initChat() {
     if (!messagesStore[m.chat_id]) messagesStore[m.chat_id] = { name: m.name || 'Customer', msgs: [] };
     messagesStore[m.chat_id].msgs.push(m);
 
-    document.getElementById('dash-users').textContent = Object.keys(messagesStore).length;
-    document.getElementById('real-users-count').textContent = Object.keys(messagesStore).length;
+    updateChatList();
+    if (activeChatId === m.chat_id) renderMessages();
+
+    const count = Object.keys(messagesStore).length;
+    document.getElementById('dash-users').textContent = count;
+    document.getElementById('real-users-count').textContent = count;
   });
 }
 
+function updateChatList() {
+  const list = document.getElementById('chat-list');
+  list.innerHTML = "";
+
+  Object.entries(messagesStore).forEach(([id, chat]) => {
+    const item = document.createElement('div');
+    item.className = `chat-item${activeChatId === id ? ' active' : ''}`;
+    item.textContent = chat.name;
+    item.onclick = () => {
+      activeChatId = id;
+      document.getElementById('chat-header').textContent = chat.name;
+      renderMessages();
+      updateChatList();
+    };
+    list.appendChild(item);
+  });
+}
+
+function renderMessages() {
+  const box = document.getElementById('chat-messages');
+  box.innerHTML = "";
+
+  if (!activeChatId) return;
+
+  messagesStore[activeChatId].msgs.forEach(m => {
+    const div = document.createElement('div');
+    div.className = `message ${m.sender === 'admin' ? 'admin' : 'user'}`;
+    div.textContent = m.text;
+    box.appendChild(div);
+  });
+
+  box.scrollTop = box.scrollHeight;
+}
+
 window.sendMessage = () => {
-  const input = document.getElementById('message-input');
+  const input = document.getElementById('reply-input');
   const text = input.value.trim();
-  if (!text) return;
+  if (!text || !activeChatId) return;
 
   push(ref(rtdb, 'messages'), {
-    chat_id: "demo-chat",
+    chat_id: activeChatId,
     text,
     sender: 'admin',
     timestamp: Date.now()
