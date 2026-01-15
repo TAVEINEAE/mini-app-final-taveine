@@ -43,7 +43,7 @@
           <div class="value" id="dash-products">0</div>
         </div>
         <div class="stat-card">
-          <div class="label">Telegram Users</div>
+          <div class="label">Customers</div>
           <div class="value" id="dash-users">0</div>
         </div>
         <div class="stat-card">
@@ -70,25 +70,25 @@
     </section>
 
     <section id="inventory-page" class="page">
-      <h2>Inventory</h2>
-      <div class="inventory" id="inventory-list"></div>
+      <h2>Inventory by Category</h2>
+      <div id="inventory-categories"></div>
     </section>
 
     <section id="customers-page" class="page">
-      <h2>Telegram Customers</h2>
+      <h2>Customers</h2>
       <div class="big-number" id="real-users-count">0</div>
-      <p>unique users who messaged your bot</p>
+      <p>active users from Telegram</p>
     </section>
 
     <section id="messages-page" class="page">
-      <h2>Telegram Messages</h2>
+      <h2>Messages</h2>
       <div class="chat">
         <div class="chat-list" id="chat-list"></div>
         <div class="chat-main">
-          <div class="chat-header" id="chat-header">Select a chat</div>
+          <div class="chat-header" id="chat-header">Select chat</div>
           <div class="chat-messages" id="chat-messages"></div>
           <div class="chat-input">
-            <input id="reply-input" placeholder="Reply to user...">
+            <input id="reply-input" placeholder="Type message...">
             <button onclick="sendMessage()" class="send-btn"><i class="fas fa-paper-plane"></i></button>
           </div>
         </div>
