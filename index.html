@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>Tavéine • Luxury Flowers</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TAVÉINE • Luxury Flowers Dubai</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -11,92 +11,89 @@
 </head>
 <body>
 
-<!-- Side Menu -->
 <div id="side-menu" class="side-drawer">
-    <div class="drawer-header">
+    <div class="menu-top">
         <div class="logo">TAVÉINE</div>
-        <button class="close-drawer" onclick="window.toggleMenu()">✕</button>
+        <button class="close-menu-btn" onclick="toggleMenu()">✕</button>
     </div>
+    
     <div class="menu-content">
         <div class="menu-item">
-            <div class="menu-header" onclick="window.toggleAccordion(this)">
+            <div class="menu-header" onclick="toggleAccordion(this)">
                 <span>Collections</span>
-                <span class="icon">+</span>
+                <span class="accordion-icon">+</span>
             </div>
             <div class="submenu">
-                <a href="#">New Arrivals</a>
-                <a href="#">Best Sellers</a>
-                <a href="#">Luxury</a>
-                <a href="#">Je t'aime</a>
-                <a href="#">Christmas</a>
-                <a href="#">Spring</a>
-                <a href="#">Specialty</a>
+                <a href="#" onclick="toggleMenu()">New Arrivals</a>
+                <a href="#" onclick="toggleMenu()">Best Sellers</a>
+                <a href="#" onclick="toggleMenu()">Luxury</a>
+                <a href="#" onclick="toggleMenu()">Je t'aime</a>
+                <a href="#" onclick="toggleMenu()">Christmas</a>
+                <a href="#" onclick="toggleMenu()">Spring</a>
             </div>
         </div>
+        
         <div class="menu-item">
-            <div class="menu-header" onclick="window.toggleAccordion(this)">
+            <div class="menu-header" onclick="toggleAccordion(this)">
                 <span>Occasions</span>
-                <span class="icon">+</span>
+                <span class="accordion-icon">+</span>
             </div>
             <div class="submenu">
-                <a href="#">Birthday</a>
-                <a href="#">Anniversary</a>
-                <a href="#">I'm Sorry</a>
-                <a href="#">New Baby</a>
-                <a href="#">Forever Rose</a>
+                <a href="#" onclick="toggleMenu()">Birthday</a>
+                <a href="#" onclick="toggleMenu()">Anniversary</a>
+                <a href="#" onclick="toggleMenu()">I'm Sorry</a>
+                <a href="#" onclick="toggleMenu()">New Baby</a>
+                <a href="#" onclick="toggleMenu()">Forever Rose</a>
             </div>
         </div>
+        
         <div class="menu-item">
-            <div class="menu-header" onclick="window.toggleAccordion(this)">
+            <div class="menu-header" onclick="toggleAccordion(this)">
                 <span>Information</span>
-                <span class="icon">+</span>
+                <span class="accordion-icon">+</span>
             </div>
             <div class="submenu">
-                <a href="#">About Us</a>
-                <a href="#">Contact</a>
-                <a href="#">Delivery</a>
-                <a href="#">Privacy Policy</a>
+                <a href="#" onclick="toggleMenu()">About Us</a>
+                <a href="#" onclick="toggleMenu()">Delivery & Returns</a>
+                <a href="#" onclick="toggleMenu()">Contact</a>
+                <a href="#" onclick="toggleMenu()">Privacy Policy</a>
             </div>
         </div>
     </div>
 </div>
 
-<div id="menu-overlay" class="menu-overlay" onclick="window.toggleMenu()"></div>
+<div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
 
-<!-- Top Bar -->
 <header class="top-bar">
-    <button class="burger-menu" onclick="window.toggleMenu()">
-        <span class="menu-lines"></span>
+    <button class="burger-menu" onclick="toggleMenu()">
+        <span class="menu-icon-lines"></span>
     </button>
     <div class="logo">TAVÉINE</div>
-    <div style="width:44px"></div>
+    <div class="header-actions">
+        <button class="icon-btn search-btn" onclick="openSearch()">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
+        </button>
+    </div>
 </header>
 
-<!-- Main Content -->
-<main id="main-page" class="main-content">
+<main id="main-content">
 
-    <!-- Hero -->
-    <section class="hero-section">
-        <div class="hero-bg"></div>
+    <section class="hero-luxury">
+        <div class="hero-gradient"></div>
         <div class="hero-content">
-            <h1>Luxury <span class="gold">Blooms</span></h1>
-            <p>Timeless elegance delivered to your door</p>
-            <button class="hero-btn">Explore Collection</button>
+            <h1>Luxury <span class="accent">Blooms</span></h1>
+            <p>Elevated floral experiences • Dubai</p>
         </div>
     </section>
 
-    <!-- New Arrivals -->
-    <section class="section">
-        <div class="section-header-row">
-            <h2 class="section-title">New Arrivals</h2>
-        </div>
+    <section class="products-section">
+        <h2 class="section-title">New Arrivals</h2>
         <div class="slider-wrapper">
             <div id="new-arrivals-slider" class="slider-container"></div>
         </div>
     </section>
 
-    <!-- Birthday -->
-    <section class="section">
+    <section class="products-section">
         <div class="section-header-row">
             <h2 class="section-title">Birthday Collection</h2>
             <button class="view-all-btn">View All</button>
@@ -106,8 +103,7 @@
         </div>
     </section>
 
-    <!-- Best Sellers -->
-    <section class="section">
+    <section class="products-section">
         <div class="section-header-row">
             <h2 class="section-title">Best Sellers</h2>
             <button class="view-all-btn">View All</button>
@@ -117,8 +113,7 @@
         </div>
     </section>
 
-    <!-- Luxury -->
-    <section class="section">
+    <section class="products-section">
         <div class="section-header-row">
             <h2 class="section-title">Luxury Collection</h2>
             <button class="view-all-btn">View All</button>
@@ -128,89 +123,95 @@
         </div>
     </section>
 
-    <!-- All Products -->
-    <section class="section">
+    <section class="products-section all-products">
         <h2 class="section-title">All Bouquets</h2>
         <div id="all-products-grid" class="grid"></div>
     </section>
 
 </main>
 
-<!-- Full-screen pages -->
-<div id="product-page" class="full-page product-page">
-    <div class="p-header">
-        <button class="back-btn" onclick="closeProductPage()">←</button>
-        <span class="p-title">Product</span>
-        <button class="close-btn" onclick="closeProductPage()">✕</button>
+<!-- Product detail overlay -->
+<div id="product-detail" class="full-screen-page product-detail-page">
+    <div class="page-header">
+        <button class="back-btn" onclick="closeProductDetail()">←</button>
+        <div class="page-title">Product</div>
+        <button class="close-btn" onclick="closeProductDetail()">✕</button>
     </div>
-    <div id="product-content" class="product-content"></div>
+    <div id="product-detail-content"></div>
 </div>
 
-<div id="wish-page" class="full-page">
-    <div class="p-header">
-        <button class="back-btn" onclick="window.closePage('wish-page')">←</button>
-        <span class="p-title">Wishlist</span>
-        <button class="close-btn" onclick="window.closePage('wish-page')">✕</button>
+<!-- Wishlist -->
+<div id="wish-page" class="full-screen-page">
+    <div class="page-header">
+        <button class="back-btn" onclick="closePage('wish-page')">←</button>
+        <div class="page-title">Wishlist</div>
+        <button class="close-btn" onclick="closePage('wish-page')">✕</button>
     </div>
-    <div id="wish-container" class="p-content"></div>
+    <div id="wish-container"></div>
 </div>
 
-<div id="cart-drawer" class="full-page">
-    <div class="p-header">
-        <span class="p-title">Shopping Cart</span>
-        <button class="close-btn" onclick="window.closePage('cart-drawer')">✕</button>
+<!-- Cart -->
+<div id="cart-drawer" class="full-screen-page">
+    <div class="page-header">
+        <div class="page-title">Cart</div>
+        <button class="close-btn" onclick="closePage('cart-drawer')">✕</button>
     </div>
-    <div id="cart-container" class="p-content"></div>
-    <div id="cart-footer-logic" class="cart-summary-fixed" style="display:none;">
-        <div class="subtotal-row">
-            <span>Subtotal</span>
-            <div><span id="cart-total-sum">0.00</span> AED</div>
-        </div>
-        <div class="cart-btns">
-            <button class="white-btn">View cart</button>
-            <button class="black-checkout-btn">Checkout</button>
-        </div>
-    </div>
+    <div id="cart-container"></div>
+    <div id="cart-footer-logic" class="cart-summary-fixed"></div>
 </div>
 
-<!-- Search Drawer -->
+<!-- Search drawer -->
 <div id="search-page" class="search-drawer">
-    <div class="drawer-header">
-        <span class="drawer-title">Search</span>
-        <button class="close-drawer" onclick="window.closeSearch()">✕</button>
+    <div class="search-header">
+        <div class="search-title">Search</div>
+        <button class="close-btn" onclick="closeSearch()">✕</button>
     </div>
-    <div class="search-field-container">
-        <input type="text" id="product-search-input" placeholder="Search bouquets..." autocomplete="off"/>
-        <button id="clear-search" onclick="window.clearSearchField()">✕</button>
+    <div class="search-field-wrapper">
+        <input type="text" id="product-search-input" placeholder="Bouquet name..." autocomplete="off">
+        <button id="clear-search" onclick="clearSearchField()">✕</button>
     </div>
-    <!-- ... остальная часть поиска без изменений ... -->
+    <div id="search-results-products" class="search-results"></div>
 </div>
 
-<!-- Bottom Navigation -->
-<nav class="bottom-nav">
-    <button onclick="location.reload()" class="nav-btn">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+<!-- Bottom navigation -->
+<nav class="bottom-navigation">
+    <button class="nav-item active" onclick="location.reload()">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         <span>Shop</span>
     </button>
-    <button onclick="window.openSearch()" class="nav-btn">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
+    
+    <button class="nav-item" onclick="openSearch()">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
         <span>Search</span>
     </button>
-    <button class="nav-btn">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    
+    <button class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         <span>Account</span>
     </button>
-    <button onclick="window.openPage('wish-page')" class="nav-btn badge">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        <em id="w-count">0</em>
+    
+    <button class="nav-item badge" onclick="openPage('wish-page')">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <span class="badge-count" id="w-count">0</span>
         <span>Wishlist</span>
     </button>
-    <button onclick="window.openPage('cart-drawer')" class="nav-btn badge">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.82-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2z"/></svg>
-        <em id="c-count">0</em>
+    
+    <button class="nav-item badge" onclick="openPage('cart-drawer')">
+        <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.82-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2z"/></svg>
+        <span class="badge-count" id="c-count">0</span>
         <span>Cart</span>
     </button>
 </nav>
+
+<div class="footer-luxury">
+    <div class="footer-brand">TAVÉINE</div>
+    <div class="footer-slogan">Luxury flowers • Dubai</div>
+    <div class="footer-socials">
+        <a href="#" target="_blank">Instagram</a>
+        <a href="#" target="_blank">WhatsApp</a>
+    </div>
+    <div class="footer-copyright">© 2026 TAVÉINE. All rights reserved.</div>
+</div>
 
 <script type="module" src="script.js"></script>
 </body>
