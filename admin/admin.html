@@ -46,7 +46,6 @@
       <div id="user-info">Admin</div>
     </header>
 
-    <!-- Pages -->
     <section id="dashboard-page" class="page active">
       <div class="stats">
         <div class="stat-card">
@@ -73,7 +72,7 @@
     <section id="add-product-page" class="page">
       <div class="card">
         <h2>Add New Product</h2>
-        <div class="form" style="margin-top:28px; display:grid; gap:20px; max-width:540px;">
+        <div class="form">
           <input id="p-name" placeholder="Product Name *" required>
           <input id="p-price" type="number" placeholder="Price (AED) *" required>
           <input id="p-category" placeholder="Category">
@@ -85,23 +84,22 @@
 
     <section id="inventory-page" class="page">
       <div class="card">
-        <h2>Inventory by Category</h2>
-        <div id="inventory-categories" style="margin-top:28px;"></div>
+        <h2>Inventory</h2>
+        <div id="inventory-categories" class="inventory"></div>
       </div>
     </section>
 
     <section id="customers-page" class="page">
-      <div class="card" style="text-align:center; padding:80px 30px;">
-        <div class="big-number" id="real-users-count" style="font-size:8rem; font-weight:800; color:var(--primary);">0</div>
+      <div class="card" style="text-align:center; padding: 80px 30px;">
+        <div class="big-number" id="real-users-count">0</div>
         <p style="margin-top:20px; font-size:1.4rem; color:var(--gray);">active users from Telegram</p>
       </div>
     </section>
 
     <section id="messages-page" class="page">
       <div class="card" style="padding:0; overflow:hidden;">
-        <h2 style="padding:32px 32px 0;">Messages</h2>
-        <div class="chat" style="height:72vh;">
-          <!-- Your original chat structure goes here -->
+        <h2 style="padding:32px 32px 0 32px;">Messages</h2>
+        <div class="chat">
           <div class="chat-list" id="chat-list"></div>
           <div class="chat-main">
             <div class="chat-header" id="chat-header">Select chat</div>
