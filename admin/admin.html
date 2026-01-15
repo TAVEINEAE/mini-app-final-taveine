@@ -14,6 +14,7 @@
 <body>
 
 <div class="layout">
+  <!-- Sidebar (для компьютера) -->
   <aside class="sidebar">
     <div class="logo">
       <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo">
@@ -30,12 +31,23 @@
     </nav>
   </aside>
 
+  <!-- Mobile Bottom Nav (для телефона) -->
+  <nav class="mobile-nav">
+    <a class="nav-item active" data-page="dashboard"><i class="fas fa-home"></i></a>
+    <a class="nav-item" data-page="add-product"><i class="fas fa-plus-circle"></i></a>
+    <a class="nav-item" data-page="inventory"><i class="fas fa-boxes"></i></a>
+    <a class="nav-item" data-page="customers"><i class="fas fa-users"></i></a>
+    <a class="nav-item" data-page="messages"><i class="fas fa-comment-dots"></i></a>
+  </nav>
+
+  <!-- Main Content -->
   <main class="main">
     <header>
       <h1 id="page-title">Dashboard</h1>
       <div id="user-info">Admin</div>
     </header>
 
+    <!-- Все страницы теперь с классом page и анимацией -->
     <section id="dashboard-page" class="page active">
       <div class="stats">
         <div class="stat-card">
