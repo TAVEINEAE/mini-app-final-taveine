@@ -9,19 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<!-- Top Search (как в Airbnb) -->
 <header class="header">
   <div class="search-bar">
     <i class="fas fa-search"></i>
-    <input type="text" placeholder="Search products..." id="search">
+    <input type="text" placeholder="Search products..." id="search-input">
   </div>
 </header>
 
-<!-- Categories (горизонтальный скролл) -->
 <div class="categories">
   <div class="category active" data-page="dashboard"><i class="fas fa-home"></i><span>Home</span></div>
   <div class="category" data-page="add-product"><i class="fas fa-plus-circle"></i><span>Add</span></div>
@@ -30,17 +27,27 @@
   <div class="category" data-page="messages"><i class="fas fa-comment-dots"></i><span>Messages</span></div>
 </div>
 
-<!-- Основной контент -->
 <main class="main-content">
   <section id="dashboard" class="page active">
     <h2>Popular Products</h2>
-    <div class="horizontal-scroll" id="popular-products"></div>
+    <div class="horizontal-scroll" id="popular-products">
+      <!-- Карточки будут добавлены JS -->
+    </div>
 
     <h2>Quick Stats</h2>
     <div class="stats-grid">
-      <div class="stat-card"><div class="label">Products</div><div class="value" id="dash-products">0</div></div>
-      <div class="stat-card"><div class="label">Customers</div><div class="value" id="dash-users">0</div></div>
-      <div class="stat-card"><div class="label">Revenue</div><div class="value" id="dash-revenue">— AED</div></div>
+      <div class="stat-card">
+        <div class="label">Products</div>
+        <div class="value" id="dash-products">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Customers</div>
+        <div class="value" id="dash-users">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Revenue</div>
+        <div class="value" id="dash-revenue">— AED</div>
+      </div>
     </div>
   </section>
 
@@ -83,7 +90,6 @@
   </section>
 </main>
 
-<!-- Bottom Navigation (как в Airbnb) -->
 <nav class="bottom-nav">
   <div class="nav-item active" data-page="dashboard"><i class="fas fa-home"></i><span>Home</span></div>
   <div class="nav-item" data-page="add-product"><i class="fas fa-plus-circle"></i><span>Add</span></div>
