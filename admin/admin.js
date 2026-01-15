@@ -1,5 +1,6 @@
+// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
@@ -21,24 +22,15 @@ const rtdb = getDatabase(app);
 let activeChatId = null;
 const messagesStore = {};
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-page]').forEach(el => {
-    el.addEventListener('click', () => {
-      const page = el.dataset.page;
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(page).classList.add('active');
+// Navigation
+document.querySelectorAll('[data-page]').forEach(el => {
+  el.addEventListener('click', () => {
+    const page = el.dataset.page;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
 
-      document.querySelectorAll('.category, .nav-item').forEach(i => i.classList.remove('active'));
-      document.querySelectorAll(`[data-page="${page}"]`).forEach(i => i.classList.add('active'));
-    });
-  });
-
-  // Анимация сердечка
-  document.addEventListener('click', e => {
-    if (e.target.closest('.favorite')) {
-      const heart = e.target.closest('.favorite');
-      heart.classList.toggle('liked');
-    }
+    document.querySelectorAll('.category, .nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll(`[data-page="${page}"]`).forEach(i => i.classList.add('active'));
   });
 });
 
@@ -56,31 +48,36 @@ async function loadProducts() {
   const popular = document.getElementById("popular-products");
   popular.innerHTML = "";
 
-  snap.forEach((doc, index) => {
+  snap.forEach(doc => {
     const p = doc.data();
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.style.animationDelay = `${index * 0.1}s`;
-    card.innerHTML = `
-      <img class="product-img" src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
-      <div class="favorite"><i class="far fa-heart"></i></div>
-      <div class="product-info">
-        <div class="product-name">${p.name}</div>
-        <div class="product-price">${p.price} AED</div>
+    popular.innerHTML += `
+      <div class="product-card">
+        <img class="product-img" src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
+        <div class="favorite"><i class="far fa-heart"></i></div>
+        <div class="product-info">
+          <div class="product-name">${p.name}</div>
+          <div class="product-price">${p.price} AED</div>
+        </div>
       </div>
     `;
-    popular.appendChild(card);
   });
+
+  const inventory = document.getElementById("inventory-list");
+  inventory.innerHTML = popular.innerHTML; // пока одинаковый список
 }
 
 window.addProduct = async () => {
   const name = document.getElementById('p-name').value.trim();
   const price = Number(document.getElementById('p-price').value);
 
-  if (!name || !price) return alert("Fill name and price");
+  if (!name || !price) return alert("Name and price required");
 
-  await addDoc(collection(db, "products"), { name, price, createdAt: serverTimestamp() });
-  alert("Added!");
+  await addDoc(collection(db, "products"), {
+    name, price,
+    createdAt: serverTimestamp()
+  });
+
+  alert("Product added!");
   loadProducts();
 };
 
@@ -93,8 +90,7 @@ function initChat() {
     messagesStore[m.chat_id].msgs.push(m);
 
     document.getElementById('dash-users').textContent = Object.keys(messagesStore).length;
-
-    // Можно добавить рендер чатов в стиле Airbnb (список сообщений)
+    document.getElementById('real-users-count').textContent = Object.keys(messagesStore).length;
   });
 }
 
@@ -104,7 +100,7 @@ window.sendMessage = () => {
   if (!text) return;
 
   push(ref(rtdb, 'messages'), {
-    chat_id: "test-chat",
+    chat_id: "demo-chat",
     text,
     sender: 'admin',
     timestamp: Date.now()
