@@ -1,9 +1,10 @@
 :root {
   --primary: #006d5b;
   --bg: #f8f9fa;
-  --card: #fff;
-  --text: #222;
-  --gray: #666;
+  --card: #ffffff;
+  --text: #111111;
+  --gray: #666666;
+  --border: #e0e0e0;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -19,7 +20,7 @@ body {
   top: 0;
   background: white;
   padding: 12px 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   z-index: 100;
 }
 
@@ -37,6 +38,7 @@ body {
   background: transparent;
   flex: 1;
   font-size: 1rem;
+  outline: none;
 }
 
 .categories {
@@ -54,20 +56,19 @@ body {
   min-width: 70px;
   color: var(--gray);
   font-size: 0.85rem;
-  transition: transform 0.2s, color 0.2s;
+  transition: color 0.2s;
 }
 
-.category i { font-size: 1.9rem; margin-bottom: 6px; transition: transform 0.3s; }
-.category.active { color: var(--primary); transform: scale(1.1); }
-.category.active i { transform: scale(1.15); }
+.category.active { color: var(--primary); }
 
-.page { display: none; padding: 0 16px 90px; animation: fadeIn 0.5s forwards; }
-.page.active { display: block; }
+.category i { font-size: 1.9rem; margin-bottom: 6px; }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.main-content { padding: 0 16px 90px; }
+
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.4s; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 h2 { font-size: 1.35rem; font-weight: 600; margin: 24px 0 12px; }
 
@@ -76,7 +77,6 @@ h2 { font-size: 1.35rem; font-weight: 600; margin: 24px 0 12px; }
   overflow-x: auto;
   gap: 16px;
   padding-bottom: 12px;
-  scroll-snap-type: x mandatory;
 }
 
 .stats-grid {
@@ -91,71 +91,16 @@ h2 { font-size: 1.35rem; font-weight: 600; margin: 24px 0 12px; }
   padding: 16px;
   text-align: center;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  animation: cardPop 0.6s ease-out forwards;
-  opacity: 0;
 }
 
-@keyframes cardPop {
-  0% { opacity: 0; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1); }
-}
+.label { color: var(--gray); font-size: 0.9rem; }
+.value { font-size: 1.9rem; font-weight: 700; color: var(--primary); }
 
-.stat-label { color: var(--gray); font-size: 0.9rem; }
-.stat-value { font-size: 1.9rem; font-weight: 700; color: var(--primary); }
-
-.product-card {
-  width: 180px;
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
-  animation: slideUp 0.7s ease-out forwards;
-  opacity: 0;
-}
-
-.product-card:hover { transform: translateY(-8px) scale(1.03); }
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.product-img { width: 100%; height: 160px; object-fit: cover; }
-
-.favorite {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(0,0,0,0.4);
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.favorite.liked {
-  background: #ff385c;
-  transform: scale(1.2);
-  animation: heartBeat 0.5s;
-}
-
-@keyframes heartBeat {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.4); }
-  100% { transform: scale(1.2); }
-}
-
-.form-container {
+.form-card {
   background: white;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   display: grid;
   gap: 16px;
 }
@@ -163,7 +108,7 @@ h2 { font-size: 1.35rem; font-weight: 600; margin: 24px 0 12px; }
 input, button {
   padding: 14px;
   border-radius: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   font-size: 1rem;
 }
 
@@ -173,10 +118,87 @@ input, button {
   border: none;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s;
 }
 
-.btn:active { transform: scale(0.96); }
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.product-card:hover { transform: translateY(-6px); }
+
+.product-img { width: 100%; height: 160px; object-fit: cover; }
+
+.product-info { padding: 12px; }
+.product-name { font-weight: 600; font-size: 1rem; }
+.product-price { color: var(--primary); font-weight: 700; }
+
+.big-stat { text-align: center; margin: 60px 0; }
+.big-number { font-size: 5.5rem; font-weight: 800; color: var(--primary); }
+.big-label { font-size: 1.1rem; color: var(--gray); }
+
+.chat-list, .chat-window { margin: 16px 0; }
+
+.chat-item {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+
+.chat-header { font-weight: 600; padding: 16px; background: white; border-radius: 16px 16px 0 0; }
+
+.chat-messages {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 0 0 16px 16px;
+  min-height: 200px;
+}
+
+.message {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  margin-bottom: 8px;
+}
+
+.message.user { background: white; align-self: flex-start; }
+.message.admin { background: var(--primary); color: white; align-self: flex-end; }
+
+.chat-input {
+  display: flex;
+  padding: 12px;
+  background: white;
+  border-top: 1px solid var(--border);
+}
+
+.chat-input input {
+  flex: 1;
+  border-radius: 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+}
+
+.chat-input button {
+  width: 44px;
+  height: 44px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  margin-left: 12px;
+}
 
 .bottom-nav {
   position: fixed;
@@ -196,18 +218,7 @@ input, button {
   align-items: center;
   color: var(--gray);
   font-size: 0.75rem;
-  transition: all 0.3s;
+  gap: 4px;
 }
 
-.nav-item i {
-  font-size: 1.6rem;
-  transition: transform 0.3s;
-}
-
-.nav-item.active {
-  color: var(--primary);
-}
-
-.nav-item.active i {
-  transform: scale(1.2);
-}
+.nav-item.active { color: var(--primary); }
