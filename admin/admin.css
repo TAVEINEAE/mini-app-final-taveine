@@ -85,13 +85,6 @@ h1, h2 { font-weight: 600; }
 .label { color: var(--gray); font-size: 0.9rem; }
 .value { font-size: 2rem; font-weight: 700; color: var(--primary); }
 
-.chart-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
 .form {
   background: var(--card);
   border-radius: var(--radius);
