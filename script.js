@@ -19,293 +19,245 @@ let products = [];
 let cart = JSON.parse(localStorage.getItem('taveine_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('taveine_wishlist')) || [];
 
-// ── Инициализация приложения ────────────────────────────────────────────────
-async function startApp() {
+// ── Init ────────────────────────────────────────────────────────────────
+async function init() {
     if (tg) {
         tg.expand();
         tg.ready();
     }
 
     try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const snapshot = await getDocs(collection(db, "products"));
+        products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        renderMain();
-        updateCounters();
-    } catch (err) {
-        console.error("Ошибка загрузки продуктов из Firebase:", err);
-        showErrorNotification("Не удалось загрузить товары");
+        renderMainPage();
+        updateBadges();
+    } catch (e) {
+        console.error("Firebase products load failed:", e);
     }
 }
 
-// ── Основной рендер главной страницы ────────────────────────────────────────
-function renderMain() {
-    const sliderConfigs = [
+// ── Main render ─────────────────────────────────────────────────────────
+function renderMainPage() {
+    const sliders = [
         { id: 'new-arrivals-slider', tag: 'new' },
         { id: 'birthday-slider', tag: 'birthday' },
         { id: 'best-sellers-slider', tag: 'bestseller' },
         { id: 'luxury-slider', tag: 'luxury' }
     ];
 
-    sliderConfigs.forEach(config => {
-        const container = document.getElementById(config.id);
-        if (!container) return;
-
-        const filtered = products.filter(p => p.tags?.includes(config.tag));
+    sliders.forEach(({ id, tag }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
         
-        container.innerHTML = filtered.length > 0
-            ? filtered.map(p => renderCard(p)).join('')
-            : '<div class="empty-slider-message">Скоро появятся новинки...</div>';
+        const items = products.filter(p => p.tags?.includes(tag));
+        el.innerHTML = items.length 
+            ? items.map(renderProductCard).join('')
+            : '<div style="padding:40px;text-align:center;opacity:0.6;">Coming soon...</div>';
     });
 
-    // Все товары внизу
-    const grid = document.getElementById('all-products-grid');
-    if (grid) {
-        grid.innerHTML = products.map(p => renderCard(p)).join('');
+    // All products grid
+    const allGrid = document.getElementById('all-products-grid');
+    if (allGrid) {
+        allGrid.innerHTML = products.map(renderProductCard).join('');
     }
 }
 
-// ── Шаблон карточки товара ──────────────────────────────────────────────────
-function renderCard(product) {
-    const isInWishlist = wishlist.some(item => item.id === product.id);
+function renderProductCard(p) {
+    const inWishlist = wishlist.some(item => item.id === p.id);
     
     return `
-        <div class="card" onclick="openProduct('${product.id}')" role="button" tabindex="0">
+        <div class="card" onclick="openProductDetail('${p.id}')">
             <button class="wish-btn-overlay" 
-                    onclick="event.stopPropagation(); toggleWish('${product.id}')"
-                    aria-label="${isInWishlist ? 'Удалить из избранного' : 'Добавить в избранное'}">
-                ${isInWishlist ? '❤️' : '🤍'}
+                    onclick="event.stopPropagation(); toggleWishlist('${p.id}')"
+                    aria-label="wishlist toggle">
+                ${inWishlist ? '❤️' : '🤍'}
             </button>
-            
-            <img src="${product.image || 'https://via.placeholder.com/480x600?text=No+Image'}" 
-                 alt="${product.name}"
-                 loading="lazy">
-                 
+            <img src="${p.image || 'https://via.placeholder.com/480x600?text=—'}" 
+                 alt="${p.name}" loading="lazy">
             <div class="card-info">
-                <h4>${product.name}</h4>
-                <div class="price">${product.price.toFixed(2)} AED</div>
+                <h4>${p.name}</h4>
+                <div class="price">${Number(p.price).toFixed(2)} AED</div>
                 <button class="add-btn" 
-                        onclick="event.stopPropagation(); addToCart('${product.id}')">
-                    В корзину
+                        onclick="event.stopPropagation(); addToCart('${p.id}')">
+                    Add to cart
                 </button>
             </div>
         </div>
     `;
 }
 
-// ── Открытие отдельной страницы товара ──────────────────────────────────────
-window.openProduct = (productId) => {
-    const product = products.find(p => p.id === productId);
+// ── Product detail ──────────────────────────────────────────────────────
+window.openProductDetail = (id) => {
+    const product = products.find(p => p.id === id);
     if (!product) return;
 
-    const container = document.getElementById('product-content');
-    if (!container) return;
-
-    const isInWishlist = wishlist.some(item => item.id === product.id);
-
-    container.innerHTML = `
+    document.getElementById('product-detail-content').innerHTML = `
         <div class="product-gallery">
-            <img src="${product.image || 'https://via.placeholder.com/720x960'}" 
-                 alt="${product.name}">
+            <img src="${product.image || 'https://via.placeholder.com/720x960'}" alt="${product.name}">
         </div>
-        
-        <div class="product-info">
+        <div class="product-info-block">
             <h1 class="product-title">${product.name}</h1>
-            <div class="product-price">${product.price.toFixed(2)} AED</div>
-            
-            ${product.description ? `
-                <div class="product-description">
-                    ${product.description}
-                </div>
-            ` : ''}
-
-            <div class="product-actions">
-                <button class="add-to-cart-btn large"
+            <div class="product-price">${Number(product.price).toFixed(2)} AED</div>
+            ${product.description ? `<div class="description">${product.description}</div>` : ''}
+            <div style="margin:32px 0 48px;">
+                <button class="add-btn" style="padding:16px;font-size:1.1rem;" 
                         onclick="addToCart('${product.id}')">
-                    Добавить в корзину
-                </button>
-                
-                <button class="wishlist-btn"
-                        onclick="toggleWish('${product.id}'); this.textContent = '${isInWishlist ? 'В избранное' : 'Уже в избранном'}'">
-                    ${isInWishlist ? 'Уже в избранном' : 'В избранное'}
+                    Add to cart
                 </button>
             </div>
         </div>
     `;
 
-    const page = document.getElementById('product-page');
+    const page = document.getElementById('product-detail');
     page.style.display = 'block';
     document.body.style.overflow = 'hidden';
-    
-    // Плавная анимация появления
-    setTimeout(() => page.classList.add('visible'), 10);
+    setTimeout(() => page.classList.add('fade-in'), 20);
 };
 
-window.closeProductPage = () => {
-    const page = document.getElementById('product-page');
-    page.classList.remove('visible');
+window.closeProductDetail = () => {
+    const page = document.getElementById('product-detail');
+    page.classList.remove('fade-in');
     setTimeout(() => {
         page.style.display = 'none';
         document.body.style.overflow = '';
-    }, 400);
+    }, 420);
 };
 
-// ── Работа с корзиной ───────────────────────────────────────────────────────
+// ── Cart logic ──────────────────────────────────────────────────────────
 window.addToCart = (id) => {
     const product = products.find(p => p.id === id);
     if (!product) return;
 
-    const existing = cart.find(item => item.id === id);
-    
-    if (existing) {
-        existing.qty = (existing.qty || 1) + 1;
+    const item = cart.find(i => i.id === id);
+    if (item) {
+        item.qty = (item.qty || 1) + 1;
     } else {
         cart.push({ ...product, qty: 1 });
     }
 
     saveCart();
     tg?.HapticFeedback?.notificationOccurred('success');
-    showNotification(`Добавлен: ${product.name}`);
 };
 
 window.updateQty = (index, delta) => {
-    const newQty = Math.max(1, (cart[index].qty || 1) + delta);
-    cart[index].qty = newQty;
+    cart[index].qty = Math.max(1, (cart[index].qty || 1) + delta);
     saveCart();
-    renderCartPage();
+    renderCart();
 };
 
 window.removeFromCart = (index) => {
     cart.splice(index, 1);
     saveCart();
-    renderCartPage();
+    renderCart();
 };
 
 function saveCart() {
     localStorage.setItem('taveine_cart', JSON.stringify(cart));
-    updateCounters();
+    updateBadges();
 }
 
-// ── Страница корзины ────────────────────────────────────────────────────────
-window.renderCartPage = () => {
+function renderCart() {
     const container = document.getElementById('cart-container');
     const footer = document.getElementById('cart-footer-logic');
     
+    if (!container) return;
+
     if (cart.length === 0) {
         footer.style.display = 'none';
         container.innerHTML = `
-            <div class="empty-state">
-                <h2>Ваша корзина пуста</h2>
-                <button class="black-btn" onclick="closePage('cart-drawer')">
-                    Вернуться в магазин
-                </button>
+            <div style="padding:120px 24px;text-align:center;">
+                <h2 style="margin-bottom:24px;">Your cart is empty</h2>
+                <button class="add-btn" onclick="closePage('cart-drawer')">Continue shopping</button>
             </div>`;
         return;
     }
 
     footer.style.display = 'block';
-    
+
     let total = 0;
-    const itemsHtml = cart.map((item, i) => {
+    container.innerHTML = cart.map((item, i) => {
         total += item.price * (item.qty || 1);
         return `
             <div class="cart-item">
-                <img src="${item.image || 'https://via.placeholder.com/120'}" alt="${item.name}">
+                <img src="${item.image || ''}" alt="">
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <p>${item.price.toFixed(2)} AED</p>
-                    <div class="qty-control">
-                        <button onclick="updateQty(${i}, -1)">−</button>
+                    <div>${Number(item.price).toFixed(2)} AED</div>
+                    <div class="qty-row">
+                        <button onclick="updateQty(${i},-1)">−</button>
                         <span>${item.qty || 1}</span>
-                        <button onclick="updateQty(${i}, 1)">+</button>
+                        <button onclick="updateQty(${i},1)">+</button>
                     </div>
-                    <button class="remove-link" onclick="removeFromCart(${i})">
-                        Удалить
-                    </button>
+                    <button class="remove-link" onclick="removeFromCart(${i})">Remove</button>
                 </div>
-            </div>`;
-    }).join('');
-
-    container.innerHTML = itemsHtml + `
-        <div class="section-title">Вам также может понравиться</div>
-        <div class="grid mini-grid">
-            ${products.slice(0, 4).map(p => renderCard(p)).join('')}
+            </div>
+        `;
+    }).join('') + `
+        <div style="padding:24px 0;color:#666;font-size:0.95rem;text-align:center;">
+            Customers also bought
+        </div>
+        <div class="grid" style="padding:0 16px;">
+            ${products.slice(0,4).map(renderProductCard).join('')}
         </div>
     `;
 
-    document.getElementById('cart-total-sum').textContent = total.toFixed(2);
-};
+    document.getElementById('cart-total-sum')?.setAttribute('data-value', total.toFixed(2));
+}
 
-// ── Избранное ───────────────────────────────────────────────────────────────
-window.toggleWish = (id) => {
-    const index = wishlist.findIndex(item => item.id === id);
+// ── Wishlist ────────────────────────────────────────────────────────────
+window.toggleWishlist = (id) => {
+    const idx = wishlist.findIndex(item => item.id === id);
     
-    if (index === -1) {
-        const product = products.find(p => p.id === id);
-        if (product) {
-            wishlist.push(product);
-            tg?.HapticFeedback?.notificationOccurred('success');
-        }
+    if (idx === -1) {
+        const p = products.find(p => p.id === id);
+        if (p) wishlist.push(p);
     } else {
-        wishlist.splice(index, 1);
+        wishlist.splice(idx, 1);
     }
 
     localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
-    updateCounters();
-    renderMain();           // обновляем все карточки на главной
-    renderWishPage();       // если открыта страница избранного
+    updateBadges();
+    renderMainPage();
+    renderWishlist();
 };
 
-window.renderWishPage = () => {
+function renderWishlist() {
     const container = document.getElementById('wish-container');
-    
+    if (!container) return;
+
     if (wishlist.length === 0) {
         container.innerHTML = `
-            <div class="empty-state">
-                <h2>Список избранного пуст</h2>
-                <button class="black-btn" onclick="closePage('wish-page')">
-                    Вернуться в магазин
+            <div style="padding:120px 24px;text-align:center;">
+                <h2>Wishlist is empty</h2>
+                <button class="add-btn" onclick="closePage('wish-page')" style="margin-top:24px;">
+                    Browse collection
                 </button>
             </div>`;
     } else {
-        container.innerHTML = `
-            <div class="grid">
-                ${wishlist.map(p => renderCard(p)).join('')}
-            </div>`;
+        container.innerHTML = `<div class="grid">${wishlist.map(renderProductCard).join('')}</div>`;
     }
-};
+}
 
-// ── Вспомогательные функции ─────────────────────────────────────────────────
-function updateCounters() {
+// ── Helpers & UI controls ───────────────────────────────────────────────
+function updateBadges() {
     document.getElementById('w-count').textContent = wishlist.length;
     document.getElementById('c-count').textContent = cart.length;
 }
 
-function showNotification(message) {
-    // Можно сделать красивый toast в будущем
-    console.log("[NOTIFICATION]", message);
-    // или tg?.showPopup(...)
-}
-
-function showErrorNotification(message) {
-    console.error("[ERROR]", message);
-    // tg?.showAlert(message) или кастомный toast
-}
-
-// ── Существующие функции интерфейса (оставлены без существенных изменений) ─
 window.toggleMenu = () => {
     document.getElementById('side-menu').classList.toggle('active');
     document.getElementById('menu-overlay').classList.toggle('active');
 };
 
-window.toggleAccordion = (element) => {
-    const parent = element.parentElement;
-    const icon = element.querySelector('.icon');
+window.toggleAccordion = (el) => {
+    const parent = el.parentElement;
+    const icon = el.querySelector('.accordion-icon');
     
     document.querySelectorAll('.menu-item').forEach(item => {
         if (item !== parent) {
             item.classList.remove('open');
-            item.querySelector('.icon')?.replaceChildren(document.createTextNode('+'));
+            item.querySelector('.accordion-icon')?.replaceChildren(document.createTextNode('+'));
         }
     });
 
@@ -314,22 +266,16 @@ window.toggleAccordion = (element) => {
 };
 
 window.openPage = (id) => {
-    const page = document.getElementById(id);
-    if (page) {
-        page.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-        
-        if (id === 'cart-drawer') renderCartPage();
-        if (id === 'wish-page') renderWishPage();
-    }
+    document.getElementById(id).style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    if (id === 'cart-drawer') renderCart();
+    if (id === 'wish-page') renderWishlist();
 };
 
 window.closePage = (id) => {
-    const page = document.getElementById(id);
-    if (page) {
-        page.style.display = 'none';
-        document.body.style.overflow = '';
-    }
+    document.getElementById(id).style.display = 'none';
+    document.body.style.overflow = '';
 };
 
 window.openSearch = () => {
@@ -342,11 +288,29 @@ window.closeSearch = () => {
 
 window.clearSearchField = () => {
     const input = document.getElementById('product-search-input');
-    if (input) {
-        input.value = '';
-        input.dispatchEvent(new Event('input'));
-    }
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
 };
 
-// ── Запуск ──────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', startApp);
+// Search live filter
+document.getElementById('product-search-input')?.addEventListener('input', e => {
+    const term = e.target.value.toLowerCase().trim();
+    document.getElementById('clear-search').style.display = term ? 'block' : 'none';
+    
+    const results = products.filter(p => p.name.toLowerCase().includes(term));
+    
+    document.getElementById('search-results-products').innerHTML = results.length
+        ? results.map(p => `
+            <div class="search-result-item" onclick="closeSearch();openProductDetail('${p.id}')">
+                <img src="${p.image||''}" alt="">
+                <div>
+                    <div style="font-weight:500;">${p.name}</div>
+                    <div style="color:#666;font-size:0.9rem;">${p.price} AED</div>
+                </div>
+            </div>
+        `).join('')
+        : '<div style="padding:40px;text-align:center;opacity:0.6;">Nothing found</div>';
+});
+
+// Start
+document.addEventListener('DOMContentLoaded', init);
