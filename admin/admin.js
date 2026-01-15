@@ -45,6 +45,8 @@ onAuthStateChanged(auth, user => {
   document.getElementById('user-info').textContent = user.email || 'Admin';
   loadAll();
 });
+// В loadAll(): await loadCalendar();
+
 
 window.logout = () => signOut(auth);
 
