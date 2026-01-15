@@ -1,13 +1,13 @@
 :root {
-    --dark: #0f1a15;
-    --gold: #c9a96e;
-    --cream: #f8f5f1;
-    --gray: #e8e3db;
-    --text: #1e1e1e;
-    --text-light: #f5f0e9;
-    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    --shadow: 0 12px 40px rgba(0,0,0,0.14);
-    --shadow-hover: 0 24px 64px rgba(0,0,0,0.22);
+    --dark-bg: #0f1814;
+    --gold: #c9a567;
+    --cream: #f9f6f0;
+    --text-main: #1e1e1e;
+    --text-light: #e8e3d7;
+    --gray: #888888;
+    --shadow: 0 14px 48px rgba(0,0,0,0.16);
+    --shadow-hover: 0 24px 72px rgba(0,0,0,0.24);
+    --transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -20,62 +20,65 @@
 body {
     font-family: 'Inter', system-ui, sans-serif;
     background: var(--cream);
-    color: var(--text);
-    line-height: 1.5;
-    overflow-x: hidden;
+    color: var(--text-main);
+    line-height: 1.48;
 }
 
 .top-bar {
-    background: var(--dark);
-    height: 68px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    height: 70px;
+    background: var(--dark-bg);
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
 }
 
 .logo {
     font-family: 'Playfair Display', serif;
-    font-size: 28px;
+    font-size: 30px;
     letter-spacing: 3px;
     font-weight: 700;
     color: var(--gold);
 }
 
-/* Burger */
-.menu-lines {
+.burger-menu {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-icon-lines {
     display: block;
-    width: 26px;
+    width: 28px;
     height: 2px;
     background: white;
     position: relative;
 }
 
-.menu-lines::before,
-.menu-lines::after {
+.menu-icon-lines::before,
+.menu-icon-lines::after {
     content: '';
     position: absolute;
-    width: 26px;
+    width: 28px;
     height: 2px;
     background: white;
     left: 0;
     transition: var(--transition);
 }
 
-.menu-lines::before { top: -8px; }
-.menu-lines::after  { top: 8px; }
+.menu-icon-lines::before { top: -8px; }
+.menu-icon-lines::after  { top: 8px; }
 
-/* Hero */
-.hero-section {
+.hero-luxury {
     position: relative;
-    height: 86vh;
-    min-height: 620px;
+    height: 82vh;
+    min-height: 580px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -84,72 +87,45 @@ body {
     overflow: hidden;
 }
 
-.hero-bg {
+.hero-gradient {
     position: absolute;
     inset: 0;
-    background: linear-gradient(rgba(15,26,21,0.58), rgba(15,26,21,0.82)),
-                url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80') center/cover no-repeat;
-    filter: brightness(0.8);
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 720px;
-    padding: 0 24px;
+    background: linear-gradient(
+        rgba(15,24,20,0.48) 0%,
+        rgba(15,24,20,0.78) 60%,
+        var(--dark-bg) 100%
+    );
 }
 
 .hero-content h1 {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(3.8rem, 10vw, 8.2rem);
+    font-size: clamp(4.2rem, 11vw, 9.4rem);
     font-weight: 700;
-    line-height: 0.92;
+    line-height: 0.9;
     margin-bottom: 0.3em;
-    text-shadow: 0 4px 30px rgba(0,0,0,0.7);
+    text-shadow: 0 6px 36px rgba(0,0,0,0.72);
 }
 
-.gold {
-    color: var(--gold);
-}
+.accent { color: var(--gold); }
 
 .hero-content p {
-    font-size: 1.38rem;
-    margin: 1.2rem 0 2.4rem;
+    font-size: 1.4rem;
     opacity: 0.92;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 
-.hero-btn {
-    background: transparent;
-    border: 2px solid var(--gold);
-    color: var(--gold);
-    padding: 16px 48px;
-    font-size: 1.1rem;
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: var(--transition);
-    cursor: pointer;
-}
-
-.hero-btn:hover {
-    background: var(--gold);
-    color: var(--dark);
-    transform: translateY(-4px);
-}
-
-/* Cards */
+/* Cards & Slider */
 .card {
     background: white;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: var(--transition);
-    position: relative;
+    cursor: pointer;
 }
 
 .card:hover {
-    transform: translateY(-16px);
+    transform: translateY(-14px);
     box-shadow: var(--shadow-hover);
 }
 
@@ -157,105 +133,268 @@ body {
     width: 100%;
     aspect-ratio: 4/5;
     object-fit: cover;
-    transition: transform 1.4s ease;
+    transition: transform 1.3s ease;
 }
 
 .card:hover img {
-    transform: scale(1.14);
+    transform: scale(1.12);
 }
 
 .wish-btn-overlay {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
+    top: 14px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.88);
     backdrop-filter: blur(8px);
     border: none;
     font-size: 22px;
     display: grid;
     place-items: center;
     transition: var(--transition);
+    z-index: 5;
 }
 
 .wish-btn-overlay:hover {
-    transform: scale(1.15);
-    background: white;
+    transform: scale(1.14);
 }
 
 .card-info {
-    padding: 20px 18px 28px;
+    padding: 18px 16px 24px;
     text-align: center;
 }
 
 .card-info h4 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.32rem;
-    margin-bottom: 0.6em;
-    color: var(--text);
+    font-size: 1.34rem;
+    margin-bottom: 0.5em;
 }
 
-.card-info b {
-    font-size: 1.48rem;
-    color: var(--dark);
+.card-info .price {
+    font-size: 1.44rem;
     font-weight: 700;
+    color: var(--dark-bg);
+    margin-bottom: 12px;
 }
 
 .add-btn {
-    margin-top: 16px;
     width: 100%;
     padding: 14px;
-    background: var(--dark);
+    background: var(--dark-bg);
     color: white;
     border: none;
     border-radius: 12px;
     font-weight: 600;
-    letter-spacing: 1.2px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     transition: var(--transition);
 }
 
 .add-btn:hover {
     background: var(--gold);
-    color: var(--dark);
-    transform: scale(1.02);
+    color: var(--dark-bg);
 }
 
-/* Product Page */
-.product-page {
-    background: var(--cream);
-    padding-bottom: 120px;
-}
-
-.product-content {
-    padding: 24px;
-}
-
-.product-gallery img {
-    width: 100%;
-    border-radius: 16px;
-    margin-bottom: 24px;
-}
-
-/* Остальные стили (side menu, bottom nav, sliders и т.д.) 
-   желательно тоже переработать в том же духе, но оставляем базовую функциональность */
-
+/* Side menu */
 .side-drawer {
-    background: var(--dark);
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 82%;
+    height: 100%;
+    background: var(--dark-bg);
     color: var(--text-light);
+    z-index: 1200;
+    transition: left 0.42s cubic-bezier(0.16,1,0.3,1);
+    overflow-y: auto;
+}
+
+.side-drawer.active {
+    left: 0;
+}
+
+.menu-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 20px;
+}
+
+.menu-content {
+    padding: 0 20px 40px;
+}
+
+.menu-item {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .menu-header {
-    color: var(--gray);
+    padding: 18px 0;
+    font-size: 1.18rem;
     font-weight: 500;
+    color: var(--text-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.submenu {
+    display: none;
+    flex-direction: column;
+    padding-bottom: 12px;
 }
 
 .submenu a {
-    color: var(--gray);
+    padding: 14px 0;
+    color: #c9c9c9;
+    text-decoration: none;
+    font-size: 0.98rem;
 }
 
 .submenu a:hover {
     color: var(--gold);
+}
+
+.accordion-icon {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* Bottom nav & Footer */
+.bottom-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 76px;
+    background: white;
+    border-top: 1px solid #eee;
+    display: flex;
+    z-index: 900;
+}
+
+.nav-item {
+    flex: 1;
+    height: 100%;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #555;
+}
+
+.nav-item svg {
+    width: 26px;
+    height: 26px;
+}
+
+.badge-count {
+    position: absolute;
+    top: 8px;
+    right: 32%;
+    background: var(--dark-bg);
+    color: white;
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-luxury {
+    background: var(--dark-bg);
+    color: var(--text-light);
+    text-align: center;
+    padding: 48px 24px 36px;
+    font-size: 0.94rem;
+}
+
+.footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+.footer-slogan {
+    opacity: 0.8;
+    margin-bottom: 24px;
+}
+
+.footer-socials a {
+    color: var(--text-light);
+    margin: 0 16px;
+    text-decoration: none;
+}
+
+.footer-socials a:hover {
+    color: var(--gold);
+}
+
+.footer-copyright {
+    margin-top: 28px;
+    opacity: 0.6;
+    font-size: 0.86rem;
+}
+
+/* Full screen pages */
+.full-screen-page {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    z-index: 1100;
+    display: none;
+    overflow-y: auto;
+}
+
+.page-header {
+    position: sticky;
+    top: 0;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    z-index: 10;
+}
+
+.back-btn, .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Product detail page specific */
+.product-detail-page .product-gallery img {
+    width: 100%;
+    display: block;
+}
+
+.product-info-block {
+    padding: 24px 20px 80px;
+}
+
+.product-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    margin-bottom: 0.4em;
+}
+
+.product-price {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--dark-bg);
+    margin: 0.6em 0 1.2em;
 }
