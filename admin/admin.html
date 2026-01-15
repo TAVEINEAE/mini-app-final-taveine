@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Taveine AE • Admin</title>
+  <title>Taveine AE • Admin Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="admin.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -22,10 +24,14 @@
     </div>
     <nav>
       <a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a>
-      <a class="nav-link" data-page="add-product"><i class="fas fa-plus-circle"></i> Add Product</a>
-      <a class="nav-link" data-page="inventory"><i class="fas fa-boxes"></i> Inventory</a>
-      <a class="nav-link" data-page="customers"><i class="fas fa-users"></i> Customers</a>
-      <a class="nav-link" data-page="messages"><i class="fas fa-comment-dots"></i> Messages</a>
+      <a class="nav-link" data-page="email"><i class="fas fa-envelope"></i> Email</a>
+      <a class="nav-link" data-page="compose"><i class="fas fa-pen"></i> Compose</a>
+      <a class="nav-link" data-page="calendar"><i class="fas fa-calendar"></i> Calendar</a>
+      <a class="nav-link" data-page="chat"><i class="fas fa-comment-dots"></i> Chat</a>
+      <a class="nav-link" data-page="forms"><i class="fas fa-file-alt"></i> Forms</a>
+      <a class="nav-link" data-page="elements"><i class="fas fa-cogs"></i> Elements</a>
+      <a class="nav-link" data-page="maps"><i class="fas fa-map"></i> Maps</a>
+      <a class="nav-link" data-page="multiple-levels"><i class="fas fa-layer-group"></i> Multiple Levels</a>
       <a class="nav-link logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </nav>
   </aside>
@@ -33,72 +39,104 @@
   <!-- Mobile Bottom Nav -->
   <nav class="mobile-nav">
     <a class="nav-item active" data-page="dashboard"><i class="fas fa-home"></i></a>
-    <a class="nav-item" data-page="add-product"><i class="fas fa-plus-circle"></i></a>
-    <a class="nav-item" data-page="inventory"><i class="fas fa-boxes"></i></a>
-    <a class="nav-item" data-page="customers"><i class="fas fa-users"></i></a>
-    <a class="nav-item" data-page="messages"><i class="fas fa-comment-dots"></i></a>
+    <a class="nav-item" data-page="email"><i class="fas fa-envelope"></i></a>
+    <a class="nav-item" data-page="calendar"><i class="fas fa-calendar"></i></a>
+    <a class="nav-item" data-page="chat"><i class="fas fa-comment-dots"></i></a>
+    <a class="nav-item" data-page="maps"><i class="fas fa-map"></i></a>
   </nav>
+
+  <!-- Top Header -->
+  <header class="header">
+    <div class="logo">
+      <span>Taveine AE Admin</span>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+    </div>
+    <div class="icons">
+      <i class="fas fa-bell icon-btn"><span class="notification-dot"></span></i>
+      <i class="fas fa-user icon-btn"></i>
+    </div>
+  </header>
 
   <!-- Main Content -->
   <main class="main">
-    <header>
-      <h1 id="page-title">Dashboard</h1>
-      <div id="user-info">Admin</div>
-    </header>
-
     <section id="dashboard-page" class="page active">
       <div class="stats">
-        <div class="stat-card">
-          <div class="label">Products</div>
-          <div class="value" id="dash-products">0</div>
+        <div class="stat-card" style="--order:1;">
+          <div class="label">Total Visits</div>
+          <div class="value" id="total-visits">0</div>
         </div>
-        <div class="stat-card">
-          <div class="label">Customers</div>
-          <div class="value" id="dash-users">0</div>
+        <div class="stat-card" style="--order:2;">
+          <div class="label">Total Page Views</div>
+          <div class="value" id="page-views">0</div>
         </div>
-        <div class="stat-card">
-          <div class="label">Revenue</div>
-          <div class="value" id="dash-revenue">— AED</div>
+        <div class="stat-card" style="--order:3;">
+          <div class="label">Unique Visitors</div>
+          <div class="value" id="unique-visitors">0</div>
+        </div>
+        <div class="stat-card" style="--order:4;">
+          <div class="label">Bounce Rate</div>
+          <div class="value" id="bounce-rate">0%</div>
         </div>
       </div>
+
       <div class="card">
-        <h3 style="margin-bottom: 28px;">Products Trend</h3>
+        <h3>Visits by Country</h3>
+        <div id="world-map" class="map-container"></div>
+      </div>
+
+      <div class="card">
+        <h3>Monthly Sales</h3>
         <div class="chart-container">
-          <canvas id="productsChart"></canvas>
+          <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Task List</h3>
+        <ul class="task-list" id="task-list"></ul>
+      </div>
+
+      <div class="card">
+        <h3>Business Stats</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;">
+          <div class="chart-container" style="height: 200px;">
+            <canvas id="pieChart1"></canvas>
+          </div>
+          <div class="chart-container" style="height: 200px;">
+            <canvas id="pieChart2"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sales Report</h3>
+        <p id="sales-summary">Total Revenue: 0 AED</p>
+      </div>
+
+      <div class="weather-date">
+        <i class="fas fa-cloud-sun weather-icon"></i>
+        <div>
+          <div id="current-date">January 15, 2026</div>
+          <div id="current-weather">Sunny, 24°C in Abu Dhabi</div>
         </div>
       </div>
     </section>
 
-    <section id="add-product-page" class="page">
-      <div class="card">
-        <h2>Add New Product</h2>
-        <div class="form">
-          <input id="p-name" placeholder="Product Name *" required>
-          <input id="p-price" type="number" placeholder="Price (AED) *" required>
-          <input id="p-category" placeholder="Category">
-          <input id="p-image" placeholder="Image URL">
-          <button onclick="addProduct()" class="btn">Add Product</button>
-        </div>
-      </div>
+    <!-- Placeholder pages for other sections -->
+    <section id="email-page" class="page">
+      <div class="card"><h2>Email</h2><p>Email interface (integrate with Telegram notifications if needed).</p></div>
     </section>
-
-    <section id="inventory-page" class="page">
-      <div class="card">
-        <h2>Inventory</h2>
-        <div id="inventory-categories" class="inventory"></div>
-      </div>
+    <section id="compose-page" class="page">
+      <div class="card"><h2>Compose</h2><p>Compose message/email.</p></div>
     </section>
-
-    <section id="customers-page" class="page">
-      <div class="card" style="text-align:center; padding: 80px 30px;">
-        <div class="big-number" id="real-users-count">0</div>
-        <p style="margin-top:20px; font-size:1.4rem; color:var(--gray);">active users from Telegram</p>
-      </div>
+    <section id="calendar-page" class="page">
+      <div class="card"><h2>Calendar</h2><p>Calendar view.</p></div>
     </section>
-
-    <section id="messages-page" class="page">
+    <section id="chat-page" class="page">
       <div class="card" style="padding:0; overflow:hidden;">
-        <h2 style="padding:32px 32px 0 32px;">Messages</h2>
+        <h2 style="padding:32px 32px 0 32px;">Chat</h2>
         <div class="chat">
           <div class="chat-list" id="chat-list"></div>
           <div class="chat-main">
@@ -111,6 +149,18 @@
           </div>
         </div>
       </div>
+    </section>
+    <section id="forms-page" class="page">
+      <div class="card"><h2>Forms</h2><p>Form builder.</p></div>
+    </section>
+    <section id="elements-page" class="page">
+      <div class="card"><h2>Elements</h2><p>UI elements.</p></div>
+    </section>
+    <section id="maps-page" class="page">
+      <div class="card"><h2>Maps</h2><div id="extra-map" class="map-container"></div></div>
+    </section>
+    <section id="multiple-levels-page" class="page">
+      <div class="card"><h2>Multiple Levels</h2><p>Multi-level menu/content.</p></div>
     </section>
   </main>
 </div>
