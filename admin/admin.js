@@ -40,6 +40,7 @@ document.querySelectorAll('.nav-link[data-page]').forEach(link => {
 
 onAuthStateChanged(auth, user => {
   if (!user) return window.location.href = "login.html";
+  document.getElementById('user-info').textContent = user.email || 'Admin';
   loadAll();
 });
 
@@ -73,7 +74,7 @@ async function loadProducts() {
           <img src="${p.image || 'https://via.placeholder.com/300x200'}" alt="${p.name}">
           <div class="product-info">
             <div class="product-name">${p.name}</div>
-            <div class="product-price">${p.price} AED</div>
+            <div class="product-price">${p.price || '—'} AED</div>
           </div>
         </div>
       `;
@@ -81,7 +82,7 @@ async function loadProducts() {
 
     updateChart(byDay);
   } catch (e) {
-    console.error(e);
+    console.error("Products error:", e);
   }
 }
 
@@ -137,7 +138,14 @@ function initChat() {
     const m = snap.val();
     if (!m?.chat_id) return;
 
-    if (!messagesStore[m.chat_id]) messagesStore[m.chat_id] = { name: m.name || 'Customer', msgs: [] };
+    if (!messagesStore[m.chat_id]) {
+      messagesStore[m.chat_id] = {
+        name: m.name || 'Telegram User',
+        username: m.username || null,
+        msgs: []
+      };
+    }
+
     messagesStore[m.chat_id].msgs.push(m);
 
     updateChatList();
@@ -153,13 +161,20 @@ function updateChatList() {
   const list = document.getElementById('chat-list');
   list.innerHTML = "";
 
-  Object.entries(messagesStore).forEach(([id, chat]) => {
+  Object.entries(messagesStore).sort(([,a], [,b]) => b.msgs.at(-1)?.timestamp - a.msgs.at(-1)?.timestamp).forEach(([id, chat]) => {
+    const lastMsg = chat.msgs.at(-1);
     const item = document.createElement('div');
     item.className = `chat-item${activeChatId === id ? ' active' : ''}`;
-    item.textContent = chat.name;
+    item.innerHTML = `
+      <strong>${chat.name}</strong>
+      ${chat.username ? `<small>@${chat.username}</small>` : ''}
+      ${lastMsg ? `<div style="margin-top:4px; font-size:0.85rem; color:var(--gray);">
+        ${lastMsg.sender === 'admin' ? 'You: ' : ''}${lastMsg.text.substring(0,40)}${lastMsg.text.length>40?'...':''}
+      </div>` : ''}
+    `;
     item.onclick = () => {
       activeChatId = id;
-      document.getElementById('chat-header').textContent = chat.name;
+      document.getElementById('chat-header').textContent = chat.name + (chat.username ? ` (@${chat.username})` : '');
       renderMessages();
       updateChatList();
     };
@@ -171,12 +186,21 @@ function renderMessages() {
   const box = document.getElementById('chat-messages');
   box.innerHTML = "";
 
-  if (!activeChatId) return;
+  if (!activeChatId || !messagesStore[activeChatId]) return;
 
   messagesStore[activeChatId].msgs.forEach(m => {
     const div = document.createElement('div');
     div.className = `message ${m.sender === 'admin' ? 'admin' : 'user'}`;
     div.textContent = m.text;
+
+    const time = document.createElement('small');
+    time.textContent = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    time.style.display = "block";
+    time.style.fontSize = "0.75rem";
+    time.style.opacity = "0.7";
+    time.style.marginTop = "4px";
+    div.appendChild(time);
+
     box.appendChild(div);
   });
 
@@ -192,7 +216,8 @@ window.sendMessage = () => {
     chat_id: activeChatId,
     text,
     sender: 'admin',
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    name: "Admin"
   });
 
   input.value = '';
