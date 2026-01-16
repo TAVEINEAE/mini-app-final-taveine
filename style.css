@@ -804,11 +804,41 @@ body {
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
-.search-results {
-    padding: 100px 24px 100px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+/* Результаты поиска — маленький горизонтальный слайдер */
+#search-results-products.horizontal-slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 16px 16px 32px 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+#search-results-products.horizontal-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* Карточки в поиске — маленькие и компактные */
+#search-results-products .uniform-card {
+    flex: 0 0 230px;          /* ширина карточки — видно 2–3 за раз */
+    max-width: 230px;
+    scroll-snap-align: start;
+}
+
+/* Фото в поиске — квадратное */
+#search-results-products .card-image-wrapper {
+    height: 230px;
+}
+
+/* Текст маленький */
+#search-results-products .product-name {
+    font-size: 0.92rem;
+    margin: 10px 0 4px;
+}
+
+#search-results-products .price {
+    font-size: 1rem;
 }
 
 .empty-search {
