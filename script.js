@@ -335,7 +335,7 @@ function renderCartItems() {
                 <span>Total:</span>
                 <span class="total-amount">${formatCurrency(total)} AED</span>
             </div>
-            <button class="checkout-btn">Proceed to Checkout</button>
+            <button class="checkout-btn" onclick="openPage('checkout-info-page')">Proceed to Checkout</button>
         </div>
     `;
 }
@@ -395,6 +395,66 @@ window.toggleSubmenu = function(element) {
     submenu.classList.toggle('active', !isActive);
     element.classList.toggle('active', !isActive);
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('checkout-form');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name    = document.getElementById('customer-name')?.value.trim();
+    const email   = document.getElementById('customer-email')?.value.trim();
+    const phone   = document.getElementById('customer-phone')?.value.trim();
+    const address = document.getElementById('customer-address')?.value.trim();
+
+    if (!name || !email || !phone || !address) {
+      tg?.showAlert('Заполните все поля');
+      return;
+    }
+
+    // Сохраняем на всякий случай
+    localStorage.setItem('taveine_customer', JSON.stringify({name, email, phone, address}));
+
+    // Готовим line_items
+    const lineItems = cart.map(item => ({
+      price_data: {
+        currency: 'aed',
+        product_data: {
+          name: item.name,
+          images: item.image ? [item.image] : undefined,
+        },
+        unit_amount: Math.round(item.price * 100),
+      },
+      quantity: item.qty || 1,
+    }));
+
+    try {
+      const response = await fetch('https://ВАША-ФУНКЦИЯ.cloudfunctions.net/createCheckoutSession', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lineItems,
+          customer_email: email,   // prefill email
+          // name и address пока не передаём — Stripe сам попросит
+        }),
+      });
+
+      const { id: sessionId, error } = await response.json();
+
+      if (error) throw new Error(error);
+
+      const { error: redirectError } = await stripe.redirectToCheckout({ sessionId });
+
+      if (redirectError) {
+        tg?.showAlert(redirectError.message);
+      }
+    } catch (err) {
+      console.error(err);
+      tg?.showAlert('Ошибка при переходе к оплате');
+    }
+  });
+});
 
 // Отключаем overscroll и pull-to-refresh в Telegram Web App
 Telegram.WebApp.ready();
