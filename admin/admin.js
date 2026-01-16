@@ -1,6 +1,6 @@
 // =============================================
 // TAVÉINE ADMIN PANEL - JavaScript (with Firebase)
-// Updated: Orders from localStorage + Categories in Inventory
+// Updated: Real Orders & Revenue on Dashboard + Notification
 // =============================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -63,23 +63,30 @@ navLinks.forEach(link => {
 });
 
 // =============================================
-// Dashboard Stats
+// Dashboard Stats — реальные данные из Firebase
 // =============================================
 async function loadDashboardStats() {
     try {
-        const snapshot = await getDocs(collection(db, "products"));
-        const productsCount = snapshot.size;
+        // 1. Продукты
+        const productsSnapshot = await getDocs(collection(db, "products"));
+        const productsCount = productsSnapshot.size;
         document.getElementById('dash-products').textContent = productsCount;
 
-        // Orders count from localStorage (from Telegram)
-        const orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
-        document.getElementById('dash-orders').textContent = orders.length;
-
-        // Revenue (simple sum)
+        // 2. Заказы + Revenue (реальные из Firebase)
+        const ordersSnapshot = await getDocs(collection(db, "orders"));
+        const orders = ordersSnapshot.docs.map(doc => doc.data());
+        const ordersCount = orders.length;
         const revenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+
+        document.getElementById('dash-orders').textContent = ordersCount;
         document.getElementById('dash-revenue').textContent = revenue.toLocaleString('en-AE') + ' AED';
+
+        console.log(`Dashboard: ${productsCount} продуктов, ${ordersCount} заказов, ${revenue} AED`);
     } catch (e) {
-        console.error("Dashboard stats error:", e);
+        console.error("Ошибка загрузки статистики:", e);
+        document.getElementById('dash-products').textContent = '—';
+        document.getElementById('dash-orders').textContent = '—';
+        document.getElementById('dash-revenue').textContent = 'Ошибка';
     }
 }
 
@@ -102,7 +109,7 @@ async function loadProducts() {
         renderCategoryProducts(products, 'bestsellers-list', 'bestseller');
         renderCategoryProducts(products, 'luxury-list', 'luxury');
 
-        // Остальные продукты (без этих тегов)
+        // Остальные продукты
         const other = products.filter(p => 
             !p.tags?.includes('new') && 
             !p.tags?.includes('birthday') && 
@@ -257,39 +264,85 @@ window.deleteProduct = async function(id) {
 };
 
 // =============================================
-// Orders from Telegram (localStorage)
+// Orders from Telegram (Firebase)
 // =============================================
-function loadOrders() {
-    const orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
+async function loadOrders() {
     const container = document.getElementById('orders-list');
+    container.innerHTML = '<p>Загрузка заказов...</p>';
 
-    if (orders.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:var(--gray-light); padding:60px 0;">No orders from Telegram yet</p>';
-        return;
+    try {
+        const snapshot = await getDocs(collection(db, "orders"));
+        const orders = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        if (orders.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:var(--gray-light); padding:60px 0;">Пока нет заказов</p>';
+            return;
+        }
+
+        container.innerHTML = orders.map(order => `
+            <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(212,175,55,0.15); border-radius:12px; padding:20px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <strong style="color:var(--gold);">Заказ ${order.id}</strong>
+                    <span style="color:var(--gray-light);">${new Date(order.createdAt?.toDate?.() || order.created).toLocaleString('ru-RU')}</span>
+                </div>
+                <p><strong>Клиент:</strong> ${order.customer.name} (${order.customer.phone})</p>
+                <p><strong>Email:</strong> ${order.customer.email}</p>
+                <p><strong>Адрес:</strong> ${order.customer.address}</p>
+                <p><strong>Сумма:</strong> ${order.total} AED</p>
+                <p><strong>Комментарий:</strong> ${order.customer.comment || '—'}</p>
+                <div style="margin-top:12px;">
+                    <strong>Товары:</strong>
+                    <ul style="margin-top:8px; padding-left:20px;">
+                        ${order.items.map(item => `
+                            <li>${item.name} × ${item.qty} — ${item.subtotal} AED</li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        console.error("Ошибка загрузки заказов:", e);
+        container.innerHTML = '<p style="color:#ef5350; text-align:center;">Ошибка загрузки заказов</p>';
     }
-
-    container.innerHTML = orders.map(order => `
-        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(212,175,55,0.15); border-radius:12px; padding:20px; margin-bottom:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <strong style="color:var(--gold);">Order ${order.id}</strong>
-                <span style="color:var(--gray-light);">${order.created}</span>
-            </div>
-            <p><strong>Customer:</strong> ${order.customer.name} (${order.customer.phone})</p>
-            <p><strong>Address:</strong> ${order.customer.address}</p>
-            <p><strong>Total:</strong> ${order.total} AED</p>
-            <p><strong>Comment:</strong> ${order.customer.comment || '—'}</p>
-            <div style="margin-top:12px;">
-                <strong>Items:</strong>
-                <ul style="margin-top:8px; padding-left:20px;">
-                    ${order.items.map(item => `<li>${item.name} × ${item.qty} — ${item.subtotal} AED</li>`).join('')}
-                </ul>
-            </div>
-        </div>
-    `).join('');
 }
+
+// =============================================
+// Уведомление о новом заказе
+// =============================================
+setInterval(async () => {
+    try {
+        const snapshot = await getDocs(collection(db, "orders"));
+        const currentCount = snapshot.size;
+        
+        const lastCount = parseInt(localStorage.getItem('lastOrderCount') || '0');
+        
+        if (currentCount > lastCount) {
+            // Новые заказы!
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="position:fixed; top:20px; right:20px; background:var(--gold); color:#001f24; padding:16px 24px; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.5); z-index:9999; font-weight:700; animation: fadeIn 0.5s;">
+                    Новый заказ! Всего: ${currentCount}
+                </div>
+            `;
+            document.body.appendChild(notification.firstElementChild);
+            
+            // Звук уведомления
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-2-113.mp3');
+            audio.play().catch(() => console.log("Звук заблокирован"));
+
+            // Убираем через 5 секунд
+            setTimeout(() => notification.firstElementChild.remove(), 5000);
+            
+            localStorage.setItem('lastOrderCount', currentCount);
+        }
+    } catch (e) {}
+}, 10000); // каждые 10 секунд
 
 // Initial load for dashboard
 loadDashboardStats();
 
 // Initial console message
-console.log("TAVÉINE Admin Panel - Updated with Orders & Categories");
+console.log("TAVÉINE Admin Panel - Updated with Real Orders & Revenue");
