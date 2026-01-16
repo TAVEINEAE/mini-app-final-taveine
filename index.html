@@ -17,7 +17,6 @@
         <div class="logo">TAVÉINE</div>
         <button class="close-btn" onclick="toggleMenu()" aria-label="Close menu">✕</button>
     </div>
-
     <div class="menu-content">
         <!-- Collection (с подменю) -->
         <div class="menu-item has-submenu" onclick="toggleSubmenu(this)">
@@ -35,7 +34,6 @@
             <a href="#" class="submenu-item" onclick="toggleMenu()">Vases</a>
             <a href="#" class="submenu-item" onclick="toggleMenu()">Box</a>
         </div>
-
         <!-- Occasions (с подменю) -->
         <div class="menu-item has-submenu" onclick="toggleSubmenu(this)">
             <span>Occasions</span>
@@ -50,7 +48,6 @@
             <a href="#" class="submenu-item" onclick="toggleMenu()">Forever Rose</a>
             <a href="#" class="submenu-item" onclick="toggleMenu()">Balloons</a>
         </div>
-
         <!-- Простые пункты без подменю -->
         <a href="#" class="menu-item" onclick="toggleMenu()">Home</a>
         <a href="#" class="menu-item" onclick="toggleMenu()">About Us</a>
@@ -85,49 +82,49 @@
         </section>
 
         <!-- 1. New Arrivals -->
-<section class="featured-section">
-    <h2 class="section-title">New Arrivals</h2>
-    <div class="horizontal-slider-wrapper">
-        <div id="new-arrivals-slider" class="horizontal-slider"></div>
-        <a href="#" class="view-all-end">VIEW ALL</a>
-    </div>
-</section>
+        <section class="featured-section">
+            <h2 class="section-title">New Arrivals</h2>
+            <div class="horizontal-slider-wrapper">
+                <div id="new-arrivals-slider" class="horizontal-slider"></div>
+                <a href="#" class="view-all-end">VIEW ALL</a>
+            </div>
+        </section>
 
-<!-- 2. Birthday Collection -->
-<section class="category-section">
-    <h2 class="section-title">Birthday Collection</h2>
-    <div class="horizontal-slider-wrapper">
-        <div id="birthday-slider" class="horizontal-slider"></div>
-        <a href="#" class="view-all-end">VIEW ALL</a>
-    </div>
-</section>
+        <!-- 2. Birthday Collection -->
+        <section class="category-section">
+            <h2 class="section-title">Birthday Collection</h2>
+            <div class="horizontal-slider-wrapper">
+                <div id="birthday-slider" class="horizontal-slider"></div>
+                <a href="#" class="view-all-end">VIEW ALL</a>
+            </div>
+        </section>
 
-<!-- 3. Bestsellers -->
-<section class="category-section">
-    <h2 class="section-title">Bestsellers</h2>
-    <div class="horizontal-slider-wrapper">
-        <div id="bestseller-slider" class="horizontal-slider"></div>
-        <a href="#" class="view-all-end">VIEW ALL</a>
-    </div>
-</section>
+        <!-- 3. Bestsellers -->
+        <section class="category-section">
+            <h2 class="section-title">Bestsellers</h2>
+            <div class="horizontal-slider-wrapper">
+                <div id="bestseller-slider" class="horizontal-slider"></div>
+                <a href="#" class="view-all-end">VIEW ALL</a>
+            </div>
+        </section>
 
-<!-- 4. Luxury Collection -->
-<section class="category-section">
-    <h2 class="section-title">Luxury Collection</h2>
-    <div class="horizontal-slider-wrapper">
-        <div id="luxury-slider" class="horizontal-slider"></div>
-        <a href="#" class="view-all-end">VIEW ALL</a>
-    </div>
-</section>
+        <!-- 4. Luxury Collection -->
+        <section class="category-section">
+            <h2 class="section-title">Luxury Collection</h2>
+            <div class="horizontal-slider-wrapper">
+                <div id="luxury-slider" class="horizontal-slider"></div>
+                <a href="#" class="view-all-end">VIEW ALL</a>
+            </div>
+        </section>
 
-<!-- 5. Explore All Bouquets -->
-<section class="all-products-section">
-    <h2 class="section-title">Explore All Bouquets</h2>
-    <div class="horizontal-slider-wrapper">
-        <div id="all-products-grid" class="horizontal-slider"></div>
-        <a href="#" class="view-all-end">VIEW ALL</a>
-    </div>
-</section>
+        <!-- 5. Explore All Bouquets -->
+        <section class="all-products-section">
+            <h2 class="section-title">Explore All Bouquets</h2>
+            <div class="horizontal-slider-wrapper">
+                <div id="all-products-grid" class="horizontal-slider"></div>
+                <a href="#" class="view-all-end">VIEW ALL</a>
+            </div>
+        </section>
     </main>
 
     <!-- Product Detail Modal -->
@@ -162,37 +159,32 @@
         <div id="cart-container"></div>
     </div>
 
-    <!-- Простая страница оформления заказа — в твоём оригинальном стиле -->
-<div id="checkout-info-page" class="full-screen-page" style="display:none;">
-  <div class="page-header">
-    <button class="back-btn" onclick="closePage('checkout-info-page')">←</button>
-    <div class="page-title">Оформление заказа</div>
-    <button class="back-btn" onclick="closePage('checkout-info-page')" style="font-size:1.5rem;">✕</button>
-  </div>
-  
-  <div style="padding:32px 24px; max-width:500px; margin:0 auto;">
-    <form id="simple-checkout-form">
-      <label>Имя и Фамилия *</label>
-      <input type="text" id="customer-name" required placeholder="Иван Иванов">
-
-      <label>Email *</label>
-      <input type="email" id="customer-email" required placeholder="example@mail.com">
-
-      <label>Телефон *</label>
-      <input type="tel" id="customer-phone" required placeholder="+971 50 123 4567">
-
-      <label>Адрес доставки *</label>
-      <textarea id="customer-address" required rows="4" placeholder="Улица, дом, квартира, район, Дубай..."></textarea>
-
-      <label>Комментарий (не обязательно)</label>
-      <textarea id="customer-comment" rows="3" placeholder="Например: без звонка, до 18:00..."></textarea>
-
-      <button type="submit" class="checkout-btn" style="margin-top:32px; width:100%;">
-        Подтвердить заказ
-      </button>
-    </form>
-  </div>
-</div>
+    <!-- Простая страница оформления заказа (добавлена) -->
+    <div id="checkout-info-page" class="full-screen-page" style="display:none;">
+      <div class="page-header">
+        <button class="back-btn" onclick="closePage('checkout-info-page')">←</button>
+        <div class="page-title">Оформление заказа</div>
+        <button class="back-btn" onclick="closePage('checkout-info-page')" style="font-size:1.5rem;">✕</button>
+      </div>
+     
+      <div style="padding:32px 24px; max-width:500px; margin:0 auto;">
+        <form id="simple-checkout-form">
+          <label>Имя и Фамилия *</label>
+          <input type="text" id="customer-name" required placeholder="Иван Иванов">
+          <label>Email *</label>
+          <input type="email" id="customer-email" required placeholder="example@mail.com">
+          <label>Телефон *</label>
+          <input type="tel" id="customer-phone" required placeholder="+971 50 123 4567">
+          <label>Адрес доставки *</label>
+          <textarea id="customer-address" required rows="4" placeholder="Улица, дом, квартира, район, Дубай..."></textarea>
+          <label>Комментарий (не обязательно)</label>
+          <textarea id="customer-comment" rows="3" placeholder="Например: без звонка, до 18:00..."></textarea>
+          <button type="submit" class="checkout-btn" style="margin-top:32px; width:100%;">
+            Подтвердить заказ
+          </button>
+        </form>
+      </div>
+    </div>
 
     <!-- Search Page -->
     <div id="search-page" class="search-drawer">
