@@ -263,7 +263,7 @@ window.openSearch = () => {
 window.closeSearch = () => { 
     document.getElementById('search-page').classList.remove('active'); 
     document.getElementById('search-input').value = '';
-    document.getElementById('search-results-products').innerHTML = '';
+    document.getElementById('search-results-products').innerHTML = cardsHTML;  // ← это останется работать
 };
 
 function renderSearchResults(results) {
