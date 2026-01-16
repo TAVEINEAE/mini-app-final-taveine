@@ -151,5 +151,10 @@ window.deleteProduct = async function(id) {
     }
 };
 
+// Toggle sidebar on mobile
+window.toggleSidebar = function() {
+    document.querySelector('.sidebar').classList.toggle('active');
+};
+
 // Initial load
 console.log("TAVÉINE Admin Panel ready");
