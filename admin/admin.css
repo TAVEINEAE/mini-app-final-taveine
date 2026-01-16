@@ -1,8 +1,3 @@
-/* =============================================
-   TAVÉINE ADMIN PANEL - Luxury Dark Gold Theme
-   Matching customer mini app style
-============================================= */
-
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
@@ -32,16 +27,14 @@ body {
     color: var(--text-light);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout */
 .layout {
     display: flex;
     min-height: 100vh;
 }
 
-/* Sidebar - becomes drawer on mobile */
+/* Sidebar - Drawer style on mobile */
 .sidebar {
     width: 280px;
     background: linear-gradient(180deg, var(--dark-bg) 0%, var(--dark-secondary) 100%);
@@ -55,12 +48,26 @@ body {
     transform: translateX(-100%);
     transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
-    border-right: 1px solid rgba(212,175,55,0.12);
     box-shadow: 4px 0 32px rgba(0,0,0,0.5);
 }
 
 .sidebar.active {
     transform: translateX(0);
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.45s;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 .logo {
@@ -98,8 +105,7 @@ body {
     font-size: 1.05rem;
 }
 
-.nav-link:hover,
-.nav-link.active {
+.nav-link:hover, .nav-link.active {
     background: rgba(212,175,55,0.15);
     color: var(--gold);
 }
@@ -115,68 +121,51 @@ body {
     background: rgba(0,31,36,0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(212,175,55,0.18);
-    padding: 16px 20px;
+    padding: 14px 16px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 900;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     box-shadow: var(--shadow-light);
 }
 
+.menu-toggle {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 8px;
+}
+
 .header h1 {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     margin: 0;
+    flex: 1;
+    text-align: center;
 }
 
 .header-actions {
     display: flex;
-    align-items: center;
     gap: 20px;
-}
-
-.search-input {
-    display: none; /* hidden on mobile for space */
-}
-
-@media (min-width: 769px) {
-    .search-input {
-        display: block;
-        padding: 10px 16px;
-        border-radius: 30px;
-        border: 1px solid rgba(212,175,55,0.25);
-        background: rgba(255,255,255,0.08);
-        color: var(--text-light);
-        width: 220px;
-    }
 }
 
 .notification-icon, .profile-icon {
     font-size: 1.4rem;
     color: var(--gray-light);
-    cursor: pointer;
 }
 
 /* Main content */
 .main {
-    flex: 1;
-    margin-top: 70px; /* space for fixed header */
-    padding: 24px 16px;
+    margin-top: 64px; /* header height */
+    padding: 20px 16px;
 }
 
-/* Pages */
-.page {
-    display: none;
-}
-
-.page.active {
-    display: block;
-}
-
-/* Cards & Content */
+/* Cards */
 .card {
     background: rgba(255,255,255,0.06);
     backdrop-filter: blur(12px);
@@ -187,37 +176,36 @@ body {
     box-shadow: var(--shadow-medium);
 }
 
-h2, h3 {
-    font-family: 'Playfair Display', serif;
-    color: var(--gold);
-    margin-bottom: 20px;
+/* Product Management */
+.inventory-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
-/* Products Grid - very important for mobile */
+.add-btn {
+    background: var(--gold-gradient);
+    color: var(--dark-bg);
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
 .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-@media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-}
-
-/* Product Card */
 .product-card {
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(212,175,55,0.15);
     border-radius: var(--border-radius);
     overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.product-card:hover {
-    transform: translateY(-6px);
 }
 
 .product-img {
@@ -240,22 +228,39 @@ h2, h3 {
 
 .product-actions button {
     padding: 10px 20px;
-    font-size: 0.95rem;
     border-radius: 8px;
+    border: none;
+    font-size: 0.95rem;
+    cursor: pointer;
 }
 
-/* Form Styles - crucial for mobile */
-#product-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+/* Modal & Form */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 1100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
     color: var(--gold);
-    font-weight: 500;
 }
 
 .form-group input,
@@ -273,7 +278,6 @@ h2, h3 {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 24px;
 }
 
 .save-btn, .cancel-btn {
@@ -296,64 +300,41 @@ h2, h3 {
     border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* Mobile-specific improvements */
-@media (max-width: 768px) {
+/* Responsive adjustments */
+@media (min-width: 769px) {
+    .sidebar {
+        position: sticky;
+        transform: translateX(0);
+        width: 280px;
+        box-shadow: none;
+    }
+    
+    .sidebar-overlay, .menu-toggle {
+        display: none;
+    }
+    
     .main {
-        padding: 16px;
-        margin-top: 70px;
+        margin-left: 280px;
+        margin-top: 0;
+        padding: 32px;
     }
-
-    .card {
-        padding: 20px;
+    
+    .header {
+        padding: 20px 32px;
     }
-
-    h2 {
+    
+    .header h1 {
         font-size: 1.8rem;
     }
-
-    .form-group input,
-    .form-group textarea {
-        padding: 16px;
-        font-size: 1.05rem;
-    }
-
-    .save-btn, .cancel-btn {
-        padding: 18px;
-        font-size: 1.15rem;
-    }
-
-    .product-card {
-        margin-bottom: 16px;
-    }
-
-    .product-actions {
+    
+    .inventory-header {
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
     }
-}
-
-@media (max-width: 480px) {
-    .header h1 {
-        font-size: 1.3rem;
-    }
-
-    .product-img {
-        height: 180px;
-    }
-}
-
-.menu-toggle {
-    background: none;
-    border: none;
-    color: var(--gold);
-    font-size: 1.6rem;
-    cursor: pointer;
-    padding: 8px;
-    display: block; /* always visible on mobile */
-}
-
-@media (min-width: 769px) {
-    .menu-toggle {
-        display: none; /* hide on desktop */
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        display: grid;
     }
 }
