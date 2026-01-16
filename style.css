@@ -1088,6 +1088,53 @@ body {
     box-shadow: 0 8px 32px rgba(212, 175, 55, 0.5);
 }
 
+/* === Горизонтальный удобный слайдер для телефона === */
+.horizontal-slider {
+    display: flex;
+    overflow-x: auto;               /* можно листать вбок */
+    gap: 20px;                      /* расстояние между карточками */
+    padding: 0 16px 40px 16px;      /* отступы по бокам и снизу */
+    scroll-snap-type: x mandatory;  /* карточки прилипают красиво */
+    -webkit-overflow-scrolling: touch; /* плавно на iPhone */
+    scrollbar-width: none;          /* скрываем полосу прокрутки */
+}
+
+.horizontal-slider::-webkit-scrollbar {
+    display: none;                  /* убираем полосу везде */
+}
+
+/* Размер карточки — удобный на телефоне */
+.horizontal-slider .uniform-card {
+    flex: 0 0 290px;                /* ширина ~290px — видно 1–1.3 карточки за раз */
+    max-width: 290px;
+    scroll-snap-align: start;
+}
+
+/* Картинка внутри карточки — большая и красивая */
+.horizontal-slider .card-image-wrapper {
+    height: 340px;                  /* оптимально для букета */
+}
+
+/* Чуть крупнее текст внутри карточки */
+.horizontal-slider .product-name {
+    font-size: 1.05rem;
+    margin: 12px 0 6px;
+}
+
+.horizontal-slider .price {
+    font-size: 1.18rem;
+}
+
+/* На совсем маленьких телефонах уменьшаем */
+@media (max-width: 360px) {
+    .horizontal-slider .uniform-card {
+        flex: 0 0 260px;
+    }
+    .horizontal-slider .card-image-wrapper {
+        height: 310px;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .top-bar {
