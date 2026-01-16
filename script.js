@@ -396,4 +396,10 @@ window.toggleSubmenu = function(element) {
     element.classList.toggle('active', !isActive);
 };
 
+// Отключаем overscroll и pull-to-refresh в Telegram Web App
+Telegram.WebApp.ready();
+Telegram.WebApp.expand(); // растягивает апп на весь экран
+Telegram.WebApp.disableVerticalSwipes(); // отключает вертикальный свайп для закрытия
+Telegram.WebApp.setBackgroundColor("#001f24"); // твой тёмный фон, чтобы красиво
+
 document.addEventListener('DOMContentLoaded', init);
