@@ -19,7 +19,7 @@
 <body>
 
 <div class="layout">
-  <!-- Sidebar -->
+  <!-- Sidebar (fixed on desktop, drawer on mobile) -->
   <aside class="sidebar" id="sidebar">
     <div class="logo">
       <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo">
@@ -50,7 +50,7 @@
       </div>
     </header>
 
-    <!-- Dashboard -->
+    <!-- Dashboard Page -->
     <section id="dashboard-page" class="page active">
       <div class="stats">
         <div class="stat-card">
@@ -73,7 +73,7 @@
       </div>
     </section>
 
-    <!-- Inventory -->
+    <!-- Inventory Page -->
     <section id="inventory-page" class="page">
       <div class="card">
         <div class="inventory-header">
@@ -85,7 +85,7 @@
         <div id="products-list" class="products-grid"></div>
       </div>
 
-      <!-- Modal -->
+      <!-- Add/Edit Modal -->
       <div id="product-modal" class="modal">
         <div class="modal-content">
           <h3 id="modal-title">Add New Product</h3>
@@ -119,23 +119,25 @@
       </div>
     </section>
 
-    <!-- Chat (your current style kept) -->
+    <!-- Chat Page -->
     <section id="chat-page" class="page">
       <div class="card">
         <div class="stats">
           <div class="stat-card"><div class="label">Products</div><div class="value">20</div></div>
           <div class="stat-card"><div class="label">Orders</div><div class="value">0</div></div>
         </div>
-        <div class="card">
-          <h3>Recent Products</h3>
-          <img src="https://i.ibb.co/some-bouquet-image.jpg" alt="Bouquet" style="width:100%; border-radius:12px;">
-        </div>
+        <h3>Recent Activity</h3>
+        <img src="https://i.ibb.co/some-large-bouquet.jpg" alt="Bouquet" style="width:100%; max-width:600px; border-radius:12px; margin:20px auto; display:block;">
+        <p style="text-align:center; color:var(--gray-light);">Chat functionality coming soon...</p>
       </div>
     </section>
 
-    <!-- Calendar -->
+    <!-- Calendar Page -->
     <section id="calendar-page" class="page">
-      <div class="card"><h2>Calendar</h2><p>Coming soon...</p></div>
+      <div class="card">
+        <h2>Calendar</h2>
+        <p>Coming soon...</p>
+      </div>
     </section>
   </main>
 </div>
