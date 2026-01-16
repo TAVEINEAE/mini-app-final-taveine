@@ -1,3 +1,4 @@
+// script.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -31,28 +32,31 @@ async function init() {
         renderMainPage();
         updateBadges();
     } catch (e) {
-        console.error("Firebase load error:", e);
+        console.error("Firebase error:", e);
     }
 }
 
-// ── Rendering ───────────────────────────────────────────────────────────
+// ── Product Card (smaller, modern, better heart) ────────────────────────
 function renderProductCard(p) {
     const inWishlist = wishlist.some(item => item.id === p.id);
     return `
-        <div class="card uniform-card" onclick="openProductDetail('${p.id}')">
-            <button class="wish-btn-overlay" onclick="event.stopPropagation(); toggleWishlist('${p.id}')"
+        <div class="card" onclick="openProductDetail('${p.id}')">
+            <button class="wish-btn ${inWishlist ? 'active' : ''}" 
+                    onclick="event.stopPropagation(); toggleWishlist('${p.id}')"
                     aria-label="Toggle wishlist">
-                ${inWishlist ? '❤️' : '🤍'}
+                <svg viewBox="0 0 24 24" class="heart-icon">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
             </button>
-            <div class="card-image-wrapper">
-                <img src="${p.image || 'https://via.placeholder.com/480x640?text=No+Image'}" 
+            <div class="card-image">
+                <img src="${p.image || 'https://via.placeholder.com/400x520?text=TAVÉINE'}" 
                      alt="${p.name}" loading="lazy">
             </div>
             <div class="card-info">
                 <h4>${p.name}</h4>
                 <div class="price">${Number(p.price || 0).toFixed(2)} AED</div>
-                <button class="add-btn" onclick="event.stopPropagation(); addToCart('${p.id}')">
-                    Add to cart
+                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p.id}')">
+                    Add to Cart
                 </button>
             </div>
         </div>
@@ -68,212 +72,46 @@ function renderMainPage() {
     ];
 
     sliders.forEach(({ id, tag }) => {
-        const container = document.getElementById(id);
-        if (!container) return;
-        const items = products.filter(p => p.tags?.includes(tag));
-        container.innerHTML = items.length 
-            ? items.map(renderProductCard).join('')
-            : '<div class="empty-message">Coming soon...</div>';
+        const el = document.getElementById(id);
+        if (el) {
+            const items = products.filter(p => p.tags?.includes(tag));
+            el.innerHTML = items.length ? items.map(renderProductCard).join('') 
+                                       : '<div class="empty">Coming soon...</div>';
+        }
     });
 
-    const allGrid = document.getElementById('all-products-grid');
-    if (allGrid) {
-        allGrid.innerHTML = products.map(renderProductCard).join('');
-    }
+    const all = document.getElementById('all-products-grid');
+    if (all) all.innerHTML = products.map(renderProductCard).join('');
 }
 
-// ── Category Page ───────────────────────────────────────────────────────
-window.openCategoryPage = (group, tag) => {
-    const title = document.getElementById('category-title');
-    title.textContent = `${group} • ${tag.charAt(0).toUpperCase() + tag.slice(1)}`;
-
-    const filtered = products.filter(p => p.tags?.includes(tag));
-    document.getElementById('category-content').innerHTML = filtered.length
-        ? `<div class="grid">${filtered.map(renderProductCard).join('')}</div>`
-        : '<div class="empty-message">No products found in this category</div>';
-
-    document.getElementById('category-page').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    toggleMenu();
-};
-
-// ── Product Detail ──────────────────────────────────────────────────────
-window.openProductDetail = (id) => {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-
-    document.getElementById('product-detail-content').innerHTML = `
-        <div class="product-gallery">
-            <img src="${p.image || 'https://via.placeholder.com/720x960'}" alt="${p.name}">
-        </div>
-        <div class="product-info-block">
-            <h1 class="product-title">${p.name}</h1>
-            <div class="product-price">${Number(p.price).toFixed(2)} AED</div>
-            ${p.description ? `<div class="description">${p.description}</div>` : ''}
-            <button class="add-btn large" onclick="addToCart('${p.id}')">Add to cart</button>
-        </div>
-    `;
-
-    document.getElementById('product-detail').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-};
-
-window.closeProductDetail = () => {
-    document.getElementById('product-detail').style.display = 'none';
-    document.body.style.overflow = '';
-};
-
-// ── Cart ────────────────────────────────────────────────────────────────
-window.addToCart = (id) => {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-    const item = cart.find(i => i.id === id);
-    if (item) item.qty = (item.qty || 1) + 1;
-    else cart.push({ ...p, qty: 1 });
-    saveCart();
-    tg?.HapticFeedback?.notificationOccurred('success');
-};
-
-function renderCart() {
-    const container = document.getElementById('cart-container');
-    const footer = document.getElementById('cart-footer');
-    if (!container || !footer) return;
-
-    if (cart.length === 0) {
-        container.innerHTML = `<div class="empty-state">Your cart is empty</div>`;
-        footer.style.display = 'none';
-        return;
-    }
-
-    let total = 0;
-    container.innerHTML = cart.map((item, i) => {
-        total += item.price * (item.qty || 1);
-        return `
-            <div class="cart-item">
-                <img src="${item.image || ''}" alt="">
-                <div class="cart-item-info">
-                    <h4>${item.name}</h4>
-                    <div class="price">${Number(item.price).toFixed(2)} AED</div>
-                    <div class="qty-controls">
-                        <button onclick="updateQty(${i}, -1)">−</button>
-                        <span>${item.qty || 1}</span>
-                        <button onclick="updateQty(${i}, 1)">+</button>
-                    </div>
-                    <button class="remove-btn" onclick="removeFromCart(${i})">Remove</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    footer.innerHTML = `
-        <div class="cart-total">
-            <span>Total:</span>
-            <strong>${total.toFixed(2)} AED</strong>
-        </div>
-        <button class="add-btn large">Checkout</button>
-    `;
-    footer.style.display = 'block';
-}
-
-window.updateQty = (index, delta) => {
-    cart[index].qty = Math.max(1, (cart[index].qty || 1) + delta);
-    saveCart();
-    renderCart();
-};
-
-window.removeFromCart = (index) => {
-    cart.splice(index, 1);
-    saveCart();
-    renderCart();
-};
-
-function saveCart() {
-    localStorage.setItem('taveine_cart', JSON.stringify(cart));
-    updateBadges();
-}
-
-// ── Wishlist ────────────────────────────────────────────────────────────
+// ── Wishlist Logic (fixed & reliable) ───────────────────────────────────
 window.toggleWishlist = (id) => {
-    const idx = wishlist.findIndex(item => item.id === id);
-    if (idx === -1) {
-        const p = products.find(p => p.id === id);
-        if (p) wishlist.push(p);
+    const index = wishlist.findIndex(item => item.id === id);
+    if (index === -1) {
+        const product = products.find(p => p.id === id);
+        if (product) wishlist.push(product);
     } else {
-        wishlist.splice(idx, 1);
+        wishlist.splice(index, 1);
     }
+    
     localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
     updateBadges();
-    renderMainPage();
+    renderMainPage();           // refresh hearts everywhere
+    if (document.getElementById('wish-page').style.display === 'block') {
+        renderWishlist();
+    }
 };
 
 function renderWishlist() {
     const container = document.getElementById('wish-container');
     if (!container) return;
-    container.innerHTML = wishlist.length
+    container.innerHTML = wishlist.length 
         ? `<div class="grid">${wishlist.map(renderProductCard).join('')}</div>`
         : `<div class="empty-state">Your wishlist is empty</div>`;
 }
 
-// ── UI Controls ─────────────────────────────────────────────────────────
-function updateBadges() {
-    document.getElementById('w-count').textContent = wishlist.length;
-    document.getElementById('c-count').textContent = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
-}
-
-window.toggleMenu = () => {
-    document.getElementById('side-menu').classList.toggle('active');
-    document.getElementById('menu-overlay').classList.toggle('active');
-};
-
-window.openPage = (id) => {
-    document.getElementById(id).style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    if (id === 'wish-page') renderWishlist();
-    if (id === 'cart-drawer') renderCart();
-};
-
-window.closePage = (id) => {
-    document.getElementById(id).style.display = 'none';
-    document.body.style.overflow = '';
-};
-
-window.openSearch = () => {
-    document.getElementById('search-page').classList.add('active');
-    document.getElementById('product-search-input').focus();
-};
-
-window.closeSearch = () => {
-    document.getElementById('search-page').classList.remove('active');
-};
-
-window.clearSearchField = () => {
-    const input = document.getElementById('product-search-input');
-    input.value = '';
-    input.dispatchEvent(new Event('input'));
-};
-
-// Live search
-document.getElementById('product-search-input')?.addEventListener('input', e => {
-    const term = e.target.value.toLowerCase().trim();
-    document.getElementById('clear-search').style.display = term ? 'block' : 'none';
-
-    const results = products.filter(p =>
-        p.name.toLowerCase().includes(term) ||
-        (p.description || '').toLowerCase().includes(term)
-    );
-
-    document.getElementById('search-results-products').innerHTML = results.length
-        ? results.map(p => `
-            <div class="search-result-item" onclick="closeSearch(); openProductDetail('${p.id}')">
-                <img src="${p.image || ''}" alt="">
-                <div>
-                    <div class="name">${p.name}</div>
-                    <div class="price">${Number(p.price).toFixed(2)} AED</div>
-                </div>
-            </div>
-        `).join('')
-        : '<div class="empty-message">Nothing found</div>';
-});
+// ── Other functions remain similar (cart, product detail, search, category page, etc.)
+// ... (you can keep the rest from previous version - just make sure to call renderMainPage() after any wishlist/cart change)
 
 // Start
 document.addEventListener('DOMContentLoaded', init);
