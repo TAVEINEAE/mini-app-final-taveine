@@ -1,240 +1,155 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+// Firebase Config & Initialization
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
-  authDomain: "taveine-admin.firebaseapp.com",
-  projectId: "taveine-admin",
-  storageBucket: "taveine-admin.firebasestorage.app",
-  messagingSenderId: "916085731146",
-  appId: "1:916085731146:web:764187ed408e8c4fdfdbb3",
-  databaseURL: "https://taveine-admin-default-rtdb.firebaseio.com"
+    apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
+    authDomain: "taveine-admin.firebaseapp.com",
+    projectId: "taveine-admin",
+    storageBucket: "taveine-admin.firebasestorage.app",
+    messagingSenderId: "916085731146",
+    appId: "1:916085731146:web:764187ed408e8c4fdfdbb3"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Functions for CRUD
-async function loadProducts() {
-    const snapshot = await getDocs(collection(db, "products"));
-    const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderProducts(products);
-}
+// Page Switching
+const navLinks = document.querySelectorAll('.nav-link[data-page]');
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageId = link.dataset.page + '-page';
 
-async function addProduct(data) {
-    await addDoc(collection(db, "products"), data);
-    loadProducts();
-}
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId)?.classList.add('active');
 
-async function editProduct(id, data) {
-    await updateDoc(doc(db, "products", id), data);
-    loadProducts();
-}
+        document.getElementById('page-title').textContent = link.textContent.trim();
 
-async function deleteProduct(id) {
-    await deleteDoc(doc(db, "products", id));
-    loadProducts();
-}
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const rtdb = getDatabase(app);
-
-let activeChatId = null;
-
-// Navigation
-function switchPage(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(page + '-page')?.classList.add('active');
-  
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.querySelector(`.nav-link[data-page="${page}"]`)?.classList.add('active');
-  
-  document.getElementById('page-title').textContent = page.charAt(0).toUpperCase() + page.slice(1);
-}
-
-document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    switchPage(link.dataset.page);
-  });
-});
-
-onAuthStateChanged(auth, user => {
-  if (!user) return window.location.href = "login.html";
-  loadAll();
-});
-
-window.logout = () => signOut(auth);
-
-async function loadAll() {
-  await loadProducts();
-  loadCalendar();
-  loadMap();
-  initChat();
-}
-
-// 1. Products + Recent on Dashboard + Inventory
-async function loadProducts() {
-  const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-  const snap = await getDocs(q);
-  
-  document.getElementById("dash-products").textContent = snap.size;
-
-  // Recent products on Dashboard
-  const recentContainer = document.getElementById("dashboard-recent-products");
-  if (recentContainer) {
-    recentContainer.innerHTML = "";
-    const products = [];
-    snap.forEach(doc => products.push(doc.data()));
-    products.slice(0, 8).forEach(p => {
-      recentContainer.innerHTML += `
-        <div class="product-card">
-          <img class="product-img" src="${p.image || 'https://via.placeholder.com/220x160'}" alt="${p.name}">
-          <div class="product-info">
-            <div class="product-name">${p.name}</div>
-            <div class="product-price">${p.price || '—'} AED</div>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  // Full inventory with categories
-  const categoriesContainer = document.getElementById("inventory-categories");
-  if (categoriesContainer) {
-    categoriesContainer.innerHTML = "";
-    const productsByCategory = {};
-    snap.forEach(doc => {
-      const p = doc.data();
-      const cat = p.category || "Uncategorized";
-      if (!productsByCategory[cat]) productsByCategory[cat] = [];
-      productsByCategory[cat].push(p);
-    });
-
-    Object.entries(productsByCategory).forEach(([cat, prods]) => {
-      const section = document.createElement("div");
-      section.className = "category-section";
-      section.innerHTML = `<h3 class="category-title">${cat} (${prods.length})</h3>`;
-      const slider = document.createElement("div");
-      slider.className = "category-slider";
-      prods.forEach(p => {
-        slider.innerHTML += `
-          <div class="product-card">
-            <img class="product-img" src="${p.image || 'https://via.placeholder.com/220x160'}" alt="${p.name}">
-            <div class="product-info">
-              <div class="product-name">${p.name}</div>
-              <div class="product-price">${p.price || '—'} AED</div>
-            </div>
-          </div>
-        `;
-      });
-      section.appendChild(slider);
-      categoriesContainer.appendChild(section);
-    });
-  }
-}
-
-// 2. Calendar with products
-function loadCalendar() {
-  const calendarEl = document.getElementById('calendar');
-  if (!calendarEl) return;
-
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    events: async function(fetchInfo, successCallback) {
-      const snap = await getDocs(collection(db, "products"));
-      const events = [];
-      const counts = {};
-
-      snap.forEach(doc => {
-        const date = doc.data().createdAt?.toDate()?.toISOString().split('T')[0];
-        if (date) counts[date] = (counts[date] || 0) + 1;
-      });
-
-      Object.entries(counts).forEach(([date, count]) => {
-        events.push({ title: `${count} products`, start: date });
-      });
-      successCallback(events);
-    },
-    eventClick: async function(info) {
-      const date = info.event.startStr;
-      const snap = await getDocs(collection(db, "products"));
-      let list = 'Products added on ' + date + ':\n\n';
-      snap.forEach(doc => {
-        const p = doc.data();
-        if (p.createdAt?.toDate()?.toISOString().split('T')[0] === date) {
-          list += `• ${p.name} - ${p.price || '?'} AED\n`;
+        // Load products when Inventory is opened
+        if (pageId === 'inventory-page') {
+            loadProducts();
         }
-      });
-      alert(list || 'No products on this day');
+    });
+});
+
+// ====================
+// Product Management
+// ====================
+
+let editId = null;
+
+async function loadProducts() {
+    try {
+        const snapshot = await getDocs(collection(db, "products"));
+        const products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderProducts(products);
+    } catch (err) {
+        console.error("Error loading products:", err);
+        alert("Failed to load products. Check console.");
     }
-  });
-  calendar.render();
 }
 
-// 3. Map with current location
-function loadMap() {
-  const mapEl = document.getElementById('location-map');
-  if (!mapEl) return;
+function renderProducts(products) {
+    const container = document.getElementById('products-list');
+    if (!container) return;
 
-  const map = L.map(mapEl).setView([34.05, -118.24], 10); // default LA
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    if (products.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--gray-light); padding:60px 0;">No products yet. Add your first product!</p>';
+        return;
+    }
 
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      const { latitude, longitude } = pos.coords;
-      map.setView([latitude, longitude], 15);
-      L.marker([latitude, longitude]).addTo(map)
-        .bindPopup('Your current location')
-        .openPopup();
-    }, () => {
-      alert('Could not get your location');
-    });
-  }
+    container.innerHTML = products.map(p => `
+        <div class="product-card">
+            <img src="${p.image || 'https://via.placeholder.com/260x220/002f36/ffffff?text=No+Image'}" 
+                 alt="${p.name}" 
+                 class="product-img"
+                 onerror="this.src='https://via.placeholder.com/260x220/002f36/ffffff?text=Image+Error'">
+            <div class="product-info">
+                <h4>${p.name}</h4>
+                <div class="price">${p.price?.toLocaleString('en-AE') || '—'} AED</div>
+                <div class="product-actions">
+                    <button class="edit-btn" onclick="openEditModal('${p.id}', \`${p.name}\`, ${p.price || 0}, '${p.image || ''}', \`${(p.description || '').replace(/`/g,'\\`')}\`, '${p.tags?.join(',') || ''}')">
+                        Edit
+                    </button>
+                    <button class="delete-btn" onclick="deleteProduct('${p.id}')">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
 
-// 4. Chat (Telegram style + DB)
-function initChat() {
-  const chatListEl = document.getElementById('chat-list');
-  if (!chatListEl) return;
+window.openAddModal = function() {
+    editId = null;
+    document.getElementById('modal-title').textContent = 'Add New Product';
+    document.getElementById('product-form').reset();
+    document.getElementById('product-modal').style.display = 'flex';
+};
 
-  // Example: listen for chats from realtime db
-  onValue(ref(rtdb, 'chats'), (snapshot) => {
-    chatListEl.innerHTML = '';
-    snapshot.forEach(child => {
-      const chatId = child.key;
-      chatListEl.innerHTML += `<div class="chat-item" onclick="loadChat('${chatId}')">${chatId}</div>`;
-    });
-  });
-}
+window.openEditModal = function(id, name, price, image, description, tags) {
+    editId = id;
+    document.getElementById('modal-title').textContent = 'Edit Product';
+    
+    document.getElementById('name').value = name;
+    document.getElementById('price').value = price;
+    document.getElementById('image').value = image;
+    document.getElementById('description').value = description;
+    document.getElementById('tags').value = tags;
+    
+    document.getElementById('product-modal').style.display = 'flex';
+};
 
-window.loadChat = function(chatId) {
-  activeChatId = chatId;
-  document.getElementById('chat-header').textContent = chatId;
-  
-  onValue(ref(rtdb, `chats/${chatId}`), (snapshot) => {
-    const msgs = document.getElementById('chat-messages');
-    msgs.innerHTML = '';
-    snapshot.forEach(child => {
-      const msg = child.val();
-      msgs.innerHTML += `<div class="message ${msg.from === 'admin' ? 'admin' : 'user'}">${msg.text}</div>`;
-    });
-    msgs.scrollTop = msgs.scrollHeight;
-  });
-}
+window.closeModal = function() {
+    document.getElementById('product-modal').style.display = 'none';
+};
 
-window.sendMessage = function() {
-  const input = document.getElementById('reply-input');
-  if (!input.value || !activeChatId) return;
+document.getElementById('product-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-  push(ref(rtdb, `chats/${activeChatId}`), {
-    text: input.value,
-    from: 'admin',
-    timestamp: Date.now()
-  });
+    const data = {
+        name: document.getElementById('name').value.trim(),
+        price: parseFloat(document.getElementById('price').value) || 0,
+        image: document.getElementById('image').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        tags: document.getElementById('tags').value
+            .split(',')
+            .map(t => t.trim())
+            .filter(t => t.length > 0)
+    };
 
-  input.value = '';
-}
+    try {
+        if (editId) {
+            await updateDoc(doc(db, "products", editId), data);
+            alert('Product updated successfully!');
+        } else {
+            await addDoc(collection(db, "products"), data);
+            alert('Product added successfully!');
+        }
+        closeModal();
+        loadProducts();
+    } catch (err) {
+        console.error("Error saving product:", err);
+        alert("Failed to save product. Check console for details.");
+    }
+});
+
+window.deleteProduct = async function(id) {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+        await deleteDoc(doc(db, "products", id));
+        alert('Product deleted');
+        loadProducts();
+    } catch (err) {
+        console.error("Error deleting:", err);
+        alert("Failed to delete product");
+    }
+};
+
+// Initial load
+console.log("TAVÉINE Admin Panel ready");
