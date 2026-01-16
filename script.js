@@ -100,35 +100,43 @@ function renderProductCard(p) {
 }
 
 function renderMainPage() {
-    const sliders = [
-        { id: 'new-arrivals-slider', tag: 'new', title: 'New Arrivals' },
-        { id: 'birthday-slider', tag: 'birthday', title: 'Birthday Special' },
-        { id: 'bestseller-slider', tag: 'bestseller', title: 'Bestsellers' },
-        { id: 'luxury-slider', tag: 'luxury', title: 'Luxury Collection' }
+    // New Arrivals — делаем крупнее и первым
+    const newContainer = document.getElementById('new-arrivals-slider');
+    if (newContainer) {
+        const newItems = products
+            .filter(p => p.tags?.includes('new'))
+            .slice(0, 10); // можно ограничить количество
+        newContainer.innerHTML = newItems.length 
+            ? newItems.map(renderProductCard).join('')
+            : '<div class="empty-message">Coming soon...</div>';
+    }
+
+    // Остальные категории — обычные слайдеры
+    const categories = [
+        { id: 'birthday-slider',    tag: 'birthday'    },
+        { id: 'bestseller-slider',  tag: 'bestseller'  },
+        { id: 'luxury-slider',      tag: 'luxury'      }
     ];
 
-    sliders.forEach(({ id, tag, title }) => {
+    categories.forEach(({ id, tag }) => {
         const container = document.getElementById(id);
         if (!container) return;
         
         const filtered = products.filter(p => p.tags?.includes(tag));
-        container.innerHTML = `
-            <h3 class="section-title">${title}</h3>
-            <div class="slider-content">
-                ${filtered.length ? filtered.map(renderProductCard).join('') : '<div class="empty-message">Coming soon...</div>'}
-            </div>
-        `;
+        container.innerHTML = filtered.length 
+            ? filtered.map(renderProductCard).join('')
+            : '<div class="empty-message">Coming soon...</div>';
     });
 
+    // Все продукты внизу в сетке
     const allGrid = document.getElementById('all-products-grid');
     if (allGrid) {
-        allGrid.innerHTML = `
-            <h3 class="section-title">All Collections</h3>
-            <div class="products-grid">
-                ${products.map(renderProductCard).join('')}
-            </div>
-        `;
+        allGrid.innerHTML = products.length 
+            ? products.map(renderProductCard).join('')
+            : '<div class="empty-message">No products yet...</div>';
     }
+
+    updateBadges();
 }
 
 window.addToCart = (id) => {
