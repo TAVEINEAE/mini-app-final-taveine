@@ -162,7 +162,7 @@
         <div id="cart-container"></div>
     </div>
 
-    <!-- Простая страница оформления заказа -->
+    <!-- Простая страница оформления заказа — в твоём оригинальном стиле -->
 <div id="checkout-info-page" class="full-screen-page" style="display:none;">
   <div class="page-header">
     <button class="back-btn" onclick="closePage('checkout-info-page')">←</button>
@@ -170,18 +170,25 @@
     <button class="back-btn" onclick="closePage('checkout-info-page')" style="font-size:1.5rem;">✕</button>
   </div>
   
-  <div style="padding:24px; max-width:480px; margin:0 auto;">
+  <div style="padding:32px 24px; max-width:500px; margin:0 auto;">
     <form id="simple-checkout-form">
       <label>Имя и Фамилия *</label>
-      <input type="text" id="customer-name" required placeholder="Имя и Фамилия">
-      <input type="email" id="customer-email" required placeholder="Ваш email">
-      <input type="tel" id="customer-phone" required placeholder="+971 ...">
-      <textarea id="customer-address" required rows="3" placeholder="Улица, дом, квартира, район, Дубай..."></textarea>
+      <input type="text" id="customer-name" required placeholder="Иван Иванов">
+
+      <label>Email *</label>
+      <input type="email" id="customer-email" required placeholder="example@mail.com">
+
+      <label>Телефон *</label>
+      <input type="tel" id="customer-phone" required placeholder="+971 50 123 4567">
+
+      <label>Адрес доставки *</label>
+      <textarea id="customer-address" required rows="4" placeholder="Улица, дом, квартира, район, Дубай..."></textarea>
+
       <label>Комментарий (не обязательно)</label>
-      <textarea id="customer-comment" rows="2" placeholder="Например: без звонка, до 18:00..."></textarea>
+      <textarea id="customer-comment" rows="3" placeholder="Например: без звонка, до 18:00..."></textarea>
 
       <button type="submit" class="checkout-btn" style="margin-top:32px; width:100%;">
-        Place Order
+        Подтвердить заказ
       </button>
     </form>
   </div>
