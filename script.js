@@ -402,8 +402,7 @@ Telegram.WebApp.expand(); // растягивает апп на весь экр�
 Telegram.WebApp.disableVerticalSwipes(); // отключает вертикальный свайп для закрытия
 Telegram.WebApp.setBackgroundColor("#001f24"); // твой тёмный фон, чтобы красиво
 
-document.addEventListener('// Обработка формы оформления заказа (без оплаты)
-// Обработка формы оформления заказа (без оплаты)
+// Правильный обработчик формы чекаута (без оплаты)
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('simple-checkout-form');
     if (!form) return;
@@ -422,7 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Формируем объект заказа
         const order = {
             id: 'ORDER-' + Date.now().toString().slice(-8),
             created: new Date().toLocaleString('ru-RU'),
@@ -438,25 +436,21 @@ document.addEventListener('DOMContentLoaded', () => {
             total: cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0)
         };
 
-        // Сохраняем в историю заказов
         let orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
         orders.push(order);
         localStorage.setItem('taveine_orders', JSON.stringify(orders));
 
-        // Очищаем корзину
         cart = [];
         saveCart();
         updateBadges();
         document.getElementById('cart-container').innerHTML = renderCartItems();
 
-        // Уведомление об успехе
         if (tg) {
             tg.showAlert(`Заказ ${order.id} оформлен!\nМы свяжемся с вами скоро.`);
         } else {
             alert(`Заказ ${order.id} оформлен!`);
         }
 
-        // Закрываем страницу
         closePage('checkout-info-page');
     });
 });
