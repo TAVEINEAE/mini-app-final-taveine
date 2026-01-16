@@ -1233,3 +1233,70 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gold-dark);
 }
+
+/* ────────────────────────────────────────────────
+   Side Menu — аккордеон + стрелки
+───────────────────────────────────────────────── */
+
+.menu-content {
+    padding: 16px 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.menu-item:hover {
+    background: rgba(212, 175, 55, 0.08);
+    color: var(--gold);
+}
+
+.has-submenu {
+    font-weight: 500;
+}
+
+.arrow {
+    font-size: 1.4rem;
+    transition: transform 0.35s ease;
+    transform: rotate(0deg);
+}
+
+.has-submenu.active .arrow {
+    transform: rotate(90deg);
+}
+
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.35s ease;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.submenu.active {
+    max-height: 600px; /* достаточно большой, чтобы вместить все пункты */
+    opacity: 1;
+}
+
+.submenu-item {
+    display: block;
+    padding: 14px 24px 14px 48px;
+    color: var(--text-light);
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.submenu-item:hover {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--gold);
+    padding-left: 56px;
+}
