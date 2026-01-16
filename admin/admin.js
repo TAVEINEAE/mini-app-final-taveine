@@ -12,6 +12,30 @@ const firebaseConfig = {
   appId: "1:916085731146:web:764187ed408e8c4fdfdbb3",
   databaseURL: "https://taveine-admin-default-rtdb.firebaseio.com"
 };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Functions for CRUD
+async function loadProducts() {
+    const snapshot = await getDocs(collection(db, "products"));
+    const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderProducts(products);
+}
+
+async function addProduct(data) {
+    await addDoc(collection(db, "products"), data);
+    loadProducts();
+}
+
+async function editProduct(id, data) {
+    await updateDoc(doc(db, "products", id), data);
+    loadProducts();
+}
+
+async function deleteProduct(id) {
+    await deleteDoc(doc(db, "products", id));
+    loadProducts();
+}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
