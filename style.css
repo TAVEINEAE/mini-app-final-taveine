@@ -1,131 +1,127 @@
-/* Product cards - smaller & consistent */
+:root {
+    --dark-bg: #0f1814;
+    --gold: #c9a567;
+    --cream: #f9f6f0;
+    --text-main: #1e1e1e;
+    --gray: #777;
+    --shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--text-main);
+}
+
+.top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 70px;
+    background: var(--dark-bg);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+}
+
 .card {
-    width: 210px;
+    width: 220px;
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    position: relative;
+    box-shadow: var(--shadow);
+    flex-shrink: 0;
 }
 
 .card img {
     width: 100%;
-    aspect-ratio: 4/5;
+    aspect-ratio: 3/4;
     object-fit: cover;
 }
 
-/* Modern wishlist button */
-.wish-btn-modern {
+.wish-btn-overlay {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 38px;
-    height: 38px;
-    background: rgba(255,255,255,0.92);
+    top: 10px; right: 10px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.9);
     border-radius: 50%;
+    font-size: 20px;
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 10;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 
-.wish-btn-modern:hover {
-    transform: scale(1.15);
+.wish-btn-overlay.active { color: #e74c3c; }
+
+.card-info {
+    padding: 12px;
+    text-align: center;
 }
 
-.wish-btn-modern svg {
-    width: 22px;
-    height: 22px;
-    fill: #555;
-    transition: fill 0.25s ease;
+.add-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--dark-bg);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-.wish-btn-modern.active svg {
-    fill: #e63946;
-}
-
-/* Grid & slider uniformity */
-.grid, .slider-container {
-    gap: 16px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
     padding: 0 16px;
 }
 
 .slider-container {
     display: flex;
+    gap: 16px;
+    padding: 0 16px;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
 }
 
-/* Page header buttons - professional look */
 .page-header {
+    position: sticky;
+    top: 0;
     background: var(--cream);
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    padding: 14px 20px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
 }
 
 .back-btn, .close-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.06);
+    background: none;
     border: none;
-    font-size: 1.5rem;
-    color: var(--dark-bg);
+    font-size: 1.6rem;
     cursor: pointer;
-    transition: background 0.25s;
 }
 
-.back-btn:hover, .close-btn:hover {
-    background: rgba(0,0,0,0.14);
-}
-
-/* Luxurious footer */
 .footer-luxury {
     background: var(--dark-bg);
-    color: #f0ede6;
+    color: white;
     text-align: center;
-    padding: 60px 20px 40px;
+    padding: 40px 20px;
 }
 
 .footer-brand {
     font-family: 'Playfair Display', serif;
-    font-size: 3.2rem;
+    font-size: 2.4rem;
     color: var(--gold);
-    letter-spacing: 3px;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
-.footer-tagline {
-    font-size: 1.05rem;
-    opacity: 0.85;
-    letter-spacing: 1px;
-    margin-bottom: 28px;
-}
-
-.footer-socials a {
-    color: #f0ede6;
-    margin: 0 18px;
-    font-size: 1.05rem;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.footer-socials a:hover {
-    color: var(--gold);
-}
-
-.footer-copyright {
-    margin-top: 32px;
-    font-size: 0.88rem;
-    opacity: 0.75;
-    letter-spacing: 0.4px;
-}
-
-/* Bottom nav - 4 items now */
-.bottom-navigation {
-    grid-template-columns: repeat(4, 1fr);
-}
+/* more styles can be added/restored as needed */
