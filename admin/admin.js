@@ -46,8 +46,7 @@ window.toggleSidebar = () => {
 async function updateDashboardStats() {
     try {
         const snap = await getDocs(collection(db, "products"));
-        const count = snap.size;
-        document.getElementById('dash-products').textContent = count;
+        document.getElementById('dash-products').textContent = snap.size;
     } catch (e) {
         console.error("Stats error:", e);
     }
@@ -57,7 +56,7 @@ async function loadRecentProducts() {
     try {
         const q = query(collection(db, "products"), orderBy("createdAt", "desc"), limit(5));
         const snap = await getDocs(q);
-        const recent = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const recent = snap.docs.map(d => d.data());
         
         document.getElementById('dashboard-recent-products').innerHTML = recent.map(p => `
             <div class="product-card">
@@ -69,7 +68,7 @@ async function loadRecentProducts() {
             </div>
         `).join('');
     } catch (e) {
-        console.error("Recent products error:", e);
+        console.error("Recent error:", e);
     }
 }
 
@@ -81,9 +80,8 @@ async function loadProducts() {
         const snap = await getDocs(collection(db, "products"));
         const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderProducts(products);
-        updateDashboardStats(); // refresh count
+        updateDashboardStats();
     } catch (e) {
-        console.error(e);
         alert("Load failed: " + e.message);
     }
 }
@@ -160,7 +158,6 @@ document.getElementById('product-form').addEventListener('submit', async e => {
         loadRecentProducts();
     } catch (err) {
         alert("Save failed: " + err.message);
-        console.error(err);
     }
 });
 
@@ -176,8 +173,8 @@ window.deleteProduct = async id => {
     }
 };
 
-// Initial load on dashboard
+// Initial load
 updateDashboardStats();
 loadRecentProducts();
 
-console.log("Admin Panel - Fixed & Working");
+console.log("Admin Panel - Final Fixed Version");
