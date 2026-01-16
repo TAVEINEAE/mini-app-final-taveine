@@ -335,7 +335,7 @@ function renderCartItems() {
                 <span>Total:</span>
                 <span class="total-amount">${formatCurrency(total)} AED</span>
             </div>
-            <button class="checkout-btn" onclick="openPage('checkout-info-page')">Proceed to Checkout</button>
+            <button class="checkout-btn" onclick="openPage('checkout-info-page')">Оформить заказ</button>
         </div>
     `;
 }
