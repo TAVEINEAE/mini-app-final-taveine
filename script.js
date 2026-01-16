@@ -396,39 +396,6 @@ window.toggleSubmenu = function(element) {
     element.classList.toggle('active', !isActive);
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('checkout-form');
-  if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name    = document.getElementById('customer-name')?.value.trim();
-    const email   = document.getElementById('customer-email')?.value.trim();
-    const phone   = document.getElementById('customer-phone')?.value.trim();
-    const address = document.getElementById('customer-address')?.value.trim();
-
-    if (!name || !email || !phone || !address) {
-      tg?.showAlert('Заполните все поля');
-      return;
-    }
-
-    // Сохраняем на всякий случай
-    localStorage.setItem('taveine_customer', JSON.stringify({name, email, phone, address}));
-
-    // Готовим line_items
-    const lineItems = cart.map(item => ({
-      price_data: {
-        currency: 'aed',
-        product_data: {
-          name: item.name,
-          images: item.image ? [item.image] : undefined,
-        },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.qty || 1,
-    }));
-
 // Отключаем overscroll и pull-to-refresh в Telegram Web App
 Telegram.WebApp.ready();
 Telegram.WebApp.expand(); // растягивает апп на весь экран
