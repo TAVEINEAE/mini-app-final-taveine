@@ -340,6 +340,16 @@ function renderCartItems() {
     `;
 }
 
+// В createCheckoutSession
+const { email, name /* , shipping */ } = req.body;
+
+const session = await stripe.checkout.sessions.create({
+  ...,
+  customer_email: email,
+  shipping_address_collection: { allowed_countries: ['AE'] },
+  // shipping: shipping ? { name, phone: shipping.phone, address: shipping.address } : undefined,
+});
+
 window.updateQuantity = (id, change) => {
     const item = cart.find(i => i.id === id);
     if (item) {
@@ -455,6 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
 
 // Отключаем overscroll и pull-to-refresh в Telegram Web App
 Telegram.WebApp.ready();
