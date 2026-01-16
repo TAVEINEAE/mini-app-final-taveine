@@ -19,33 +19,40 @@ let cart = JSON.parse(localStorage.getItem('taveine_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('taveine_wishlist')) || [];
 
 async function init() {
-    if (tg) { 
-        tg.expand(); 
-        tg.ready(); 
+    if (tg) {
+        tg.expand();
+        tg.ready();
         tg.MainButton.setText('Continue Shopping').show();
     }
-    
+   
     try {
         const snapshot = await getDocs(collection(db, "products"));
-        products = snapshot.docs.map(doc => ({ 
-            id: doc.id, 
+        products = snapshot.docs.map(doc => ({
+            id: doc.id,
             ...doc.data(),
             price: parseFloat(doc.data().price) || 0
         }));
-        renderMainPage();
-        updateBadges();
-        setupEventListeners();
-    } catch (e) { 
-        console.error("Load error:", e); 
-        // Fallback products for demo
+        console.log("Успешно загружено продуктов из Firebase:", products.length);
+        console.log("Пример первого продукта:", products[0] || "пусто");
+    } catch (e) {
+        console.error("Ошибка загрузки продуктов:", e.message);
+        // Fallback
         products = [
             { id: '1', name: 'Eternal Rose Bouquet', price: 299, image: 'https://via.placeholder.com/300x300/8B4513/FFFFFF?text=Rose', description: 'Luxurious eternal roses that last forever', tags: ['luxury', 'bestseller'] },
             { id: '2', name: 'Velvet Orchid Delight', price: 189, image: 'https://via.placeholder.com/300x300/2F4F4F/FFFFFF?text=Orchid', description: 'Exquisite orchids wrapped in silk', tags: ['new', 'luxury'] },
             { id: '3', name: 'Golden Lily Symphony', price: 249, image: 'https://via.placeholder.com/300x300/DAA520/FFFFFF?text=Lily', description: 'Premium lilies with golden accents', tags: ['birthday', 'luxury'] }
         ];
-        renderMainPage();
-        updateBadges();
+        console.log("Загружен fallback — продуктов:", products.length);
     }
+
+    // Принудительно рендерим
+    renderMainPage();
+    updateBadges();
+    setupEventListeners();
+
+    // Проверяем, что контейнеры существуют
+    console.log("new-arrivals-slider существует?", !!document.getElementById('new-arrivals-slider'));
+    console.log("Содержимое new-arrivals-slider после рендера:", document.getElementById('new-arrivals-slider')?.innerHTML.substring(0, 100) || "пусто");
 }
 
 function setupEventListeners() {
