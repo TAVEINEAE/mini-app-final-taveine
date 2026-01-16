@@ -11,20 +11,51 @@
 </head>
 <body>
 
-    <!-- Side Menu -->
-    <div id="side-menu" class="side-drawer">
-        <div class="menu-top">
-            <div class="logo">TAVÉINE</div>
-            <button class="close-btn" onclick="toggleMenu()" aria-label="Close menu">✕</button>
-        </div>
-        <div class="menu-content">
-            <div class="menu-item" onclick="toggleMenu(); openPage('wish-page')">My Wishlist</div>
-            <div class="menu-item" onclick="toggleMenu(); openPage('cart-drawer')">Shopping Cart</div>
-            <div class="menu-item" onclick="toggleMenu(); openSearch()">Search Collections</div>
-            <div class="menu-item" onclick="toggleMenu(); location.href='#'">Contact Us</div>
-            <div class="menu-item" onclick="toggleMenu(); location.href='#'">About TAVÉINE</div>
-        </div>
+   <!-- Side Menu (слева, с аккордеоном) -->
+<div id="side-menu" class="side-drawer">
+    <div class="menu-top">
+        <div class="logo">TAVÉINE</div>
+        <button class="close-btn" onclick="toggleMenu()" aria-label="Close menu">✕</button>
     </div>
+
+    <div class="menu-content">
+        <!-- Collection (с подменю) -->
+        <div class="menu-item has-submenu" onclick="toggleSubmenu(this)">
+            <span>Collection</span>
+            <span class="arrow">›</span>
+        </div>
+        <div class="submenu">
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Christmas Collection</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Spring</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">New Arrivals</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Best Sellers</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Luxury</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Specialty</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Je t’aime Collection</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Vases</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Box</a>
+        </div>
+
+        <!-- Occasions (с подменю) -->
+        <div class="menu-item has-submenu" onclick="toggleSubmenu(this)">
+            <span>Occasions</span>
+            <span class="arrow">›</span>
+        </div>
+        <div class="submenu">
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Anniversary</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Birthday</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">I’m Sorry</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">New Baby</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Event Design Services</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Forever Rose</a>
+            <a href="#" class="submenu-item" onclick="toggleMenu()">Balloons</a>
+        </div>
+
+        <!-- Простые пункты без подменю -->
+        <a href="#" class="menu-item" onclick="toggleMenu()">Home</a>
+        <a href="#" class="menu-item" onclick="toggleMenu()">About Us</a>
+    </div>
+</div>
 
     <!-- Menu Overlay -->
     <div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
