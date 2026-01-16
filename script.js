@@ -402,4 +402,57 @@ Telegram.WebApp.expand(); // растягивает апп на весь экр�
 Telegram.WebApp.disableVerticalSwipes(); // отключает вертикальный свайп для закрытия
 Telegram.WebApp.setBackgroundColor("#001f24"); // твой тёмный фон, чтобы красиво
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('// Обработка формы оформления заказа (без оплаты)
+document.getElementById('simple-checkout-form')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name    = document.getElementById('customer-name')?.value.trim();
+    const email   = document.getElementById('customer-email')?.value.trim();
+    const phone   = document.getElementById('customer-phone')?.value.trim();
+    const address = document.getElementById('customer-address')?.value.trim();
+    const comment = document.getElementById('customer-comment')?.value.trim() || 'Без комментария';
+
+    if (!name || !email || !phone || !address) {
+        if (tg) tg.showAlert('Заполните все обязательные поля!');
+        return;
+    }
+
+    // Формируем объект заказа
+    const order = {
+        id: 'ORDER-' + Date.now().toString().slice(-8),
+        created: new Date().toLocaleString('ru-RU'),
+        status: 'Новый',
+        items: cart.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            qty: item.qty || 1,
+            subtotal: item.price * (item.qty || 1)
+        })),
+        customer: { name, email, phone, address, comment },
+        total: cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0)
+    };
+
+    // Сохраняем в историю заказов
+    let orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
+    orders.push(order);
+    localStorage.setItem('taveine_orders', JSON.stringify(orders));
+
+    // Очищаем корзину
+    cart = [];
+    saveCart();
+    updateBadges();
+    document.getElementById('cart-container').innerHTML = renderCartItems();
+
+    // Уведомление об успехе
+    if (tg) {
+        tg.showAlert(`Заказ ${order.id} оформлен!\nМы свяжемся с вами скоро.`);
+    } else {
+        alert(`Заказ ${order.id} оформлен!`);
+    }
+
+    // Закрываем страницу
+    closePage('checkout-info-page');
+});', init);
+
+
