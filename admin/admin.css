@@ -341,3 +341,19 @@ h2, h3 {
         height: 180px;
     }
 }
+
+.menu-toggle {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 8px;
+    display: block; /* always visible on mobile */
+}
+
+@media (min-width: 769px) {
+    .menu-toggle {
+        display: none; /* hide on desktop */
+    }
+}
