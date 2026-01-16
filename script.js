@@ -13,34 +13,44 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const tg = window.Telegram?.WebApp;
+
 let products = [];
 let cart = JSON.parse(localStorage.getItem('taveine_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('taveine_wishlist')) || [];
 
+// ── Init ────────────────────────────────────────────────────────────────
 async function init() {
+    if (tg) {
+        tg.expand();
+        tg.ready();
+    }
     try {
         const snapshot = await getDocs(collection(db, "products"));
         products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderMainPage();
         updateBadges();
     } catch (e) {
-        console.error("Firebase error:", e);
+        console.error("Firebase load error:", e);
     }
 }
 
+// ── Rendering ───────────────────────────────────────────────────────────
 function renderProductCard(p) {
     const inWishlist = wishlist.some(item => item.id === p.id);
     return `
-        <div class="card" onclick="openProductDetail('${p.id}')">
-            <button class="wish-btn-overlay ${inWishlist ? 'active' : ''}"
-                    onclick="event.stopPropagation(); toggleWishlist('${p.id}')"
+        <div class="card uniform-card" onclick="openProductDetail('${p.id}')">
+            <button class="wish-btn-overlay" onclick="event.stopPropagation(); toggleWishlist('${p.id}')"
                     aria-label="Toggle wishlist">
                 ${inWishlist ? '❤️' : '🤍'}
             </button>
-            <img src="${p.image || 'https://via.placeholder.com/480x600'}" alt="${p.name}" loading="lazy">
+            <div class="card-image-wrapper">
+                <img src="${p.image || 'https://via.placeholder.com/480x640?text=No+Image'}" 
+                     alt="${p.name}" loading="lazy">
+            </div>
             <div class="card-info">
                 <h4>${p.name}</h4>
-                <div class="price">${Number(p.price).toFixed(2)} AED</div>
+                <div class="price">${Number(p.price || 0).toFixed(2)} AED</div>
                 <button class="add-btn" onclick="event.stopPropagation(); addToCart('${p.id}')">
                     Add to cart
                 </button>
@@ -58,20 +68,40 @@ function renderMainPage() {
     ];
 
     sliders.forEach(({ id, tag }) => {
-        const el = document.getElementById(id);
-        if (el) {
-            const items = products.filter(p => p.tags?.includes(tag));
-            el.innerHTML = items.length ? items.map(renderProductCard).join('') : '<div class="empty-message">Coming soon...</div>';
-        }
+        const container = document.getElementById(id);
+        if (!container) return;
+        const items = products.filter(p => p.tags?.includes(tag));
+        container.innerHTML = items.length 
+            ? items.map(renderProductCard).join('')
+            : '<div class="empty-message">Coming soon...</div>';
     });
 
     const allGrid = document.getElementById('all-products-grid');
-    if (allGrid) allGrid.innerHTML = products.map(renderProductCard).join('');
+    if (allGrid) {
+        allGrid.innerHTML = products.map(renderProductCard).join('');
+    }
 }
 
+// ── Category Page ───────────────────────────────────────────────────────
+window.openCategoryPage = (group, tag) => {
+    const title = document.getElementById('category-title');
+    title.textContent = `${group} • ${tag.charAt(0).toUpperCase() + tag.slice(1)}`;
+
+    const filtered = products.filter(p => p.tags?.includes(tag));
+    document.getElementById('category-content').innerHTML = filtered.length
+        ? `<div class="grid">${filtered.map(renderProductCard).join('')}</div>`
+        : '<div class="empty-message">No products found in this category</div>';
+
+    document.getElementById('category-page').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    toggleMenu();
+};
+
+// ── Product Detail ──────────────────────────────────────────────────────
 window.openProductDetail = (id) => {
     const p = products.find(x => x.id === id);
     if (!p) return;
+
     document.getElementById('product-detail-content').innerHTML = `
         <div class="product-gallery">
             <img src="${p.image || 'https://via.placeholder.com/720x960'}" alt="${p.name}">
@@ -80,33 +110,38 @@ window.openProductDetail = (id) => {
             <h1 class="product-title">${p.name}</h1>
             <div class="product-price">${Number(p.price).toFixed(2)} AED</div>
             ${p.description ? `<div class="description">${p.description}</div>` : ''}
-            <button class="add-btn" onclick="addToCart('${p.id}')">Add to cart</button>
+            <button class="add-btn large" onclick="addToCart('${p.id}')">Add to cart</button>
         </div>
     `;
+
     document.getElementById('product-detail').style.display = 'block';
+    document.body.style.overflow = 'hidden';
 };
 
 window.closeProductDetail = () => {
     document.getElementById('product-detail').style.display = 'none';
+    document.body.style.overflow = '';
 };
 
+// ── Cart ────────────────────────────────────────────────────────────────
 window.addToCart = (id) => {
     const p = products.find(x => x.id === id);
     if (!p) return;
     const item = cart.find(i => i.id === id);
     if (item) item.qty = (item.qty || 1) + 1;
     else cart.push({ ...p, qty: 1 });
-    localStorage.setItem('taveine_cart', JSON.stringify(cart));
-    updateBadges();
+    saveCart();
+    tg?.HapticFeedback?.notificationOccurred('success');
 };
 
 function renderCart() {
     const container = document.getElementById('cart-container');
-    if (!container) return;
+    const footer = document.getElementById('cart-footer');
+    if (!container || !footer) return;
 
     if (cart.length === 0) {
-        container.innerHTML = '<div class="empty-message">Your cart is empty</div>';
-        document.getElementById('cart-footer').style.display = 'none';
+        container.innerHTML = `<div class="empty-state">Your cart is empty</div>`;
+        footer.style.display = 'none';
         return;
     }
 
@@ -118,39 +153,46 @@ function renderCart() {
                 <img src="${item.image || ''}" alt="">
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <div>${Number(item.price).toFixed(2)} AED</div>
-                    <div class="qty-row">
+                    <div class="price">${Number(item.price).toFixed(2)} AED</div>
+                    <div class="qty-controls">
                         <button onclick="updateQty(${i}, -1)">−</button>
                         <span>${item.qty || 1}</span>
                         <button onclick="updateQty(${i}, 1)">+</button>
                     </div>
-                    <button onclick="removeFromCart(${i})">Remove</button>
+                    <button class="remove-btn" onclick="removeFromCart(${i})">Remove</button>
                 </div>
             </div>
         `;
     }).join('');
 
-    document.getElementById('cart-footer').innerHTML = `
-        <div class="cart-total">Total: ${total.toFixed(2)} AED</div>
-        <button class="add-btn">Checkout</button>
+    footer.innerHTML = `
+        <div class="cart-total">
+            <span>Total:</span>
+            <strong>${total.toFixed(2)} AED</strong>
+        </div>
+        <button class="add-btn large">Checkout</button>
     `;
-    document.getElementById('cart-footer').style.display = 'block';
+    footer.style.display = 'block';
 }
 
-window.updateQty = (i, delta) => {
-    cart[i].qty = Math.max(1, (cart[i].qty || 1) + delta);
-    localStorage.setItem('taveine_cart', JSON.stringify(cart));
+window.updateQty = (index, delta) => {
+    cart[index].qty = Math.max(1, (cart[index].qty || 1) + delta);
+    saveCart();
     renderCart();
-    updateBadges();
 };
 
-window.removeFromCart = (i) => {
-    cart.splice(i, 1);
-    localStorage.setItem('taveine_cart', JSON.stringify(cart));
+window.removeFromCart = (index) => {
+    cart.splice(index, 1);
+    saveCart();
     renderCart();
-    updateBadges();
 };
 
+function saveCart() {
+    localStorage.setItem('taveine_cart', JSON.stringify(cart));
+    updateBadges();
+}
+
+// ── Wishlist ────────────────────────────────────────────────────────────
 window.toggleWishlist = (id) => {
     const idx = wishlist.findIndex(item => item.id === id);
     if (idx === -1) {
@@ -162,19 +204,20 @@ window.toggleWishlist = (id) => {
     localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
     updateBadges();
     renderMainPage();
-    if (document.getElementById('wish-page').style.display === 'block') renderWishlist();
 };
 
 function renderWishlist() {
     const container = document.getElementById('wish-container');
-    container.innerHTML = wishlist.length 
+    if (!container) return;
+    container.innerHTML = wishlist.length
         ? `<div class="grid">${wishlist.map(renderProductCard).join('')}</div>`
-        : '<div class="empty-message">Wishlist is empty</div>';
+        : `<div class="empty-state">Your wishlist is empty</div>`;
 }
 
+// ── UI Controls ─────────────────────────────────────────────────────────
 function updateBadges() {
     document.getElementById('w-count').textContent = wishlist.length;
-    document.getElementById('c-count').textContent = cart.reduce((sum, i) => sum + (i.qty || 1), 0);
+    document.getElementById('c-count').textContent = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
 }
 
 window.toggleMenu = () => {
@@ -182,28 +225,21 @@ window.toggleMenu = () => {
     document.getElementById('menu-overlay').classList.toggle('active');
 };
 
-window.openCategoryPage = (group, tag) => {
-    document.getElementById('category-title').textContent = `${group} • ${tag}`;
-    const filtered = products.filter(p => p.tags?.includes(tag));
-    document.getElementById('category-content').innerHTML = filtered.length 
-        ? `<div class="grid">${filtered.map(renderProductCard).join('')}</div>`
-        : '<div class="empty-message">No products yet</div>';
-    document.getElementById('category-page').style.display = 'block';
-    toggleMenu();
-};
-
 window.openPage = (id) => {
     document.getElementById(id).style.display = 'block';
+    document.body.style.overflow = 'hidden';
     if (id === 'wish-page') renderWishlist();
     if (id === 'cart-drawer') renderCart();
 };
 
 window.closePage = (id) => {
     document.getElementById(id).style.display = 'none';
+    document.body.style.overflow = '';
 };
 
 window.openSearch = () => {
     document.getElementById('search-page').classList.add('active');
+    document.getElementById('product-search-input').focus();
 };
 
 window.closeSearch = () => {
@@ -211,20 +247,33 @@ window.closeSearch = () => {
 };
 
 window.clearSearchField = () => {
-    document.getElementById('product-search-input').value = '';
-    document.getElementById('product-search-input').dispatchEvent(new Event('input'));
+    const input = document.getElementById('product-search-input');
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
 };
 
+// Live search
 document.getElementById('product-search-input')?.addEventListener('input', e => {
     const term = e.target.value.toLowerCase().trim();
     document.getElementById('clear-search').style.display = term ? 'block' : 'none';
-    const results = products.filter(p => p.name.toLowerCase().includes(term));
-    document.getElementById('search-results-products').innerHTML = results.map(p => `
-        <div class="search-result-item" onclick="closeSearch(); openProductDetail('${p.id}')">
-            <img src="${p.image||''}" alt="">
-            <div>${p.name} – ${p.price} AED</div>
-        </div>
-    `).join('') || '<div class="empty-message">Nothing found</div>';
+
+    const results = products.filter(p =>
+        p.name.toLowerCase().includes(term) ||
+        (p.description || '').toLowerCase().includes(term)
+    );
+
+    document.getElementById('search-results-products').innerHTML = results.length
+        ? results.map(p => `
+            <div class="search-result-item" onclick="closeSearch(); openProductDetail('${p.id}')">
+                <img src="${p.image || ''}" alt="">
+                <div>
+                    <div class="name">${p.name}</div>
+                    <div class="price">${Number(p.price).toFixed(2)} AED</div>
+                </div>
+            </div>
+        `).join('')
+        : '<div class="empty-message">Nothing found</div>';
 });
 
+// Start
 document.addEventListener('DOMContentLoaded', init);
