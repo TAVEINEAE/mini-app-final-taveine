@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <link rel="stylesheet" href="admin.css">
 
@@ -44,8 +45,8 @@
       </button>
       <h1 id="page-title">Dashboard</h1>
       <div class="header-actions">
-        <i class="fas fa-bell notification-icon"></i>
-        <i class="fas fa-user profile-icon"></i>
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-user"></i>
       </div>
     </header>
 
@@ -68,7 +69,7 @@
 
       <div class="card">
         <h3>Recent Products</h3>
-        <div id="dashboard-recent-products" class="category-slider"></div>
+        <div id="dashboard-recent-products" class="recent-products"></div>
       </div>
     </section>
 
@@ -118,9 +119,24 @@
       </div>
     </section>
 
-    <!-- Placeholders -->
-    <section id="chat-page" class="page"><div class="card"><h2>Chat</h2><p>Coming soon...</p></div></section>
-    <section id="calendar-page" class="page"><div class="card"><h2>Calendar</h2><p>Coming soon...</p></div></section>
+    <!-- Chat (your current style kept) -->
+    <section id="chat-page" class="page">
+      <div class="card">
+        <div class="stats">
+          <div class="stat-card"><div class="label">Products</div><div class="value">20</div></div>
+          <div class="stat-card"><div class="label">Orders</div><div class="value">0</div></div>
+        </div>
+        <div class="card">
+          <h3>Recent Products</h3>
+          <img src="https://i.ibb.co/some-bouquet-image.jpg" alt="Bouquet" style="width:100%; border-radius:12px;">
+        </div>
+      </div>
+    </section>
+
+    <!-- Calendar -->
+    <section id="calendar-page" class="page">
+      <div class="card"><h2>Calendar</h2><p>Coming soon...</p></div>
+    </section>
   </main>
 </div>
 
