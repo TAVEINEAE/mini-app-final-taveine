@@ -687,7 +687,8 @@ body {
 .side-drawer {
     position: fixed;
     top: 0;
-    right: -100%;
+    left: -100%;
+    right: auto;
     width: 280px;
     height: 100vh;
     background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-secondary) 100%);
@@ -698,7 +699,8 @@ body {
 }
 
 .side-drawer.active {
-    right: 0;
+    left: 0;
+    right: auto;
 }
 
 .menu-top {
