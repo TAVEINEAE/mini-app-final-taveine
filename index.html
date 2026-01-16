@@ -10,6 +10,7 @@
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23d4af37'/><text y='.9em' font-size='90' fill='%23001f24'>🌹</text></svg>">
 </head>
 <body>
+
     <!-- Side Menu -->
     <div id="side-menu" class="side-drawer">
         <div class="menu-top">
@@ -24,7 +25,7 @@
             <div class="menu-item" onclick="toggleMenu(); location.href='#'">About TAVÉINE</div>
         </div>
     </div>
-    
+
     <!-- Menu Overlay -->
     <div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
 
@@ -46,52 +47,40 @@
             <div class="hero-gradient"></div>
             <div class="hero-content">
                 <h1>Exquisite <span class="accent">Blooms</span></h1>
-                <p style="font-size: 1.2rem; opacity: 0.9; margin-top: 16px; font-family: 'Inter', sans-serif;">Discover luxury floral artistry crafted for unforgettable moments</p>
+                <p style="font-size: 1.3rem; margin-top: 20px; opacity: 0.92;">
+                    Handcrafted luxury bouquets for unforgettable moments
+                </p>
             </div>
         </section>
 
-        <!-- New Arrivals --><main id="main-content">
+        <!-- Самый первый и самый важный блок — New Arrivals (большой слайдер) -->
+        <section class="featured-section">
+            <h2 class="section-title">New Arrivals</h2>
+            <div id="new-arrivals-slider" class="slider-container large-slider"></div>
+        </section>
 
-    <!-- Hero (оставляем как есть или усиливаем) -->
-    <section class="hero-luxury">
-        <div class="hero-gradient"></div>
-        <div class="hero-content">
-            <h1>Exquisite <span class="accent">Blooms</span></h1>
-            <p style="font-size: 1.3rem; margin-top: 20px; opacity: 0.92;">
-                Handcrafted luxury bouquets for unforgettable moments
-            </p>
-        </div>
-    </section>
+        <!-- Другие категории тоже в слайдерах -->
+        <section class="category-section">
+            <h2 class="section-title">Birthday Collection</h2>
+            <div id="birthday-slider" class="slider-container"></div>
+        </section>
 
-    <!-- Самый первый и самый важный блок — New Arrivals (большой слайдер) -->
-    <section class="featured-section">
-        <h2 class="section-title">New Arrivals</h2>
-        <div id="new-arrivals-slider" class="slider-container large-slider"></div>
-    </section>
+        <section class="category-section">
+            <h2 class="section-title">Bestsellers</h2>
+            <div id="bestseller-slider" class="slider-container"></div>
+        </section>
 
-    <!-- Другие категории тоже в слайдерах -->
-    <section class="category-section">
-        <h2 class="section-title">Birthday Collection</h2>
-        <div id="birthday-slider" class="slider-container"></div>
-    </section>
+        <section class="category-section">
+            <h2 class="section-title">Luxury Collection</h2>
+            <div id="luxury-slider" class="slider-container"></div>
+        </section>
 
-    <section class="category-section">
-        <h2 class="section-title">Bestsellers</h2>
-        <div id="bestseller-slider" class="slider-container"></div>
-    </section>
-
-    <section class="category-section">
-        <h2 class="section-title">Luxury Collection</h2>
-        <div id="luxury-slider" class="slider-container"></div>
-    </section>
-
-    <!-- В самом низу — все продукты в сетке -->
-    <section class="all-products-section">
-        <h2 class="section-title">Explore All Bouquets</h2>
-        <div id="all-products-grid" class="products-grid"></div>
-    </section>
-
-</main>
+        <!-- В самом низу — все продукты в сетке -->
+        <section class="all-products-section">
+            <h2 class="section-title">Explore All Bouquets</h2>
+            <div id="all-products-grid" class="products-grid"></div>
+        </section>
+    </main>
 
     <!-- Product Detail Modal -->
     <div id="product-detail" class="full-screen-page">
@@ -144,7 +133,7 @@
             </svg>
             <span>Home</span>
         </button>
-        
+
         <button class="nav-item" onclick="openSearch()" aria-label="Search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -152,29 +141,29 @@
             </svg>
             <span>Search</span>
         </button>
-        
+
         <button class="nav-item" onclick="openPage('wish-page')" aria-label="Wishlist">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
-            <span class="badge-count" id="w-count" style="display: none;">0</span>
+            <span class="badge-count" id="w-count">0</span>
             <span>Wishlist</span>
         </button>
-        
+
         <button class="nav-item" onclick="openPage('cart-drawer')" aria-label="Cart">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="9" cy="21" r="1"></circle>
                 <circle cx="20" cy="21" r="1"></circle>
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
             </svg>
-            <span class="badge-count" id="c-count" style="display: none;">0</span>
+            <span class="badge-count" id="c-count">0</span>
             <span>Cart</span>
         </button>
     </nav>
 
     <!-- Telegram WebApp Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
+
     <!-- Main Application Script -->
     <script type="module" src="script.js"></script>
 </body>
