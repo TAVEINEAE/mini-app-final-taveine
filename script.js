@@ -460,4 +460,3 @@ document.addEventListener('DOMContentLoaded', () => {
         closePage('checkout-info-page');
     });
 });
-
