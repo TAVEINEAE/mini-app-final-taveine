@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
@@ -257,7 +257,7 @@ window.openSearch = () => {
 window.closeSearch = () => {
     document.getElementById('search-page').classList.remove('active');
     document.getElementById('search-input').value = '';
-    document.getElementById('search-results-products').innerHTML = ''; // исправлено — убрано cardsHTML
+    document.getElementById('search-results-products').innerHTML = '';
 };
 
 function renderSearchResults(results) {
@@ -396,12 +396,12 @@ Telegram.WebApp.setBackgroundColor("#001f24"); // твой тёмный фон, 
 
 document.addEventListener('DOMContentLoaded', init);
 
-// Правильный обработчик формы чекаута (без оплаты)
+// Правильный обработчик формы чекаута (без оплаты) + сохранение в Firebase
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('simple-checkout-form');
     if (!form) return;
 
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const name    = document.getElementById('customer-name')?.value.trim();
@@ -430,9 +430,22 @@ document.addEventListener('DOMContentLoaded', () => {
             total: cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0)
         };
 
+        // Сохранение в localStorage (как было)
         let orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
         orders.push(order);
         localStorage.setItem('taveine_orders', JSON.stringify(orders));
+
+        // Сохранение в Firebase (новое)
+        try {
+            await addDoc(collection(db, "orders"), {
+                ...order,
+                createdAt: new Date(),
+                status: "Новый"
+            });
+            console.log("Заказ сохранён в Firebase:", order.id);
+        } catch (err) {
+            console.error("Ошибка сохранения в Firebase:", err);
+        }
 
         cart = [];
         saveCart();
