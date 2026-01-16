@@ -3,21 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Taveine AE • Admin</title>
+  <title>TAVÉINE • Admin</title>
+  
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  
+  <!-- Your styles -->
   <link rel="stylesheet" href="admin.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Firebase SDK -->
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+
+  <!-- Optional libraries (keep if you use them) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
+
 <div class="layout">
   <!-- Sidebar -->
   <aside class="sidebar">
@@ -27,34 +36,41 @@
     </div>
     <nav>
       <a class="nav-link active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a>
-      <a class="nav-link" data-page="email"><i class="fas fa-envelope"></i> Email</a>
-      <a class="nav-link" data-page="compose"><i class="fas fa-pen"></i> Compose</a>
-      <a class="nav-link" data-page="calendar"><i class="fas fa-calendar-alt"></i> Calendar</a>
-      <a class="nav-link" data-page="chat"><i class="fas fa-comment-dots"></i> Chat</a>
       <a class="nav-link" data-page="inventory"><i class="fas fa-boxes"></i> Inventory</a>
-      <a class="nav-link" data-page="elements"><i class="fas fa-cogs"></i> Elements</a>
+      <a class="nav-link" data-page="chat"><i class="fas fa-comment-dots"></i> Chat</a>
+      <a class="nav-link" data-page="calendar"><i class="fas fa-calendar-alt"></i> Calendar</a>
+      <a class="nav-link" data-page="email"><i class="fas fa-envelope"></i> Email</a>
       <a class="nav-link" data-page="maps"><i class="fas fa-map"></i> Maps</a>
-      <a class="nav-link logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      <a class="nav-link logout" onclick="alert('Logout functionality coming soon')"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </nav>
   </aside>
 
-  <!-- Main content -->
+  <!-- Main Content -->
   <main class="main">
     <header class="header">
       <h1 id="page-title">Dashboard</h1>
-      <div style="display:flex; align-items:center; gap:20px;">
-        <input type="text" placeholder="Search..." style="padding:12px 20px; border-radius:30px; border:1px solid rgba(212,175,55,0.25); background:rgba(255,255,255,0.08); color:var(--text-light); width:280px;">
-        <i class="fas fa-bell" style="font-size:1.5rem; color:var(--gray-light); cursor:pointer;"></i>
-        <i class="fas fa-user" style="font-size:1.5rem; color:var(--gray-light); cursor:pointer;"></i>
+      <div class="header-actions">
+        <input type="text" placeholder="Search..." class="search-input">
+        <i class="fas fa-bell notification-icon"></i>
+        <i class="fas fa-user profile-icon"></i>
       </div>
     </header>
 
-    <!-- Dashboard -->
+    <!-- Dashboard Page -->
     <section id="dashboard-page" class="page active">
       <div class="stats">
-        <div class="stat-card"><div class="label">Products</div><div class="value" id="dash-products">0</div></div>
-        <div class="stat-card"><div class="label">Customers</div><div class="value" id="dash-users">0</div></div>
-        <div class="stat-card"><div class="label">Revenue</div><div class="value" id="dash-revenue">— AED</div></div>
+        <div class="stat-card">
+          <div class="label">Products</div>
+          <div class="value" id="dash-products">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Orders</div>
+          <div class="value" id="dash-orders">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Revenue</div>
+          <div class="value" id="dash-revenue">— AED</div>
+        </div>
       </div>
       <div class="card">
         <h3>Recent Products</h3>
@@ -62,29 +78,64 @@
       </div>
     </section>
 
-    <!-- Other pages remain the same structure, just visual style changed -->
-    <section id="calendar-page" class="page">
+    <!-- Inventory Page - Product Management -->
+    <section id="inventory-page" class="page">
       <div class="card">
-        <h2>Product Calendar</h2>
-        <div id="calendar" style="max-width:1200px; margin:0 auto;"></div>
+        <div class="inventory-header">
+          <h2>Product Management</h2>
+          <button class="add-btn" onclick="openAddModal()">
+            <i class="fas fa-plus"></i> Add New Product
+          </button>
+        </div>
+        
+        <div id="products-list" class="products-grid"></div>
       </div>
-    </section>
 
-    <section id="chat-page" class="page">
-      <div class="card chat">
-        <div class="chat-list" id="chat-list"></div>
-        <div class="chat-main">
-          <div class="chat-header" id="chat-header">Select chat</div>
-          <div class="chat-messages" id="chat-messages"></div>
-          <div class="chat-input">
-            <input id="reply-input" placeholder="Type message...">
-            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-          </div>
+      <!-- Add/Edit Modal -->
+      <div id="product-modal" class="modal" style="display:none;">
+        <div class="modal-content card">
+          <h3 id="modal-title">Add New Product</h3>
+          
+          <form id="product-form">
+            <div class="form-group">
+              <label>Product Name</label>
+              <input type="text" id="name" required placeholder="Eternal Rose Bouquet">
+            </div>
+            
+            <div class="form-group">
+              <label>Price (AED)</label>
+              <input type="number" id="price" step="1" required placeholder="299">
+            </div>
+            
+            <div class="form-group">
+              <label>Image URL</label>
+              <input type="url" id="image" placeholder="https://example.com/image.jpg">
+            </div>
+            
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="description" rows="4" placeholder="Luxurious eternal roses..."></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label>Tags (comma separated)</label>
+              <input type="text" id="tags" placeholder="new, luxury, bestseller">
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="save-btn">Save Product</button>
+              <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
     </section>
 
-    <!-- ... other placeholder pages ... -->
+    <!-- Other pages (placeholders) -->
+    <section id="chat-page" class="page"><div class="card"><h2>Chat</h2><p>Coming soon...</p></div></section>
+    <section id="calendar-page" class="page"><div class="card"><h2>Calendar</h2><p>Coming soon...</p></div></section>
+    <section id="email-page" class="page"><div class="card"><h2>Email</h2><p>Coming soon...</p></div></section>
+    <section id="maps-page" class="page"><div class="card"><h2>Maps</h2><p>Coming soon...</p></div></section>
   </main>
 </div>
 
