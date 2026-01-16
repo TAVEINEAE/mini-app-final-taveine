@@ -1,14 +1,5 @@
-// Firebase Config & Initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    getFirestore, 
-    collection, 
-    getDocs, 
-    addDoc, 
-    updateDoc, 
-    doc, 
-    deleteDoc 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
@@ -22,78 +13,57 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Page Switching
-const navLinks = document.querySelectorAll('.nav-link[data-page]');
-
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
+// Page switching
+document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+    link.addEventListener('click', e => {
         e.preventDefault();
-        
-        const pageId = link.dataset.page + '-page';
-        
+        const page = link.dataset.page + '-page';
+
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId)?.classList.add('active');
-        
+        document.getElementById(page)?.classList.add('active');
+
         document.getElementById('page-title').textContent = link.textContent.trim();
-        
-        navLinks.forEach(l => l.classList.remove('active'));
+
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         link.classList.add('active');
 
-        // Close sidebar on mobile after selection
-        if (window.innerWidth <= 768) {
-            toggleSidebar();
-        }
+        // Close sidebar on mobile
+        if (window.innerWidth < 993) toggleSidebar();
 
-        // Load products when Inventory is opened
-        if (pageId === 'inventory-page') {
-            loadProducts();
-        }
+        if (page === 'inventory-page') loadProducts();
     });
 });
 
-// Sidebar toggle (mobile)
-window.toggleSidebar = function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
-}
+// Sidebar toggle
+window.toggleSidebar = () => {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('overlay').classList.toggle('active');
+};
 
-// Product Management
-let currentEditId = null;
+// Product management
+let editId = null;
 
 async function loadProducts() {
     try {
-        const snapshot = await getDocs(collection(db, "products"));
-        const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const snap = await getDocs(collection(db, "products"));
+        const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderProducts(products);
-    } catch (error) {
-        console.error("Load error:", error);
-        alert("Failed to load products: " + error.message);
+    } catch (e) {
+        console.error(e);
+        alert("Failed to load products: " + e.message);
     }
 }
 
 function renderProducts(products) {
-    const container = document.getElementById('products-list');
-    if (!container) return;
-
-    if (products.length === 0) {
-        container.innerHTML = '<p style="text-align:center; padding:60px 0; color:var(--gray-light);">No products yet...</p>';
-        return;
-    }
-
-    container.innerHTML = products.map(p => `
+    const cont = document.getElementById('products-list');
+    cont.innerHTML = products.map(p => `
         <div class="product-card">
-            <img src="${p.image || 'https://via.placeholder.com/300x200/002f36/ffffff?text=No+Image'}" 
-                 class="product-img" alt="${p.name}">
+            <img src="${p.image || 'https://via.placeholder.com/300x200'}" class="product-img">
             <div class="product-info">
                 <h4>${p.name}</h4>
-                <div class="price">${(p.price || 0).toLocaleString('en-AE')} AED</div>
+                <div class="price">${p.price || 0} AED</div>
                 <div class="product-actions">
-                    <button onclick="openEditModal('${p.id}', \`${p.name.replace(/`/g,'\\`')}\`, ${p.price||0}, '${p.image||''}', \`${(p.description||'').replace(/`/g,'\\`')}\`, '${p.tags?.join(',')||''}')">
-                        Edit
-                    </button>
+                    <button onclick="openEditModal('${p.id}','${p.name.replace(/'/g,"\\'")}','${p.image||''}','${(p.description||'').replace(/'/g,"\\'")}','${p.tags?.join(',')||''}')">Edit</button>
                     <button onclick="deleteProduct('${p.id}')">Delete</button>
                 </div>
             </div>
@@ -102,17 +72,16 @@ function renderProducts(products) {
 }
 
 window.openAddModal = () => {
-    currentEditId = null;
+    editId = null;
     document.getElementById('modal-title').textContent = 'Add New Product';
     document.getElementById('product-form').reset();
     document.getElementById('product-modal').style.display = 'flex';
 };
 
-window.openEditModal = (id, name, price, image, desc, tags) => {
-    currentEditId = id;
+window.openEditModal = (id, name, image, desc, tags) => {
+    editId = id;
     document.getElementById('modal-title').textContent = 'Edit Product';
     document.getElementById('name').value = name;
-    document.getElementById('price').value = price;
     document.getElementById('image').value = image;
     document.getElementById('description').value = desc;
     document.getElementById('tags').value = tags;
@@ -123,58 +92,46 @@ window.closeModal = () => {
     document.getElementById('product-modal').style.display = 'none';
 };
 
-document.getElementById('product-form').addEventListener('submit', async (e) => {
+document.getElementById('product-form').addEventListener('submit', async e => {
     e.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    const price = parseFloat(document.getElementById('price').value);
-    const image = document.getElementById('image').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const tagsStr = document.getElementById('tags').value.trim();
+    const data = {
+        name: document.getElementById('name').value.trim(),
+        price: Number(document.getElementById('price').value),
+        image: document.getElementById('image').value.trim() || null,
+        description: document.getElementById('description').value.trim() || null,
+        tags: document.getElementById('tags').value.split(',').map(t=>t.trim()).filter(Boolean)
+    };
 
-    if (!name || isNaN(price) || price <= 0) {
-        alert("Please fill name and valid price");
+    if (!data.name || isNaN(data.price) || data.price <= 0) {
+        alert("Name and valid price are required!");
         return;
     }
 
-    const data = {
-        name,
-        price,
-        image: image || null,
-        description: description || null,
-        tags: tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [],
-        updatedAt: new Date()
-    };
-
     try {
-        if (currentEditId) {
-            await updateDoc(doc(db, "products", currentEditId), data);
-            alert("Product updated!");
+        if (editId) {
+            await updateDoc(doc(db, "products", editId), data);
+            alert("Updated!");
         } else {
-            await addDoc(collection(db, "products"), {
-                ...data,
-                createdAt: new Date()
-            });
-            alert("Product added!");
+            await addDoc(collection(db, "products"), data);
+            alert("Added!");
         }
         closeModal();
         loadProducts();
     } catch (err) {
-        console.error("Save error:", err);
         alert("Save failed: " + err.message);
+        console.error(err);
     }
 });
 
-window.deleteProduct = async (id) => {
-    if (!confirm("Delete this product?")) return;
+window.deleteProduct = async id => {
+    if (!confirm("Delete?")) return;
     try {
         await deleteDoc(doc(db, "products", id));
-        alert("Deleted");
         loadProducts();
     } catch (err) {
         alert("Delete failed: " + err.message);
     }
 };
 
-// Initial log
-console.log("TAVÉINE Admin Panel – Mobile Ready Version");
+console.log("Admin Panel Ready");
