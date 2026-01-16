@@ -379,4 +379,22 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
+// Аккордеон для бокового меню
+window.toggleSubmenu = function(element) {
+    const submenu = element.nextElementSibling;
+    const isActive = submenu.classList.contains('active');
+
+    // Закрываем все другие подменю
+    document.querySelectorAll('.submenu.active').forEach(sub => {
+        if (sub !== submenu) {
+            sub.classList.remove('active');
+            sub.previousElementSibling.classList.remove('active');
+        }
+    });
+
+    // Переключаем текущее
+    submenu.classList.toggle('active', !isActive);
+    element.classList.toggle('active', !isActive);
+};
+
 document.addEventListener('DOMContentLoaded', init);
