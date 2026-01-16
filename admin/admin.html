@@ -8,11 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <link rel="stylesheet" href="admin.css">
 
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 </head>
@@ -37,7 +36,7 @@
   <!-- Mobile overlay -->
   <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  <!-- Main Area -->
+  <!-- Main Content -->
   <main class="main">
     <header class="header">
       <button class="menu-toggle" onclick="toggleSidebar()">
@@ -45,25 +44,35 @@
       </button>
       <h1 id="page-title">Dashboard</h1>
       <div class="header-actions">
-        <i class="fas fa-bell"></i>
-        <i class="fas fa-user"></i>
+        <i class="fas fa-bell notification-icon"></i>
+        <i class="fas fa-user profile-icon"></i>
       </div>
     </header>
 
-    <!-- Dashboard Page -->
+    <!-- Dashboard -->
     <section id="dashboard-page" class="page active">
       <div class="stats">
-        <div class="stat-card"><div class="label">Products</div><div class="value">—</div></div>
-        <div class="stat-card"><div class="label">Orders</div><div class="value">—</div></div>
-        <div class="stat-card"><div class="label">Revenue</div><div class="value">— AED</div></div>
+        <div class="stat-card">
+          <div class="label">Products</div>
+          <div class="value" id="dash-products">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Orders</div>
+          <div class="value" id="dash-orders">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Revenue</div>
+          <div class="value" id="dash-revenue">0 AED</div>
+        </div>
       </div>
+
       <div class="card">
         <h3>Recent Products</h3>
-        <div class="category-slider" id="dashboard-recent-products"></div>
+        <div id="dashboard-recent-products" class="category-slider"></div>
       </div>
     </section>
 
-    <!-- Inventory Page -->
+    <!-- Inventory -->
     <section id="inventory-page" class="page">
       <div class="card">
         <div class="inventory-header">
@@ -109,7 +118,7 @@
       </div>
     </section>
 
-    <!-- Placeholder pages -->
+    <!-- Placeholders -->
     <section id="chat-page" class="page"><div class="card"><h2>Chat</h2><p>Coming soon...</p></div></section>
     <section id="calendar-page" class="page"><div class="card"><h2>Calendar</h2><p>Coming soon...</p></div></section>
   </main>
