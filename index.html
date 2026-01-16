@@ -50,46 +50,48 @@
             </div>
         </section>
 
-        <!-- New Arrivals -->
-        <div id="new-arrivals-section">
-            <h2 class="section-title">New Arrivals</h2>
-            <div id="new-arrivals-slider" class="slider-container">
-                <div class="loading" style="margin: 40px auto;"></div>
-            </div>
-        </div>
+        <!-- New Arrivals --><main id="main-content">
 
-        <!-- Birthday Special -->
-        <div id="birthday-section" style="display: none;">
-            <h2 class="section-title">Birthday Special</h2>
-            <div id="birthday-slider" class="slider-container">
-                <div class="loading" style="margin: 40px auto;"></div>
-            </div>
+    <!-- Hero (оставляем как есть или усиливаем) -->
+    <section class="hero-luxury">
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+            <h1>Exquisite <span class="accent">Blooms</span></h1>
+            <p style="font-size: 1.3rem; margin-top: 20px; opacity: 0.92;">
+                Handcrafted luxury bouquets for unforgettable moments
+            </p>
         </div>
+    </section>
 
-        <!-- Bestsellers -->
-        <div id="bestseller-section" style="display: none;">
-            <h2 class="section-title">Bestsellers</h2>
-            <div id="bestseller-slider" class="slider-container">
-                <div class="loading" style="margin: 40px auto;"></div>
-            </div>
-        </div>
+    <!-- Самый первый и самый важный блок — New Arrivals (большой слайдер) -->
+    <section class="featured-section">
+        <h2 class="section-title">New Arrivals</h2>
+        <div id="new-arrivals-slider" class="slider-container large-slider"></div>
+    </section>
 
-        <!-- Luxury Collection -->
-        <div id="luxury-section" style="display: none;">
-            <h2 class="section-title">Luxury Collection</h2>
-            <div id="luxury-slider" class="slider-container">
-                <div class="loading" style="margin: 40px auto;"></div>
-            </div>
-        </div>
+    <!-- Другие категории тоже в слайдерах -->
+    <section class="category-section">
+        <h2 class="section-title">Birthday Collection</h2>
+        <div id="birthday-slider" class="slider-container"></div>
+    </section>
 
-        <!-- All Products -->
-        <div id="all-products-section">
-            <h2 class="section-title">All Collections</h2>
-            <div id="all-products-grid" class="products-grid">
-                <div class="loading" style="margin: 40px auto; font-size: 2rem;"></div>
-            </div>
-        </div>
-    </main>
+    <section class="category-section">
+        <h2 class="section-title">Bestsellers</h2>
+        <div id="bestseller-slider" class="slider-container"></div>
+    </section>
+
+    <section class="category-section">
+        <h2 class="section-title">Luxury Collection</h2>
+        <div id="luxury-slider" class="slider-container"></div>
+    </section>
+
+    <!-- В самом низу — все продукты в сетке -->
+    <section class="all-products-section">
+        <h2 class="section-title">Explore All Bouquets</h2>
+        <div id="all-products-grid" class="products-grid"></div>
+    </section>
+
+</main>
 
     <!-- Product Detail Modal -->
     <div id="product-detail" class="full-screen-page">
