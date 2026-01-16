@@ -1,6 +1,14 @@
 // Firebase Config & Initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    getFirestore, 
+    collection, 
+    getDocs, 
+    addDoc, 
+    updateDoc, 
+    doc, 
+    deleteDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
@@ -16,18 +24,25 @@ const db = getFirestore(app);
 
 // Page Switching
 const navLinks = document.querySelectorAll('.nav-link[data-page]');
+
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
+        
         const pageId = link.dataset.page + '-page';
-
+        
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId)?.classList.add('active');
-
+        
         document.getElementById('page-title').textContent = link.textContent.trim();
-
+        
         navLinks.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
+
+        // Close sidebar on mobile after selection
+        if (window.innerWidth <= 768) {
+            toggleSidebar();
+        }
 
         // Load products when Inventory is opened
         if (pageId === 'inventory-page') {
@@ -36,20 +51,26 @@ navLinks.forEach(link => {
     });
 });
 
-// ====================
-// Product Management
-// ====================
+// Sidebar toggle (mobile)
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
 
-let editId = null;
+// Product Management
+let currentEditId = null;
 
 async function loadProducts() {
     try {
         const snapshot = await getDocs(collection(db, "products"));
-        const products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         renderProducts(products);
-    } catch (err) {
-        console.error("Error loading products:", err);
-        alert("Failed to load products. Check console.");
+    } catch (error) {
+        console.error("Load error:", error);
+        alert("Failed to load products: " + error.message);
     }
 }
 
@@ -58,103 +79,102 @@ function renderProducts(products) {
     if (!container) return;
 
     if (products.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:var(--gray-light); padding:60px 0;">No products yet. Add your first product!</p>';
+        container.innerHTML = '<p style="text-align:center; padding:60px 0; color:var(--gray-light);">No products yet...</p>';
         return;
     }
 
     container.innerHTML = products.map(p => `
         <div class="product-card">
-            <img src="${p.image || 'https://via.placeholder.com/260x220/002f36/ffffff?text=No+Image'}" 
-                 alt="${p.name}" 
-                 class="product-img"
-                 onerror="this.src='https://via.placeholder.com/260x220/002f36/ffffff?text=Image+Error'">
+            <img src="${p.image || 'https://via.placeholder.com/300x200/002f36/ffffff?text=No+Image'}" 
+                 class="product-img" alt="${p.name}">
             <div class="product-info">
                 <h4>${p.name}</h4>
-                <div class="price">${p.price?.toLocaleString('en-AE') || '—'} AED</div>
+                <div class="price">${(p.price || 0).toLocaleString('en-AE')} AED</div>
                 <div class="product-actions">
-                    <button class="edit-btn" onclick="openEditModal('${p.id}', \`${p.name}\`, ${p.price || 0}, '${p.image || ''}', \`${(p.description || '').replace(/`/g,'\\`')}\`, '${p.tags?.join(',') || ''}')">
+                    <button onclick="openEditModal('${p.id}', \`${p.name.replace(/`/g,'\\`')}\`, ${p.price||0}, '${p.image||''}', \`${(p.description||'').replace(/`/g,'\\`')}\`, '${p.tags?.join(',')||''}')">
                         Edit
                     </button>
-                    <button class="delete-btn" onclick="deleteProduct('${p.id}')">
-                        Delete
-                    </button>
+                    <button onclick="deleteProduct('${p.id}')">Delete</button>
                 </div>
             </div>
         </div>
     `).join('');
 }
 
-window.openAddModal = function() {
-    editId = null;
+window.openAddModal = () => {
+    currentEditId = null;
     document.getElementById('modal-title').textContent = 'Add New Product';
     document.getElementById('product-form').reset();
     document.getElementById('product-modal').style.display = 'flex';
 };
 
-window.openEditModal = function(id, name, price, image, description, tags) {
-    editId = id;
+window.openEditModal = (id, name, price, image, desc, tags) => {
+    currentEditId = id;
     document.getElementById('modal-title').textContent = 'Edit Product';
-    
     document.getElementById('name').value = name;
     document.getElementById('price').value = price;
     document.getElementById('image').value = image;
-    document.getElementById('description').value = description;
+    document.getElementById('description').value = desc;
     document.getElementById('tags').value = tags;
-    
     document.getElementById('product-modal').style.display = 'flex';
 };
 
-window.closeModal = function() {
+window.closeModal = () => {
     document.getElementById('product-modal').style.display = 'none';
 };
 
-document.getElementById('product-form').addEventListener('submit', async function(e) {
+document.getElementById('product-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const name = document.getElementById('name').value.trim();
+    const price = parseFloat(document.getElementById('price').value);
+    const image = document.getElementById('image').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const tagsStr = document.getElementById('tags').value.trim();
+
+    if (!name || isNaN(price) || price <= 0) {
+        alert("Please fill name and valid price");
+        return;
+    }
+
     const data = {
-        name: document.getElementById('name').value.trim(),
-        price: parseFloat(document.getElementById('price').value) || 0,
-        image: document.getElementById('image').value.trim(),
-        description: document.getElementById('description').value.trim(),
-        tags: document.getElementById('tags').value
-            .split(',')
-            .map(t => t.trim())
-            .filter(t => t.length > 0)
+        name,
+        price,
+        image: image || null,
+        description: description || null,
+        tags: tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [],
+        updatedAt: new Date()
     };
 
     try {
-        if (editId) {
-            await updateDoc(doc(db, "products", editId), data);
-            alert('Product updated successfully!');
+        if (currentEditId) {
+            await updateDoc(doc(db, "products", currentEditId), data);
+            alert("Product updated!");
         } else {
-            await addDoc(collection(db, "products"), data);
-            alert('Product added successfully!');
+            await addDoc(collection(db, "products"), {
+                ...data,
+                createdAt: new Date()
+            });
+            alert("Product added!");
         }
         closeModal();
         loadProducts();
     } catch (err) {
-        console.error("Error saving product:", err);
-        alert("Failed to save product. Check console for details.");
+        console.error("Save error:", err);
+        alert("Save failed: " + err.message);
     }
 });
 
-window.deleteProduct = async function(id) {
-    if (!confirm('Are you sure you want to delete this product?')) return;
-
+window.deleteProduct = async (id) => {
+    if (!confirm("Delete this product?")) return;
     try {
         await deleteDoc(doc(db, "products", id));
-        alert('Product deleted');
+        alert("Deleted");
         loadProducts();
     } catch (err) {
-        console.error("Error deleting:", err);
-        alert("Failed to delete product");
+        alert("Delete failed: " + err.message);
     }
 };
 
-// Toggle sidebar on mobile
-window.toggleSidebar = function() {
-    document.querySelector('.sidebar').classList.toggle('active');
-};
-
-// Initial load
-console.log("TAVÉINE Admin Panel ready");
+// Initial log
+console.log("TAVÉINE Admin Panel – Mobile Ready Version");
