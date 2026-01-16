@@ -11,6 +11,7 @@
 </head>
 <body>
 
+<!-- Side Menu (left drawer) -->
 <div id="side-menu" class="side-drawer">
     <div class="menu-top">
         <div class="logo">TAVÉINE</div>
@@ -37,12 +38,15 @@
 
 <div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
 
+<!-- Top Bar -->
 <header class="top-bar">
     <button class="burger-menu" onclick="toggleMenu()">
         <span class="menu-icon-lines"></span>
     </button>
     <div class="logo">TAVÉINE</div>
-    <div class="header-actions"></div>
+    <div class="header-actions">
+        <!-- Search icon intentionally removed -->
+    </div>
 </header>
 
 <main id="main-content">
@@ -88,7 +92,7 @@
     </section>
 </main>
 
-<!-- Category page -->
+<!-- Category Page -->
 <div id="category-page" class="full-screen-page">
     <div class="page-header">
         <button class="back-btn" onclick="closePage('category-page')">←</button>
@@ -98,8 +102,8 @@
     <div id="category-content"></div>
 </div>
 
-<!-- Product detail -->
-<div id="product-detail" class="full-screen-page">
+<!-- Product Detail -->
+<div id="product-detail" class="full-screen-page product-detail-page">
     <div class="page-header">
         <button class="back-btn" onclick="closeProductDetail()">←</button>
         <div class="page-title">Product</div>
@@ -128,7 +132,7 @@
     <div id="cart-footer" class="cart-summary-fixed"></div>
 </div>
 
-<!-- Search -->
+<!-- Search (slides up from bottom) -->
 <div id="search-page" class="search-drawer">
     <div class="search-header">
         <div class="search-title">Search</div>
@@ -141,7 +145,7 @@
     <div id="search-results-products" class="search-results"></div>
 </div>
 
-<!-- Bottom nav -->
+<!-- Bottom Navigation -->
 <nav class="bottom-navigation">
     <button class="nav-item active" onclick="location.reload()">
         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -150,6 +154,10 @@
     <button class="nav-item" onclick="openSearch()">
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
         <span>Search</span>
+    </button>
+    <button class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span>Account</span>
     </button>
     <button class="nav-item badge" onclick="openPage('wish-page')">
         <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -162,16 +170,6 @@
         <span>Cart</span>
     </button>
 </nav>
-
-<div class="footer-luxury">
-    <div class="footer-brand">TAVÉINE</div>
-    <div class="footer-slogan">Luxury flowers • Dubai</div>
-    <div class="footer-socials">
-        <a href="#" target="_blank">Instagram</a>
-        <a href="#" target="_blank">WhatsApp</a>
-    </div>
-    <div class="footer-copyright">© 2026 TAVÉINE. All rights reserved.</div>
-</div>
 
 <script type="module" src="script.js"></script>
 </body>
