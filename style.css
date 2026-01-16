@@ -397,9 +397,23 @@ body {
 
 /* Общий грид — уменьшили min-width карточек */
 .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));  /* Было 280px */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* 3 в ряд по умолчанию */
     gap: 24px;
     padding: 0 24px 60px;
+}
+
+/* Адаптивно: на мобильных 1-2 */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);  /* 2 в ряд на планшетах/мобильных */
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;  /* 1 в ряд на маленьких экранах */
+    }
 }
 
 /* Тексты — уменьшили глобально */
