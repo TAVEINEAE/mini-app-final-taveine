@@ -4,54 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TAVÉINE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<div id="side-menu" class="side-drawer">
+    <div class="menu-top">
+        <div class="logo">TAVÉINE</div>
+        <button class="close-btn" onclick="toggleMenu()">✕</button>
+    </div>
+    <div class="menu-content">
+        <div class="menu-item" onclick="toggleMenu()">Collections</div>
+    </div>
+</div>
+<div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
+
 <header class="top-bar">
-    <button class="burger-menu" onclick="toggleMenu()">
-        <span class="menu-icon-lines"></span>
-    </button>
+    <button class="burger-menu" onclick="toggleMenu()"><span class="menu-icon-lines"></span></button>
     <div class="logo">TAVÉINE</div>
-    <div style="width:24px;"></div>
+    <div style="width:26px"></div>
 </header>
 
-<main>
+<main id="main-content">
     <section class="hero-luxury">
         <div class="hero-gradient"></div>
-        <div class="hero-content">
-            <h1>Luxury <span class="accent">Blooms</span></h1>
-        </div>
+        <div class="hero-content"><h1>Luxury <span class="accent">Blooms</span></h1></div>
     </section>
 
-    <h2 class="section-title">New Arrivals</h2>
-    <div id="new-slider" class="slider-container"></div>
+    <h2 style="padding:20px; color:var(--gold)">New Arrivals</h2>
+    <div id="new-arrivals-slider" class="slider-container"></div>
 
-    <h2 class="section-title">Best Sellers</h2>
-    <div id="bestseller-slider" class="slider-container"></div>
-
-    <h2 class="section-title">All Bouquets</h2>
+    <h2 style="padding:20px; color:var(--gold)">All Bouquets</h2>
     <div id="all-products-grid" class="grid"></div>
 </main>
 
 <div id="product-detail" class="full-screen-page">
     <div class="page-header">
-        <button class="back-btn" onclick="closeProductDetail()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        </button>
-        <span class="logo" style="font-size:1.2rem;">TAVÉINE</span>
-        <button class="close-btn" onclick="closeProductDetail()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
+        <button class="back-btn" onclick="closeProductDetail()">✕</button>
+        <div class="logo" style="font-size:1.2rem">TAVÉINE</div>
+        <div></div>
     </div>
     <div id="product-detail-content"></div>
 </div>
 
+<div id="wish-page" class="full-screen-page">
+    <div class="page-header">
+        <button class="back-btn" onclick="closePage('wish-page')">✕</button>
+        <div class="page-title">Wishlist</div>
+        <div></div>
+    </div>
+    <div id="wish-container"></div>
+</div>
+
+<div id="cart-drawer" class="full-screen-page">
+    <div class="page-header">
+        <button class="back-btn" onclick="closePage('cart-drawer')">✕</button>
+        <div class="page-title">Cart</div>
+        <div></div>
+    </div>
+    <div id="cart-container"></div>
+</div>
+
+<div id="search-page" class="search-drawer">
+    <div class="search-header">
+        <div class="search-title">Search</div>
+        <button class="close-btn" onclick="closeSearch()">✕</button>
+    </div>
+    <div id="search-results-products"></div>
+</div>
+
 <nav class="bottom-navigation">
-    <button class="nav-item">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        <span>Account</span>
+    <button class="nav-item active" onclick="location.reload()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span>Shop</span>
+    </button>
+    <button class="nav-item" onclick="openSearch()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <span>Search</span>
+    </button>
+    <button class="nav-item" onclick="openPage('wish-page')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="badge-count" id="w-count">0</span>
+        <span>Wishlist</span>
+    </button>
+    <button class="nav-item" onclick="openPage('cart-drawer')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="badge-count" id="c-count">0</span>
+        <span>Cart</span>
     </button>
 </nav>
 
