@@ -4,34 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TAVÉINE • Admin</title>
-  
+ 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+ 
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  
+ 
   <!-- Your styles -->
   <link rel="stylesheet" href="admin.css">
-  
+ 
   <!-- Firebase SDK -->
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-
   <!-- Optional libraries (keep if you use them) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
 </head>
 <body>
-
 <div class="layout">
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="logo">
-      <img src="https://i.ibb.co/vz0Lz9S/logo.png" alt="Logo">
+      <img src="logo-dark.png" alt="Logo">
       <span>TAVÉINE</span>
     </div>
     <nav>
@@ -39,12 +37,11 @@
       <a class="nav-link" data-page="inventory"><i class="fas fa-boxes"></i> Inventory</a>
       <a class="nav-link" data-page="chat"><i class="fas fa-comment-dots"></i> Chat</a>
       <a class="nav-link" data-page="calendar"><i class="fas fa-calendar-alt"></i> Calendar</a>
-      <a class="nav-link" data-page="email"><i class="fas fa-envelope"></i> Email</a>
+      <a class="nav-link" data-page="orders"><i class="fas fa-shopping-bag"></i> Orders</a>
       <a class="nav-link" data-page="maps"><i class="fas fa-map"></i> Maps</a>
       <a class="nav-link logout" onclick="alert('Logout functionality coming soon')"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </nav>
   </aside>
-
   <!-- Main Content -->
   <main class="main">
     <header class="header">
@@ -87,41 +84,59 @@
             <i class="fas fa-plus"></i> Add New Product
           </button>
         </div>
-        
-        <div id="products-list" class="products-grid"></div>
+       
+        <div class="category-section">
+          <h3>New Arrivals</h3>
+          <div id="new-arrivals-list" class="products-grid"></div>
+        </div>
+        <div class="category-section">
+          <h3>Birthday Collection</h3>
+          <div id="birthday-list" class="products-grid"></div>
+        </div>
+        <div class="category-section">
+          <h3>Bestsellers</h3>
+          <div id="bestsellers-list" class="products-grid"></div>
+        </div>
+        <div class="category-section">
+          <h3>Luxury Collection</h3>
+          <div id="luxury-list" class="products-grid"></div>
+        </div>
+        <div class="category-section">
+          <h3>Other Products</h3>
+          <div id="other-products-list" class="products-grid"></div>
+        </div>
       </div>
 
       <!-- Add/Edit Modal -->
       <div id="product-modal" class="modal" style="display:none;">
         <div class="modal-content card">
           <h3 id="modal-title">Add New Product</h3>
-          
+         
           <form id="product-form">
             <div class="form-group">
               <label>Product Name</label>
               <input type="text" id="name" required placeholder="Eternal Rose Bouquet">
             </div>
-            
+           
             <div class="form-group">
               <label>Price (AED)</label>
               <input type="number" id="price" step="1" required placeholder="299">
             </div>
-            
+           
             <div class="form-group">
               <label>Image URL</label>
               <input type="url" id="image" placeholder="https://example.com/image.jpg">
             </div>
-            
+           
             <div class="form-group">
               <label>Description</label>
               <textarea id="description" rows="4" placeholder="Luxurious eternal roses..."></textarea>
             </div>
-            
+           
             <div class="form-group">
               <label>Tags (comma separated)</label>
               <input type="text" id="tags" placeholder="new, luxury, bestseller">
             </div>
-
             <div class="form-actions">
               <button type="submit" class="save-btn">Save Product</button>
               <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
@@ -131,10 +146,17 @@
       </div>
     </section>
 
+    <!-- Orders Page (была Email) -->
+    <section id="orders-page" class="page">
+      <div class="card">
+        <h2>Orders from Telegram</h2>
+        <div id="orders-list"></div>
+      </div>
+    </section>
+
     <!-- Other pages (placeholders) -->
     <section id="chat-page" class="page"><div class="card"><h2>Chat</h2><p>Coming soon...</p></div></section>
     <section id="calendar-page" class="page"><div class="card"><h2>Calendar</h2><p>Coming soon...</p></div></section>
-    <section id="email-page" class="page"><div class="card"><h2>Email</h2><p>Coming soon...</p></div></section>
     <section id="maps-page" class="page"><div class="card"><h2>Maps</h2><p>Coming soon...</p></div></section>
   </main>
 </div>
