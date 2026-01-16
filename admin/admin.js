@@ -13,25 +13,42 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Page Switching
+// Page Switching (this is the most important fix!)
 document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-    link.addEventListener('click', e => {
+    link.addEventListener('click', function(e) {
         e.preventDefault();
-        const page = link.dataset.page + '-page';
+        
+        const pageName = this.getAttribute('data-page');
+        const targetPageId = pageName + '-page';
 
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(page)?.classList.add('active');
+        // Hide ALL pages first
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
 
-        document.getElementById('page-title').textContent = link.textContent.trim();
+        // Show the clicked page
+        const targetPage = document.getElementById(targetPageId);
+        if (targetPage) {
+            targetPage.classList.add('active');
+        }
 
+        // Update header title
+        document.getElementById('page-title').textContent = this.textContent.trim();
+
+        // Update active nav link
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
+        this.classList.add('active');
 
-        if (window.innerWidth < 993) toggleSidebar();
+        // Close sidebar on mobile
+        if (window.innerWidth < 993) {
+            toggleSidebar();
+        }
 
-        if (page === 'inventory-page' || page === 'dashboard-page') {
+        // Load data for specific pages
+        if (pageName === 'dashboard' || pageName === 'inventory') {
             updateDashboardStats();
-            loadRecentProducts();
+            if (pageName === 'dashboard') loadRecentProducts();
+            if (pageName === 'inventory') loadProducts();
         }
     });
 });
@@ -68,13 +85,11 @@ async function loadRecentProducts() {
             </div>
         `).join('');
     } catch (e) {
-        console.error("Recent error:", e);
+        console.error("Recent products error:", e);
     }
 }
 
-// Product CRUD
-let editId = null;
-
+// Inventory - Load Products
 async function loadProducts() {
     try {
         const snap = await getDocs(collection(db, "products"));
@@ -82,13 +97,13 @@ async function loadProducts() {
         renderProducts(products);
         updateDashboardStats();
     } catch (e) {
-        alert("Load failed: " + e.message);
+        alert("Failed to load products: " + e.message);
     }
 }
 
 function renderProducts(products) {
-    const cont = document.getElementById('products-list');
-    cont.innerHTML = products.map(p => `
+    const container = document.getElementById('products-list');
+    container.innerHTML = products.map(p => `
         <div class="product-card">
             <img src="${p.image || 'https://via.placeholder.com/300x200'}" class="product-img">
             <div class="product-info">
@@ -102,6 +117,9 @@ function renderProducts(products) {
         </div>
     `).join('');
 }
+
+// Modal Functions
+let editId = null;
 
 window.openAddModal = () => {
     editId = null;
@@ -158,11 +176,12 @@ document.getElementById('product-form').addEventListener('submit', async e => {
         loadRecentProducts();
     } catch (err) {
         alert("Save failed: " + err.message);
+        console.error(err);
     }
 });
 
 window.deleteProduct = async id => {
-    if (!confirm("Delete?")) return;
+    if (!confirm("Delete this product?")) return;
     try {
         await deleteDoc(doc(db, "products", id));
         loadProducts();
@@ -173,8 +192,8 @@ window.deleteProduct = async id => {
     }
 };
 
-// Initial load
+// Initial load for dashboard
 updateDashboardStats();
 loadRecentProducts();
 
-console.log("Admin Panel - Final Fixed Version");
+console.log("Admin Panel - All fixed & working");
