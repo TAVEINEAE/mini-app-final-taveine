@@ -340,16 +340,6 @@ function renderCartItems() {
     `;
 }
 
-// В createCheckoutSession
-const { email, name /* , shipping */ } = req.body;
-
-const session = await stripe.checkout.sessions.create({
-  ...,
-  customer_email: email,
-  shipping_address_collection: { allowed_countries: ['AE'] },
-  // shipping: shipping ? { name, phone: shipping.phone, address: shipping.address } : undefined,
-});
-
 window.updateQuantity = (id, change) => {
     const item = cart.find(i => i.id === id);
     if (item) {
@@ -438,34 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       quantity: item.qty || 1,
     }));
-
-    try {
-      const response = await fetch('https://ВАША-ФУНКЦИЯ.cloudfunctions.net/createCheckoutSession', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lineItems,
-          customer_email: email,   // prefill email
-          // name и address пока не передаём — Stripe сам попросит
-        }),
-      });
-
-      const { id: sessionId, error } = await response.json();
-
-      if (error) throw new Error(error);
-
-      const { error: redirectError } = await stripe.redirectToCheckout({ sessionId });
-
-      if (redirectError) {
-        tg?.showAlert(redirectError.message);
-      }
-    } catch (err) {
-      console.error(err);
-      tg?.showAlert('Ошибка при переходе к оплате');
-    }
-  });
-});
-
 
 // Отключаем overscroll и pull-to-refresh в Telegram Web App
 Telegram.WebApp.ready();
