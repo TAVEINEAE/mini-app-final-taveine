@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBMAds5kqj8BUzOP2OaimC12wUqfkLs9oE",
@@ -13,7 +13,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Page switching
+// Page Switching
 document.querySelectorAll('.nav-link[data-page]').forEach(link => {
     link.addEventListener('click', e => {
         e.preventDefault();
@@ -27,20 +27,53 @@ document.querySelectorAll('.nav-link[data-page]').forEach(link => {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         link.classList.add('active');
 
-        // Close sidebar on mobile
         if (window.innerWidth < 993) toggleSidebar();
 
-        if (page === 'inventory-page') loadProducts();
+        if (page === 'inventory-page' || page === 'dashboard-page') {
+            updateDashboardStats();
+            loadRecentProducts();
+        }
     });
 });
 
-// Sidebar toggle
+// Sidebar Toggle
 window.toggleSidebar = () => {
     document.getElementById('sidebar').classList.toggle('active');
     document.getElementById('overlay').classList.toggle('active');
 };
 
-// Product management
+// Dashboard Stats & Recent Products
+async function updateDashboardStats() {
+    try {
+        const snap = await getDocs(collection(db, "products"));
+        const count = snap.size;
+        document.getElementById('dash-products').textContent = count;
+    } catch (e) {
+        console.error("Stats error:", e);
+    }
+}
+
+async function loadRecentProducts() {
+    try {
+        const q = query(collection(db, "products"), orderBy("createdAt", "desc"), limit(5));
+        const snap = await getDocs(q);
+        const recent = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        document.getElementById('dashboard-recent-products').innerHTML = recent.map(p => `
+            <div class="product-card">
+                <img src="${p.image || 'https://via.placeholder.com/220x160'}" alt="${p.name}">
+                <div class="product-info">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-price">${p.price || 0} AED</div>
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        console.error("Recent products error:", e);
+    }
+}
+
+// Product CRUD
 let editId = null;
 
 async function loadProducts() {
@@ -48,9 +81,10 @@ async function loadProducts() {
         const snap = await getDocs(collection(db, "products"));
         const products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         renderProducts(products);
+        updateDashboardStats(); // refresh count
     } catch (e) {
         console.error(e);
-        alert("Failed to load products: " + e.message);
+        alert("Load failed: " + e.message);
     }
 }
 
@@ -100,11 +134,12 @@ document.getElementById('product-form').addEventListener('submit', async e => {
         price: Number(document.getElementById('price').value),
         image: document.getElementById('image').value.trim() || null,
         description: document.getElementById('description').value.trim() || null,
-        tags: document.getElementById('tags').value.split(',').map(t=>t.trim()).filter(Boolean)
+        tags: document.getElementById('tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+        updatedAt: new Date()
     };
 
     if (!data.name || isNaN(data.price) || data.price <= 0) {
-        alert("Name and valid price are required!");
+        alert("Name and valid price required!");
         return;
     }
 
@@ -113,11 +148,16 @@ document.getElementById('product-form').addEventListener('submit', async e => {
             await updateDoc(doc(db, "products", editId), data);
             alert("Updated!");
         } else {
-            await addDoc(collection(db, "products"), data);
+            await addDoc(collection(db, "products"), {
+                ...data,
+                createdAt: new Date()
+            });
             alert("Added!");
         }
         closeModal();
         loadProducts();
+        updateDashboardStats();
+        loadRecentProducts();
     } catch (err) {
         alert("Save failed: " + err.message);
         console.error(err);
@@ -129,9 +169,15 @@ window.deleteProduct = async id => {
     try {
         await deleteDoc(doc(db, "products", id));
         loadProducts();
+        updateDashboardStats();
+        loadRecentProducts();
     } catch (err) {
         alert("Delete failed: " + err.message);
     }
 };
 
-console.log("Admin Panel Ready");
+// Initial load on dashboard
+updateDashboardStats();
+loadRecentProducts();
+
+console.log("Admin Panel - Fixed & Working");
