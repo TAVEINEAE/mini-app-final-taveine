@@ -10,7 +10,6 @@
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23d4af37'/><text y='.9em' font-size='90' fill='%23001f24'>🌹</text></svg>">
 </head>
 <body>
-
    <!-- Side Menu (слева, с аккордеоном) -->
 <div id="side-menu" class="side-drawer">
     <div class="menu-top">
@@ -24,15 +23,15 @@
             <span class="arrow">›</span>
         </div>
         <div class="submenu">
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Christmas Collection</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Spring</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">New Arrivals</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Best Sellers</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Luxury</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Specialty</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Je t’aime Collection</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Vases</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Box</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Christmas Collection</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Spring</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">New Arrivals</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Best Sellers</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Luxury</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Specialty</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Je t’aime Collection</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Vases</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Box</a>
         </div>
         <!-- Occasions (с подменю) -->
         <div class="menu-item has-submenu" onclick="toggleSubmenu(this)">
@@ -40,23 +39,21 @@
             <span class="arrow">›</span>
         </div>
         <div class="submenu">
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Anniversary</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Birthday</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">I’m Sorry</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">New Baby</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Event Design Services</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Forever Rose</a>
-            <a href="#" class="submenu-item" onclick="toggleMenu()">Balloons</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Anniversary</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Birthday</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">I’m Sorry</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">New Baby</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Event Design Services</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Forever Rose</a>
+            <a href="#" class="submenu-item" onclick="openCategory(this.textContent); toggleMenu()">Balloons</a>
         </div>
         <!-- Простые пункты без подменю -->
         <a href="#" class="menu-item" onclick="toggleMenu()">Home</a>
-        <a href="#" class="menu-item" onclick="toggleMenu()">About Us</a>
+        <a href="#" class="menu-item" onclick="openAbout(); toggleMenu()">About Us</a>
     </div>
 </div>
-
     <!-- Menu Overlay -->
     <div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
-
     <!-- Top Navigation -->
     <header class="top-bar">
         <button class="burger-menu" onclick="toggleMenu()" aria-label="Open menu">
@@ -67,7 +64,6 @@
             <button class="search-trigger" onclick="openSearch()" aria-label="Search" style="background: none; border: none; color: white; font-size: 1.2rem;">🔍</button>
         </div>
     </header>
-
     <!-- Main Content -->
     <main id="main-content">
         <!-- Hero Section -->
@@ -80,71 +76,63 @@
                 </p>
             </div>
         </section>
-
         <!-- 1. New Arrivals -->
         <section class="featured-section">
             <h2 class="section-title">New Arrivals</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="new-arrivals-slider" class="horizontal-slider"></div>
-                <a href="#" class="view-all-end">VIEW ALL</a>
+                <a href="#" class="view-all-end" onclick="openCategory('New Arrivals')">VIEW ALL</a>
             </div>
         </section>
-
         <!-- 2. Birthday Collection -->
         <section class="category-section">
             <h2 class="section-title">Birthday Collection</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="birthday-slider" class="horizontal-slider"></div>
-                <a href="#" class="view-all-end">VIEW ALL</a>
+                <a href="#" class="view-all-end" onclick="openCategory('Birthday')">VIEW ALL</a>
             </div>
         </section>
-
         <!-- 3. Bestsellers -->
         <section class="category-section">
             <h2 class="section-title">Bestsellers</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="bestseller-slider" class="horizontal-slider"></div>
-                <a href="#" class="view-all-end">VIEW ALL</a>
+                <a href="#" class="view-all-end" onclick="openCategory('Best Sellers')">VIEW ALL</a>
             </div>
         </section>
-
         <!-- 4. Luxury Collection -->
         <section class="category-section">
             <h2 class="section-title">Luxury Collection</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="luxury-slider" class="horizontal-slider"></div>
-                <a href="#" class="view-all-end">VIEW ALL</a>
+                <a href="#" class="view-all-end" onclick="openCategory('Luxury')">VIEW ALL</a>
             </div>
         </section>
-
         <!-- 5. Vases Collection -->
         <section class="category-section">
             <h2 class="section-title">Vases Collection</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="luxury-slider" class="horizontal-slider"></div>
-                <a href="#" class="view-all-end">VIEW ALL</a>
+                <a href="#" class="view-all-end" onclick="openCategory('Vases')">VIEW ALL</a>
             </div>
         </section>
-
         <!-- 6. Specialty Collection -->
         <section class="category-section">
             <h2 class="section-title">Specialty</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="luxury-slider" class="horizontal-slider"></div>
-                <a href="#" class="view-all-end">VIEW ALL</a>
+                <a href="#" class="view-all-end" onclick="openCategory('Specialty')">VIEW ALL</a>
             </div>
         </section>
-
         <!-- 7. Explore All Bouquets -->
         <section class="all-products-section">
             <h2 class="section-title">Shop All</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="all-products-grid" class="horizontal-slider"></div>
-                <a href="#" class="view-all-end">VIEW ALL</a>
+                <a href="#" class="view-all-end" onclick="openCategory('All')">VIEW ALL</a>
             </div>
         </section>
     </main>
-
     <!-- Product Detail Modal -->
     <div id="product-detail" class="full-screen-page">
         <div class="page-header">
@@ -156,7 +144,6 @@
             <div class="loading" style="margin: 100px auto; font-size: 3rem;"></div>
         </div>
     </div>
-
     <!-- Wishlist Page -->
     <div id="wish-page" class="full-screen-page">
         <div class="page-header">
@@ -166,7 +153,6 @@
         </div>
         <div id="wish-container"></div>
     </div>
-
     <!-- Cart Drawer -->
     <div id="cart-drawer" class="full-screen-page">
         <div class="page-header">
@@ -176,7 +162,6 @@
         </div>
         <div id="cart-container"></div>
     </div>
-
     <!-- Чекаут -->
     <div id="checkout-info-page" class="full-screen-page" style="display:none;">
       <div class="page-header">
@@ -184,7 +169,7 @@
         <div class="page-title">Place an order</div>
         <button class="back-btn" onclick="closePage('checkout-info-page')" style="font-size:1.5rem;">✕</button>
       </div>
-     
+    
       <div style="padding:32px 24px; max-width:500px; margin:0 auto;">
         <form id="simple-checkout-form">
           <label>First & Last Name *</label>
@@ -203,7 +188,6 @@
         </form>
       </div>
     </div>
-
     <!-- Search Page -->
     <div id="search-page" class="search-drawer">
         <div class="search-header">
@@ -213,7 +197,6 @@
         <input type="text" id="search-input" placeholder="Search for flowers, bouquets, or occasions..." autocomplete="off">
         <div id="search-results-products" class="horizontal-slider"></div>
     </div>
-
     <!-- Bottom Navigation -->
     <nav class="bottom-navigation">
         <button class="nav-item active" onclick="location.reload()" aria-label="Home">
@@ -223,7 +206,6 @@
             </svg>
             <span>Home</span>
         </button>
-
         <button class="nav-item" onclick="openSearch()" aria-label="Search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -231,7 +213,6 @@
             </svg>
             <span>Search</span>
         </button>
-
         <button class="nav-item" onclick="openPage('wish-page')" aria-label="Wishlist">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -239,7 +220,6 @@
             <span class="badge-count" id="w-count">0</span>
             <span>Wishlist</span>
         </button>
-
         <button class="nav-item" onclick="openPage('cart-drawer')" aria-label="Cart">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="9" cy="21" r="1"></circle>
@@ -250,10 +230,61 @@
             <span>Cart</span>
         </button>
     </nav>
-
+    <!-- Category Page -->
+    <div id="category-page" class="full-screen-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('category-page')" aria-label="Back">←</button>
+            <div class="page-title" id="category-title">Category</div>
+            <button class="back-btn" onclick="closePage('category-page')" style="font-size: 1.5rem;" aria-label="Close">✕</button>
+        </div>
+        <div id="category-products" class="horizontal-slider-wrapper">
+            <div id="category-slider" class="horizontal-slider"></div>
+        </div>
+    </div>
+    <!-- About Us Page -->
+    <div id="about-page" class="full-screen-page">
+        <div class="page-header">
+            <button class="back-btn" onclick="closePage('about-page')" aria-label="Back">←</button>
+            <div class="page-title">About Us</div>
+            <button class="back-btn" onclick="closePage('about-page')" style="font-size: 1.5rem;" aria-label="Close">✕</button>
+        </div>
+        <div style="padding: 32px 24px; max-width: 800px; margin: 0 auto; color: var(--text-light); line-height: 1.7;">
+            <h2 style="font-family: 'Playfair Display', Georgia, serif; color: var(--gold); font-size: 2rem; margin-bottom: 24px;">Welcome to TAVÉINE</h2>
+            <p>TAVÉINE is a premier luxury floral boutique specializing in handcrafted bouquets and arrangements for life's most special moments. Founded in Dubai, we blend timeless elegance with modern sophistication, using only the finest blooms sourced from around the world.</p>
+            <p style="margin-top: 20px;">Our mission is to create unforgettable experiences through the art of floristry. Whether it's a romantic gesture, a celebratory event, or a thoughtful apology, our expert florists craft each piece with passion and precision.</p>
+            <p style="margin-top: 20px;">At TAVÉINE, we believe flowers speak the language of the heart. Join us in celebrating beauty, love, and luxury.</p>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="luxury-footer">
+        <div class="footer-content">
+            <div class="social-icons">
+                <a href="https://instagram.com/taveine" target="_blank" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 6.25 1.25 1.25 0 0 1 16 5a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                    </svg>
+                </a>
+                <a href="https://taveine.com" target="_blank" aria-label="Website">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m7.07 15a7.94 7.94 0 0 1-1.44 1.84L14.83 13H19c0 .7-.13 1.37-.35 2m-.35-3h-3.1l-2.01-4.36c-.46.18-.95.36-1.45.51l1.12 3.85H7.43L5.5 7.34c-.5.15-1 .33-1.45.51L5.16 12H5c0-.7.12-1.37.34-2h3.11l1.5 5.19 2.01-6.9C11.54 4.12 11.67 4 12 4s.46.12.69.35l2.01 6.9 1.5-5.19h3.07c.22.63.34 1.3.34 2h-.14l1.11-3.85c-.45-.18-.95-.36-1.45-.51l-1.93 6.66M5 15c0-.7.13-1.37.35-2h3.1l2.01 4.36c.5-.15 1-.33 1.46-.51L10.84 13H16l1.93 6.66c.45.18.94.36 1.45.51L18.83 15H5z"/>
+                    </svg>
+                </a>
+                <a href="https://facebook.com/taveine" target="_blank" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M12 2.04c-5.5 0-10 4.49-10 10 0 4.41 3.58 8.04 8.19 8.93v-6.32h-2.47v-2.61h2.47v-1.99c0-2.45 1.5-3.78 3.69-3.78 1.05 0 1.95.08 2.21.11v2.57h-1.52c-1.19 0-1.42.56-1.42 1.39v1.82h2.84l-.37 2.61h-2.47v6.32c4.61-.89 8.19-4.52 8.19-8.93 0-5.51-4.5-10-10-10z"/>
+                    </svg>
+                </a>
+                <a href="https://wa.me/1234567890" target="_blank" aria-label="WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01-1.87-1.87-4.36-2.9-7.01-2.9m0 18.17c-1.45 0-2.85-.38-4.07-1.1l-.29-.17-3.11.82.84-3.03-.2-.3c-.79-1.2-1.2-2.6-1.2-4.06 0-4.23 3.44-7.67 7.67-7.67 2.05 0 3.98.8 5.42 2.25 1.45 1.45 2.25 3.38 2.25 5.42 0 4.23-3.44 7.67-7.67 7.67m4.2-5.69c-.23-.11-1.33-.65-1.54-.73-.2-.07-.35-.11-.5.11-.15.22-.58.73-.71.88-.13.15-.26.16-.49.05-.23-.11-.97-.36-1.85-1.15-.68-.61-1.14-1.37-1.27-1.6-.13-.23-.01-.35.11-.46.1-.1.23-.26.34-.4.11-.13.15-.23.23-.38.07-.15.04-.28-.02-.4-.06-.11-.5-1.22-.69-1.67-.18-.44-.36-.37-.5-.38-.13-.01-.28-.01-.43-.01-.15 0-.4.06-.5.3-.11.24-.43.73-.43 1.78 0 1.05.44 2.06.5 2.2.06.14.87 2.11 2.11 2.87 1.24.76 1.24.51 1.46.48.22-.04.71-.28.81-.56.1-.28.1-.52.07-.71-.03-.19-.17-.32-.4-.43z"/>
+                    </svg>
+                </a>
+            </div>
+            <p>&copy; 2026 TAVÉINE. All rights reserved.</p>
+        </div>
+    </footer>
     <!-- Telegram WebApp Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
     <!-- Main Application Script -->
     <script type="module" src="script.js"></script>
 </body>
