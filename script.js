@@ -26,7 +26,7 @@ async function init() {
         tg.MainButton.setText('Continue Shopping').show();
     }
 
-    console.log("Начало загрузки продуктов...");
+    console.log("Запуск init()... Пытаемся загрузить продукты");
 
     // Пробуем загрузить из Firebase
     try {
@@ -37,78 +37,77 @@ async function init() {
             price: parseFloat(doc.data().price) || 0
         }));
 
-        if (products.length > 0) {
-            console.log("Продукты успешно загружены из Firebase:", products.length, "шт");
-        } else {
-            console.warn("Firebase вернул пустой список продуктов");
+        console.log("Из Firebase загружено:", products.length, "продуктов");
+
+        if (products.length === 0) {
+            console.warn("Firebase вернул пустой список — переходим к демо");
         }
     } catch (e) {
-        console.error("Ошибка загрузки из Firebase:", e.message);
+        console.error("Ошибка Firebase:", e.message);
     }
 
-    // Если продуктов нет — используем демо (fallback)
+    // Если после Firebase пусто — всегда используем демо-продукты
     if (products.length === 0) {
-        console.log("Используем демо-продукты (fallback)");
+        console.log("Применяем демо-продукты (fallback)");
         products = [
-            {
-                id: 'demo1',
-                name: 'Eternal Rose Bouquet',
-                price: 299,
-                image: 'https://via.placeholder.com/300x400/ff69b4/ffffff?text=Eternal+Rose',
-                description: 'Вечные розы премиум-класса',
-                tags: ['luxury', 'bestseller', 'forever']
+            { 
+                id: '1', 
+                name: 'Eternal Rose Bouquet', 
+                price: 299, 
+                image: 'https://via.placeholder.com/300x400/ff69b4/ffffff?text=Eternal+Rose', 
+                description: 'Вечные розы премиум-класса', 
+                tags: ['luxury', 'bestseller', 'forever'] 
             },
-            {
-                id: 'demo2',
-                name: 'Spring Blossom',
-                price: 149,
-                image: 'https://via.placeholder.com/300x400/90ee90/000?text=Spring',
-                description: 'Нежный весенний букет',
-                tags: ['spring', 'new']
+            { 
+                id: '2', 
+                name: 'Spring Blossom Bouquet', 
+                price: 149, 
+                image: 'https://via.placeholder.com/300x400/90ee90/000000?text=Spring', 
+                description: 'Нежный весенний букет', 
+                tags: ['spring', 'new'] 
             },
-            {
-                id: 'demo3',
-                name: 'Crystal Vase Set',
-                price: 220,
-                image: 'https://via.placeholder.com/300x400/add8e6/000?text=Vase',
-                description: 'Композиция в хрустальной вазе',
-                tags: ['vases']
+            { 
+                id: '3', 
+                name: 'Crystal Vase Arrangement', 
+                price: 220, 
+                image: 'https://via.placeholder.com/300x400/add8e6/000000?text=Vase', 
+                description: 'Элегантная композиция в вазе', 
+                tags: ['vases'] 
             },
-            {
-                id: 'demo4',
-                name: 'Forever Rose Dome',
-                price: 450,
-                image: 'https://via.placeholder.com/300x400/ffb6c1/000?text=Forever',
-                description: 'Вечная роза под куполом',
-                tags: ['forever', 'luxury']
+            { 
+                id: '4', 
+                name: 'Forever Rose Dome', 
+                price: 450, 
+                image: 'https://via.placeholder.com/300x400/ffb6c1/000000?text=Forever', 
+                description: 'Вечная роза под куполом', 
+                tags: ['forever', 'luxury'] 
             },
-            {
-                id: 'demo5',
-                name: 'Luxury Orchid Box',
-                price: 380,
-                image: 'https://via.placeholder.com/300x400/4b0082/fff?text=Specialty',
-                description: 'Экзотическая орхидея в подарочной коробке',
-                tags: ['specialty', 'luxury']
+            { 
+                id: '5', 
+                name: 'Luxury Specialty Box', 
+                price: 380, 
+                image: 'https://via.placeholder.com/300x400/4b0082/ffffff?text=Specialty', 
+                description: 'Экзотическая коробка с редкими цветами', 
+                tags: ['specialty'] 
             },
-            {
-                id: 'demo6',
-                name: 'Romantic Balloons & Roses',
-                price: 195,
-                image: 'https://via.placeholder.com/300x400/ffb6c1/000?text=Balloons',
-                description: 'Розы + воздушные шары',
-                tags: ['balloons']
+            { 
+                id: '6', 
+                name: 'Romantic Balloons & Roses', 
+                price: 195, 
+                image: 'https://via.placeholder.com/300x400/ffb6c1/000000?text=Balloons', 
+                description: 'Розы + воздушные шары', 
+                tags: ['balloons'] 
             }
         ];
     }
 
-    console.log("Итого продуктов перед рендером:", products.length);
+    console.log("Продуктов перед рендером:", products.length);
 
-    // Принудительно рендерим главную страницу
     renderMainPage();
     updateBadges();
     setupEventListeners();
 
-    console.log("Инициализация завершена — продукты должны отображаться");
+    console.log("Инициализация завершена — продукты должны быть видны");
 }
 
 function setupEventListeners() {
@@ -161,7 +160,7 @@ function renderProductCard(p) {
 }
 
 function renderMainPage() {
-    console.log("renderMainPage вызван, продуктов:", products.length);
+    console.log("renderMainPage вызван — продуктов:", products.length);
 
     // New Arrivals
     const newContainer = document.getElementById('new-arrivals-slider');
@@ -177,8 +176,6 @@ function renderMainPage() {
         { id: 'birthday-slider', tag: 'birthday' },
         { id: 'bestseller-slider', tag: 'bestseller' },
         { id: 'luxury-slider', tag: 'luxury' }
-        { id: 'vases-slider', tag: 'vases' }
-        { id: 'speciality-slider', tag: 'speciality' }
     ];
     categories.forEach(({ id, tag }) => {
         const container = document.getElementById(id);
@@ -510,67 +507,64 @@ window.openAbout = () => {
 };
 
 // Обработчик чекаута
-const checkoutForm = document.getElementById('simple-checkout-form');
-if (checkoutForm) {
-    checkoutForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const name = document.getElementById('customer-name')?.value.trim();
-        const email = document.getElementById('customer-email')?.value.trim();
-        const phone = document.getElementById('customer-phone')?.value.trim();
-        const address = document.getElementById('customer-address')?.value.trim();
-        const comment = document.getElementById('customer-comment')?.value.trim() || 'Без комментария';
+document.getElementById('simple-checkout-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name = document.getElementById('customer-name')?.value.trim();
+    const email = document.getElementById('customer-email')?.value.trim();
+    const phone = document.getElementById('customer-phone')?.value.trim();
+    const address = document.getElementById('customer-address')?.value.trim();
+    const comment = document.getElementById('customer-comment')?.value.trim() || 'Без комментария';
 
-        if (!name || !email || !phone || !address) {
-            if (tg) tg.showAlert('Заполните все обязательные поля!');
-            return;
-        }
+    if (!name || !email || !phone || !address) {
+        if (tg) tg.showAlert('Заполните все обязательные поля!');
+        return;
+    }
 
-        const order = {
-            id: 'ORDER-' + Date.now().toString().slice(-8),
-            created: new Date().toLocaleString('ru-RU'),
-            status: 'Новый',
-            items: cart.map(item => ({
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                qty: item.qty || 1,
-                subtotal: item.price * (item.qty || 1)
-            })),
-            customer: { name, email, phone, address, comment },
-            total: cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0)
-        };
+    const order = {
+        id: 'ORDER-' + Date.now().toString().slice(-8),
+        created: new Date().toLocaleString('ru-RU'),
+        status: 'Новый',
+        items: cart.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            qty: item.qty || 1,
+            subtotal: item.price * (item.qty || 1)
+        })),
+        customer: { name, email, phone, address, comment },
+        total: cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0)
+    };
 
-        let orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
-        orders.push(order);
-        localStorage.setItem('taveine_orders', JSON.stringify(orders));
+    let orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
+    orders.push(order);
+    localStorage.setItem('taveine_orders', JSON.stringify(orders));
 
-        try {
-            await addDoc(collection(db, "orders"), {
-                ...order,
-                createdAt: new Date(),
-                status: "Новый"
-            });
-            console.log("Заказ сохранён в Firebase:", order.id);
-        } catch (err) {
-            console.error("Ошибка сохранения в Firebase:", err);
-        }
+    try {
+        await addDoc(collection(db, "orders"), {
+            ...order,
+            createdAt: new Date(),
+            status: "Новый"
+        });
+        console.log("Заказ сохранён в Firebase:", order.id);
+    } catch (err) {
+        console.error("Ошибка сохранения в Firebase:", err);
+    }
 
-        cart = [];
-        saveCart();
-        updateBadges();
-        document.getElementById('cart-container').innerHTML = renderCartItems();
+    cart = [];
+    saveCart();
+    updateBadges();
+    document.getElementById('cart-container').innerHTML = renderCartItems();
 
-        if (tg) {
-            tg.showAlert(`Заказ ${order.id} оформлен!\nМы свяжемся с вами скоро.`);
-        } else {
-            alert(`Заказ ${order.id} оформлен!`);
-        }
+    if (tg) {
+        tg.showAlert(`Заказ ${order.id} оформлен!\nМы свяжемся с вами скоро.`);
+    } else {
+        alert(`Заказ ${order.id} оформлен!`);
+    }
 
-        closePage('checkout-info-page');
-    });
-}
+    closePage('checkout-info-page');
+});
 
-// Запускаем инициализацию только один раз
+// Запускаем инициализацию **только один раз**
 document.addEventListener('DOMContentLoaded', () => {
     init();
 });
