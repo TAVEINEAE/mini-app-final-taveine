@@ -26,7 +26,9 @@ async function init() {
         tg.MainButton.setText('Continue Shopping').show();
     }
 
-    // 1. Пробуем загрузить из Firebase
+    console.log("Начало загрузки продуктов...");
+
+    // Пробуем загрузить из Firebase
     try {
         const snapshot = await getDocs(collection(db, "products"));
         products = snapshot.docs.map(doc => ({
@@ -34,26 +36,25 @@ async function init() {
             ...doc.data(),
             price: parseFloat(doc.data().price) || 0
         }));
-        
-        // Если из Firebase пришло хоть что-то — используем
+
         if (products.length > 0) {
-            console.log("Продукты успешно загружены из Firebase:", products.length);
+            console.log("Продукты успешно загружены из Firebase:", products.length, "шт");
         } else {
             console.warn("Firebase вернул пустой список продуктов");
         }
     } catch (e) {
-        console.error("Ошибка загрузки из Firebase:", e);
+        console.error("Ошибка загрузки из Firebase:", e.message);
     }
 
-    // 2. Если после попытки загрузки массив всё ещё пустой → fallback
+    // Если продуктов нет — используем демо (fallback)
     if (products.length === 0) {
-        console.log("Используем fallback-продукты");
+        console.log("Используем демо-продукты (fallback)");
         products = [
             {
                 id: 'demo1',
                 name: 'Eternal Rose Bouquet',
                 price: 299,
-                image: 'https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Eternal+Rose',
+                image: 'https://via.placeholder.com/300x400/ff69b4/ffffff?text=Eternal+Rose',
                 description: 'Вечные розы премиум-класса',
                 tags: ['luxury', 'bestseller', 'forever']
             },
@@ -61,7 +62,7 @@ async function init() {
                 id: 'demo2',
                 name: 'Spring Blossom',
                 price: 149,
-                image: 'https://via.placeholder.com/300x400/90EE90/FFFFFF?text=Spring',
+                image: 'https://via.placeholder.com/300x400/90ee90/000?text=Spring',
                 description: 'Нежный весенний букет',
                 tags: ['spring', 'new']
             },
@@ -69,7 +70,7 @@ async function init() {
                 id: 'demo3',
                 name: 'Crystal Vase Set',
                 price: 220,
-                image: 'https://via.placeholder.com/300x400/ADD8E6/FFFFFF?text=Vase',
+                image: 'https://via.placeholder.com/300x400/add8e6/000?text=Vase',
                 description: 'Композиция в хрустальной вазе',
                 tags: ['vases']
             },
@@ -77,18 +78,37 @@ async function init() {
                 id: 'demo4',
                 name: 'Forever Rose Dome',
                 price: 450,
-                image: 'https://via.placeholder.com/300x400/FF69B4/FFFFFF?text=Forever',
+                image: 'https://via.placeholder.com/300x400/ffb6c1/000?text=Forever',
                 description: 'Вечная роза под куполом',
                 tags: ['forever', 'luxury']
+            },
+            {
+                id: 'demo5',
+                name: 'Luxury Orchid Box',
+                price: 380,
+                image: 'https://via.placeholder.com/300x400/4b0082/fff?text=Specialty',
+                description: 'Экзотическая орхидея в подарочной коробке',
+                tags: ['specialty', 'luxury']
+            },
+            {
+                id: 'demo6',
+                name: 'Romantic Balloons & Roses',
+                price: 195,
+                image: 'https://via.placeholder.com/300x400/ffb6c1/000?text=Balloons',
+                description: 'Розы + воздушные шары',
+                tags: ['balloons']
             }
         ];
     }
 
-    // 3. Принудительно рендерим и логируем
-    console.log("Финальное количество продуктов перед рендером:", products.length);
+    console.log("Итого продуктов перед рендером:", products.length);
+
+    // Принудительно рендерим главную страницу
     renderMainPage();
     updateBadges();
     setupEventListeners();
+
+    console.log("Инициализация завершена — продукты должны отображаться");
 }
 
 function setupEventListeners() {
@@ -116,7 +136,7 @@ function renderProductCard(p) {
     const wishIcon = inWishlist
         ? `<svg viewBox="0 0 24 24" fill="currentColor" class="wish-filled"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`
         : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="wish-empty"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-  
+
     return `
         <div class="uniform-card" onclick="openProductDetail('${p.id}')">
             <button class="wish-btn-overlay" onclick="event.stopPropagation(); toggleWishlist('${p.id}')" title="${inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}">
@@ -141,17 +161,18 @@ function renderProductCard(p) {
 }
 
 function renderMainPage() {
-    // New Arrivals — делаем крупнее и первым
+    console.log("renderMainPage вызван, продуктов:", products.length);
+
+    // New Arrivals
     const newContainer = document.getElementById('new-arrivals-slider');
     if (newContainer) {
-        const newItems = products
-            .filter(p => p.tags?.includes('new'))
-            .slice(0, 10);
+        const newItems = products.filter(p => p.tags?.includes('new')).slice(0, 10);
         newContainer.innerHTML = newItems.length
             ? newItems.map(renderProductCard).join('')
             : '<div class="empty-message">Coming soon...</div>';
     }
-    // Остальные категории — обычные слайдеры
+
+    // Остальные категории
     const categories = [
         { id: 'birthday-slider', tag: 'birthday' },
         { id: 'bestseller-slider', tag: 'bestseller' },
@@ -160,19 +181,21 @@ function renderMainPage() {
     categories.forEach(({ id, tag }) => {
         const container = document.getElementById(id);
         if (!container) return;
-      
+
         const filtered = products.filter(p => p.tags?.includes(tag));
         container.innerHTML = filtered.length
             ? filtered.map(renderProductCard).join('')
             : '<div class="empty-message">Coming soon...</div>';
     });
-    // Все продукты внизу в сетке
+
+    // Shop All
     const allGrid = document.getElementById('all-products-grid');
     if (allGrid) {
         allGrid.innerHTML = products.length
             ? products.map(renderProductCard).join('')
             : '<div class="empty-message">No products yet...</div>';
     }
+
     updateBadges();
 }
 
@@ -185,16 +208,15 @@ window.addToCart = (id) => {
     } else {
         cart.push({ ...p, qty: 1 });
     }
-  
+
     saveCart();
     updateBadges();
-  
+
     if (tg) {
         tg.HapticFeedback.notificationOccurred('success');
         tg.showAlert(`${p.name} added to cart!`);
     }
-  
-    // Update cart page
+
     document.getElementById('cart-container').innerHTML = renderCartItems();
 };
 
@@ -206,14 +228,13 @@ window.toggleWishlist = (id) => {
     } else {
         wishlist.splice(idx, 1);
     }
-  
+
     localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
     updateBadges();
     renderMainPage();
-  
-    // Update wishlist page
+
     document.getElementById('wish-container').innerHTML = renderWishlistItems();
-  
+
     if (tg) tg.HapticFeedback.notificationOccurred('success');
 };
 
@@ -225,7 +246,7 @@ function saveCart() {
 function updateBadges() {
     const wCount = document.getElementById('w-count');
     const cCount = document.getElementById('c-count');
-  
+
     if (wCount) wCount.textContent = wishlist.length;
     if (cCount) cCount.textContent = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
 }
@@ -262,9 +283,9 @@ window.openProductDetail = (id) => {
             </div>
         </div>
     `;
-  
+
     document.getElementById('product-detail').style.display = 'block';
-  
+
     if (tg) {
         tg.HapticFeedback.notificationOccurred('impact');
         tg.expand();
@@ -305,7 +326,7 @@ window.closeSearch = () => {
 function renderSearchResults(results) {
     const container = document.getElementById('search-results-products');
     if (!container) return;
-  
+
     container.innerHTML = results.length ?
         `<div class="search-results">${results.map(renderProductCard).join('')}</div>` :
         '<div class="empty-search">No products found</div>';
@@ -315,7 +336,7 @@ function renderWishlistItems() {
     if (!wishlist.length) {
         return '<div class="empty-wishlist">Your wishlist is empty. Start adding your favorite blooms!</div>';
     }
-  
+
     return wishlist.map(p => `
         <div class="wishlist-item">
             <img src="${p.image || 'https://via.placeholder.com/80x80'}" alt="${p.name}" class="wishlist-image">
@@ -344,9 +365,9 @@ function renderCartItems() {
             </div>
         `;
     }
-  
+
     const total = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
-  
+
     return `
         <div class="cart-items">
             ${cart.map(item => `
@@ -459,7 +480,6 @@ const categoryMapping = {
 // Открытие страницы категории
 window.openCategory = (categoryName) => {
     let filteredProducts = [];
-
     if (categoryName === 'All') {
         filteredProducts = [...products];
     } else {
@@ -488,20 +508,21 @@ window.openAbout = () => {
 };
 
 // Обработчик чекаута
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('simple-checkout-form');
-    if (!form) return;
-    form.addEventListener('submit', async function(e) {
+const checkoutForm = document.getElementById('simple-checkout-form');
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         const name = document.getElementById('customer-name')?.value.trim();
         const email = document.getElementById('customer-email')?.value.trim();
         const phone = document.getElementById('customer-phone')?.value.trim();
         const address = document.getElementById('customer-address')?.value.trim();
         const comment = document.getElementById('customer-comment')?.value.trim() || 'Без комментария';
+
         if (!name || !email || !phone || !address) {
             if (tg) tg.showAlert('Заполните все обязательные поля!');
             return;
         }
+
         const order = {
             id: 'ORDER-' + Date.now().toString().slice(-8),
             created: new Date().toLocaleString('ru-RU'),
@@ -516,11 +537,11 @@ document.addEventListener('DOMContentLoaded', () => {
             customer: { name, email, phone, address, comment },
             total: cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0)
         };
-        // Сохранение в localStorage
+
         let orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
         orders.push(order);
         localStorage.setItem('taveine_orders', JSON.stringify(orders));
-        // Сохранение в Firebase
+
         try {
             await addDoc(collection(db, "orders"), {
                 ...order,
@@ -531,17 +552,23 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error("Ошибка сохранения в Firebase:", err);
         }
+
         cart = [];
         saveCart();
         updateBadges();
         document.getElementById('cart-container').innerHTML = renderCartItems();
+
         if (tg) {
             tg.showAlert(`Заказ ${order.id} оформлен!\nМы свяжемся с вами скоро.`);
         } else {
             alert(`Заказ ${order.id} оформлен!`);
         }
+
         closePage('checkout-info-page');
     });
+}
 
-    document.addEventListener('DOMContentLoaded', init);
+// Запускаем инициализацию только один раз
+document.addEventListener('DOMContentLoaded', () => {
+    init();
 });
