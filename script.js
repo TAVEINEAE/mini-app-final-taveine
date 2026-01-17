@@ -26,21 +26,66 @@ async function init() {
         tg.MainButton.setText('Continue Shopping').show();
     }
 
-    // Временно отключаем Firebase для теста
-    // try { ... } catch { ... }
+    // 1. Пробуем загрузить из Firebase
+    try {
+        const snapshot = await getDocs(collection(db, "products"));
+        products = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            price: parseFloat(doc.data().price) || 0
+        }));
+        
+        // Если из Firebase пришло хоть что-то — используем
+        if (products.length > 0) {
+            console.log("Продукты успешно загружены из Firebase:", products.length);
+        } else {
+            console.warn("Firebase вернул пустой список продуктов");
+        }
+    } catch (e) {
+        console.error("Ошибка загрузки из Firebase:", e);
+    }
 
-    // Только fallback — всегда будут продукты
-    products = [
-        { id: '1', name: 'Eternal Rose Bouquet', price: 299, image: 'https://via.placeholder.com/300x300/8B4513/FFFFFF?text=Rose', description: 'Luxurious eternal roses', tags: ['luxury', 'bestseller', 'forever'] },
-        { id: '2', name: 'Velvet Orchid', price: 189, image: 'https://via.placeholder.com/300x300/2F4F4F/FFFFFF?text=Orchid', description: 'Exquisite orchids', tags: ['new', 'luxury'] },
-        { id: '3', name: 'Golden Lily', price: 249, image: 'https://via.placeholder.com/300x300/DAA520/FFFFFF?text=Lily', description: 'Premium lilies', tags: ['birthday', 'luxury'] },
-        { id: '4', name: 'Crystal Vase', price: 150, image: 'https://via.placeholder.com/300x300?text=Vase', tags: ['vases'] },
-        { id: '5', name: 'Specialty Box', price: 320, image: 'https://via.placeholder.com/300x300?text=Specialty', tags: ['specialty'] },
-        { id: '6', name: 'Spring Bouquet', price: 145, image: 'https://via.placeholder.com/300x300?text=Spring', tags: ['spring'] },
-        { id: '7', name: 'Forever Rose Dome', price: 420, image: 'https://via.placeholder.com/300x300?text=Forever', tags: ['forever'] },
-        { id: '8', name: 'Balloons & Flowers', price: 195, image: 'https://via.placeholder.com/300x300?text=Balloons', tags: ['balloons'] }
-    ];
+    // 2. Если после попытки загрузки массив всё ещё пустой → fallback
+    if (products.length === 0) {
+        console.log("Используем fallback-продукты");
+        products = [
+            {
+                id: 'demo1',
+                name: 'Eternal Rose Bouquet',
+                price: 299,
+                image: 'https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Eternal+Rose',
+                description: 'Вечные розы премиум-класса',
+                tags: ['luxury', 'bestseller', 'forever']
+            },
+            {
+                id: 'demo2',
+                name: 'Spring Blossom',
+                price: 149,
+                image: 'https://via.placeholder.com/300x400/90EE90/FFFFFF?text=Spring',
+                description: 'Нежный весенний букет',
+                tags: ['spring', 'new']
+            },
+            {
+                id: 'demo3',
+                name: 'Crystal Vase Set',
+                price: 220,
+                image: 'https://via.placeholder.com/300x400/ADD8E6/FFFFFF?text=Vase',
+                description: 'Композиция в хрустальной вазе',
+                tags: ['vases']
+            },
+            {
+                id: 'demo4',
+                name: 'Forever Rose Dome',
+                price: 450,
+                image: 'https://via.placeholder.com/300x400/FF69B4/FFFFFF?text=Forever',
+                description: 'Вечная роза под куполом',
+                tags: ['forever', 'luxury']
+            }
+        ];
+    }
 
+    // 3. Принудительно рендерим и логируем
+    console.log("Финальное количество продуктов перед рендером:", products.length);
     renderMainPage();
     updateBadges();
     setupEventListeners();
