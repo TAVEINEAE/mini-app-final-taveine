@@ -25,33 +25,25 @@ async function init() {
         tg.ready();
         tg.MainButton.setText('Continue Shopping').show();
     }
- 
-    try {
-        const snapshot = await getDocs(collection(db, "products"));
-        products = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            price: parseFloat(doc.data().price) || 0
-        }));
-        renderMainPage();
-        updateBadges();
-        setupEventListeners();
-    } catch (e) {
-        console.error("Load error:", e);
-        // Fallback products for demo
-        products = [
-            { id: '1', name: 'Eternal Rose Bouquet', price: 299, image: 'https://via.placeholder.com/300x300/8B4513/FFFFFF?text=Rose', description: 'Luxurious eternal roses that last forever', tags: ['luxury', 'bestseller', 'forever'] },
-            { id: '2', name: 'Velvet Orchid Delight', price: 189, image: 'https://via.placeholder.com/300x300/2F4F4F/FFFFFF?text=Orchid', description: 'Exquisite orchids wrapped in silk', tags: ['new', 'luxury'] },
-            { id: '3', name: 'Golden Lily Symphony', price: 249, image: 'https://via.placeholder.com/300x300/DAA520/FFFFFF?text=Lily', description: 'Premium lilies with golden accents', tags: ['birthday', 'luxury'] },
-            { id: '4', name: 'Elegant Vase Arrangement', price: 150, image: 'https://via.placeholder.com/300x300/ADD8E6/FFFFFF?text=Vase', description: 'Beautiful arrangement in crystal vase', tags: ['vases'] },
-            { id: '5', name: 'Exotic Specialty Box', price: 320, image: 'https://via.placeholder.com/300x300/4B0082/FFFFFF?text=Specialty', description: 'Unique rare flowers in luxury box', tags: ['specialty'] },
-            { id: '6', name: 'Spring Blossom Delight', price: 145, image: 'https://via.placeholder.com/300x300/90EE90/FFFFFF?text=Spring', description: 'Fresh spring flowers bouquet', tags: ['spring'] },
-            { id: '7', name: 'Forever Rose in Dome', price: 420, image: 'https://via.placeholder.com/300x300/FF69B4/FFFFFF?text=Forever', description: 'Preserved rose under glass dome', tags: ['forever', 'luxury'] },
-            { id: '8', name: 'Romantic Balloons & Blooms', price: 195, image: 'https://via.placeholder.com/300x300/FFB6C1/FFFFFF?text=Balloons', description: 'Flowers with helium balloons', tags: ['balloons'] }
-        ];
-        renderMainPage();
-        updateBadges();
-    }
+
+    // Временно отключаем Firebase для теста
+    // try { ... } catch { ... }
+
+    // Только fallback — всегда будут продукты
+    products = [
+        { id: '1', name: 'Eternal Rose Bouquet', price: 299, image: 'https://via.placeholder.com/300x300/8B4513/FFFFFF?text=Rose', description: 'Luxurious eternal roses', tags: ['luxury', 'bestseller', 'forever'] },
+        { id: '2', name: 'Velvet Orchid', price: 189, image: 'https://via.placeholder.com/300x300/2F4F4F/FFFFFF?text=Orchid', description: 'Exquisite orchids', tags: ['new', 'luxury'] },
+        { id: '3', name: 'Golden Lily', price: 249, image: 'https://via.placeholder.com/300x300/DAA520/FFFFFF?text=Lily', description: 'Premium lilies', tags: ['birthday', 'luxury'] },
+        { id: '4', name: 'Crystal Vase', price: 150, image: 'https://via.placeholder.com/300x300?text=Vase', tags: ['vases'] },
+        { id: '5', name: 'Specialty Box', price: 320, image: 'https://via.placeholder.com/300x300?text=Specialty', tags: ['specialty'] },
+        { id: '6', name: 'Spring Bouquet', price: 145, image: 'https://via.placeholder.com/300x300?text=Spring', tags: ['spring'] },
+        { id: '7', name: 'Forever Rose Dome', price: 420, image: 'https://via.placeholder.com/300x300?text=Forever', tags: ['forever'] },
+        { id: '8', name: 'Balloons & Flowers', price: 195, image: 'https://via.placeholder.com/300x300?text=Balloons', tags: ['balloons'] }
+    ];
+
+    renderMainPage();
+    updateBadges();
+    setupEventListeners();
 }
 
 function setupEventListeners() {
