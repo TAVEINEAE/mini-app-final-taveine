@@ -391,7 +391,7 @@ function renderCartItems() {
                 <span>Total:</span>
                 <span class="total-amount">${formatCurrency(total)} AED</span>
             </div>
-            <button class="checkout-btn" onclick="openPage('checkout-info-page')">Оформить заказ</button>
+            <button class="checkout-btn" onclick="openPage('checkout-info-page')">Place an order</button>
         </div>
     `;
 }
@@ -513,10 +513,10 @@ document.getElementById('simple-checkout-form')?.addEventListener('submit', asyn
     const email = document.getElementById('customer-email')?.value.trim();
     const phone = document.getElementById('customer-phone')?.value.trim();
     const address = document.getElementById('customer-address')?.value.trim();
-    const comment = document.getElementById('customer-comment')?.value.trim() || 'Без комментария';
+    const comment = document.getElementById('customer-comment')?.value.trim() || 'No comment';
 
     if (!name || !email || !phone || !address) {
-        if (tg) tg.showAlert('Заполните все обязательные поля!');
+        if (tg) tg.showAlert('Please fill in all required fields!');
         return;
     }
 
@@ -543,7 +543,7 @@ document.getElementById('simple-checkout-form')?.addEventListener('submit', asyn
         await addDoc(collection(db, "orders"), {
             ...order,
             createdAt: new Date(),
-            status: "Новый"
+            status: "New"
         });
         console.log("Заказ сохранён в Firebase:", order.id);
     } catch (err) {
@@ -556,9 +556,9 @@ document.getElementById('simple-checkout-form')?.addEventListener('submit', asyn
     document.getElementById('cart-container').innerHTML = renderCartItems();
 
     if (tg) {
-        tg.showAlert(`Заказ ${order.id} оформлен!\nМы свяжемся с вами скоро.`);
+        tg.showAlert(`Order ${order.id} placed!\nМы We will contact you soon.`);
     } else {
-        alert(`Заказ ${order.id} оформлен!`);
+        alert(`Order ${order.id} Placed!`);
     }
 
     closePage('checkout-info-page');
