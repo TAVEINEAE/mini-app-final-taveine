@@ -25,7 +25,7 @@ async function init() {
         tg.ready();
         tg.MainButton.setText('Continue Shopping').show();
     }
-  
+ 
     try {
         const snapshot = await getDocs(collection(db, "products"));
         products = snapshot.docs.map(doc => ({
@@ -40,9 +40,14 @@ async function init() {
         console.error("Load error:", e);
         // Fallback products for demo
         products = [
-            { id: '1', name: 'Eternal Rose Bouquet', price: 299, image: 'https://via.placeholder.com/300x300/8B4513/FFFFFF?text=Rose', description: 'Luxurious eternal roses that last forever', tags: ['luxury', 'bestseller'] },
+            { id: '1', name: 'Eternal Rose Bouquet', price: 299, image: 'https://via.placeholder.com/300x300/8B4513/FFFFFF?text=Rose', description: 'Luxurious eternal roses that last forever', tags: ['luxury', 'bestseller', 'forever'] },
             { id: '2', name: 'Velvet Orchid Delight', price: 189, image: 'https://via.placeholder.com/300x300/2F4F4F/FFFFFF?text=Orchid', description: 'Exquisite orchids wrapped in silk', tags: ['new', 'luxury'] },
-            { id: '3', name: 'Golden Lily Symphony', price: 249, image: 'https://via.placeholder.com/300x300/DAA520/FFFFFF?text=Lily', description: 'Premium lilies with golden accents', tags: ['birthday', 'luxury'] }
+            { id: '3', name: 'Golden Lily Symphony', price: 249, image: 'https://via.placeholder.com/300x300/DAA520/FFFFFF?text=Lily', description: 'Premium lilies with golden accents', tags: ['birthday', 'luxury'] },
+            { id: '4', name: 'Elegant Vase Arrangement', price: 150, image: 'https://via.placeholder.com/300x300/ADD8E6/FFFFFF?text=Vase', description: 'Beautiful arrangement in crystal vase', tags: ['vases'] },
+            { id: '5', name: 'Exotic Specialty Box', price: 320, image: 'https://via.placeholder.com/300x300/4B0082/FFFFFF?text=Specialty', description: 'Unique rare flowers in luxury box', tags: ['specialty'] },
+            { id: '6', name: 'Spring Blossom Delight', price: 145, image: 'https://via.placeholder.com/300x300/90EE90/FFFFFF?text=Spring', description: 'Fresh spring flowers bouquet', tags: ['spring'] },
+            { id: '7', name: 'Forever Rose in Dome', price: 420, image: 'https://via.placeholder.com/300x300/FF69B4/FFFFFF?text=Forever', description: 'Preserved rose under glass dome', tags: ['forever', 'luxury'] },
+            { id: '8', name: 'Romantic Balloons & Blooms', price: 195, image: 'https://via.placeholder.com/300x300/FFB6C1/FFFFFF?text=Balloons', description: 'Flowers with helium balloons', tags: ['balloons'] }
         ];
         renderMainPage();
         updateBadges();
@@ -64,7 +69,7 @@ function setupEventListeners() {
     }
     // Wishlist page rendering
     document.getElementById('wish-container').innerHTML = renderWishlistItems();
-   
+  
     // Cart page rendering
     document.getElementById('cart-container').innerHTML = renderCartItems();
 }
@@ -74,7 +79,7 @@ function renderProductCard(p) {
     const wishIcon = inWishlist
         ? `<svg viewBox="0 0 24 24" fill="currentColor" class="wish-filled"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`
         : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="wish-empty"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-   
+  
     return `
         <div class="uniform-card" onclick="openProductDetail('${p.id}')">
             <button class="wish-btn-overlay" onclick="event.stopPropagation(); toggleWishlist('${p.id}')" title="${inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}">
@@ -88,11 +93,11 @@ function renderProductCard(p) {
                 <h4 class="product-name">${p.name}</h4>
                 <div class="price">${formatCurrency(p.price)} AED</div>
                 <button class="add-btn" onclick="event.stopPropagation(); addToCart('${p.id}')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/> <!-- Иконка корзины вместо + -->
-    </svg>
-    Add to Cart
-</button>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    Add to Cart
+                </button>
             </div>
         </div>
     `;
@@ -104,7 +109,7 @@ function renderMainPage() {
     if (newContainer) {
         const newItems = products
             .filter(p => p.tags?.includes('new'))
-            .slice(0, 10); // можно ограничить количество
+            .slice(0, 10);
         newContainer.innerHTML = newItems.length
             ? newItems.map(renderProductCard).join('')
             : '<div class="empty-message">Coming soon...</div>';
@@ -118,7 +123,7 @@ function renderMainPage() {
     categories.forEach(({ id, tag }) => {
         const container = document.getElementById(id);
         if (!container) return;
-       
+      
         const filtered = products.filter(p => p.tags?.includes(tag));
         container.innerHTML = filtered.length
             ? filtered.map(renderProductCard).join('')
@@ -143,15 +148,15 @@ window.addToCart = (id) => {
     } else {
         cart.push({ ...p, qty: 1 });
     }
-   
+  
     saveCart();
     updateBadges();
-   
+  
     if (tg) {
         tg.HapticFeedback.notificationOccurred('success');
         tg.showAlert(`${p.name} added to cart!`);
     }
-   
+  
     // Update cart page
     document.getElementById('cart-container').innerHTML = renderCartItems();
 };
@@ -164,14 +169,14 @@ window.toggleWishlist = (id) => {
     } else {
         wishlist.splice(idx, 1);
     }
-   
+  
     localStorage.setItem('taveine_wishlist', JSON.stringify(wishlist));
     updateBadges();
     renderMainPage();
-   
+  
     // Update wishlist page
     document.getElementById('wish-container').innerHTML = renderWishlistItems();
-   
+  
     if (tg) tg.HapticFeedback.notificationOccurred('success');
 };
 
@@ -183,7 +188,7 @@ function saveCart() {
 function updateBadges() {
     const wCount = document.getElementById('w-count');
     const cCount = document.getElementById('c-count');
-   
+  
     if (wCount) wCount.textContent = wishlist.length;
     if (cCount) cCount.textContent = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
 }
@@ -220,9 +225,9 @@ window.openProductDetail = (id) => {
             </div>
         </div>
     `;
-   
+  
     document.getElementById('product-detail').style.display = 'block';
-   
+  
     if (tg) {
         tg.HapticFeedback.notificationOccurred('impact');
         tg.expand();
@@ -263,7 +268,7 @@ window.closeSearch = () => {
 function renderSearchResults(results) {
     const container = document.getElementById('search-results-products');
     if (!container) return;
-   
+  
     container.innerHTML = results.length ?
         `<div class="search-results">${results.map(renderProductCard).join('')}</div>` :
         '<div class="empty-search">No products found</div>';
@@ -273,7 +278,7 @@ function renderWishlistItems() {
     if (!wishlist.length) {
         return '<div class="empty-wishlist">Your wishlist is empty. Start adding your favorite blooms!</div>';
     }
-   
+  
     return wishlist.map(p => `
         <div class="wishlist-item">
             <img src="${p.image || 'https://via.placeholder.com/80x80'}" alt="${p.name}" class="wishlist-image">
@@ -302,9 +307,9 @@ function renderCartItems() {
             </div>
         `;
     }
-   
+  
     const total = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
-   
+  
     return `
         <div class="cart-items">
             ${cart.map(item => `
@@ -394,27 +399,72 @@ Telegram.WebApp.expand(); // растягивает апп на весь экр�
 Telegram.WebApp.disableVerticalSwipes(); // отключает вертикальный свайп для закрытия
 Telegram.WebApp.setBackgroundColor("#001f24"); // твой тёмный фон, чтобы красиво
 
-document.addEventListener('DOMContentLoaded', init);
+// Mapping категорий → тегов
+const categoryMapping = {
+    'Christmas Collection': 'christmas',
+    'Spring': 'spring',
+    'New Arrivals': 'new',
+    'Best Sellers': 'bestseller',
+    'Luxury': 'luxury',
+    'Specialty': 'specialty',
+    'Je t’aime Collection': 'jetaime',
+    'Vases': 'vases',
+    'Box': 'box',
+    'Anniversary': 'anniversary',
+    'Birthday': 'birthday',
+    'I’m Sorry': 'imsorry',
+    'New Baby': 'newbaby',
+    'Event Design Services': 'eventdesign',
+    'Forever Rose': 'forever',
+    'Balloons': 'balloons'
+};
 
-// Правильный обработчик формы чекаута (без оплаты) + сохранение в Firebase
+// Открытие страницы категории
+window.openCategory = (categoryName) => {
+    let filteredProducts = [];
+
+    if (categoryName === 'All') {
+        filteredProducts = [...products];
+    } else {
+        const tag = categoryMapping[categoryName] || categoryName.toLowerCase().replace(/\s+/g, '');
+        filteredProducts = products.filter(p => p.tags?.includes(tag));
+    }
+
+    const container = document.getElementById('category-slider');
+    container.innerHTML = filteredProducts.length
+        ? filteredProducts.map(renderProductCard).join('')
+        : '<div class="empty-message">No products in this category yet...</div>';
+
+    document.getElementById('category-title').textContent = categoryName;
+    document.getElementById('category-page').style.display = 'block';
+
+    if (tg) {
+        tg.expand();
+        tg.HapticFeedback.notificationOccurred('impact');
+    }
+};
+
+// Открытие страницы "О нас"
+window.openAbout = () => {
+    document.getElementById('about-page').style.display = 'block';
+    if (tg) tg.expand();
+};
+
+// Обработчик чекаута
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('simple-checkout-form');
     if (!form) return;
-
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-
-        const name    = document.getElementById('customer-name')?.value.trim();
-        const email   = document.getElementById('customer-email')?.value.trim();
-        const phone   = document.getElementById('customer-phone')?.value.trim();
+        const name = document.getElementById('customer-name')?.value.trim();
+        const email = document.getElementById('customer-email')?.value.trim();
+        const phone = document.getElementById('customer-phone')?.value.trim();
         const address = document.getElementById('customer-address')?.value.trim();
         const comment = document.getElementById('customer-comment')?.value.trim() || 'Без комментария';
-
         if (!name || !email || !phone || !address) {
             if (tg) tg.showAlert('Заполните все обязательные поля!');
             return;
         }
-
         const order = {
             id: 'ORDER-' + Date.now().toString().slice(-8),
             created: new Date().toLocaleString('ru-RU'),
@@ -429,13 +479,11 @@ document.addEventListener('DOMContentLoaded', () => {
             customer: { name, email, phone, address, comment },
             total: cart.reduce((sum, i) => sum + i.price * (i.qty || 1), 0)
         };
-
-        // Сохранение в localStorage (как было)
+        // Сохранение в localStorage
         let orders = JSON.parse(localStorage.getItem('taveine_orders') || '[]');
         orders.push(order);
         localStorage.setItem('taveine_orders', JSON.stringify(orders));
-
-        // Сохранение в Firebase (новое)
+        // Сохранение в Firebase
         try {
             await addDoc(collection(db, "orders"), {
                 ...order,
@@ -446,18 +494,17 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error("Ошибка сохранения в Firebase:", err);
         }
-
         cart = [];
         saveCart();
         updateBadges();
         document.getElementById('cart-container').innerHTML = renderCartItems();
-
         if (tg) {
             tg.showAlert(`Заказ ${order.id} оформлен!\nМы свяжемся с вами скоро.`);
         } else {
             alert(`Заказ ${order.id} оформлен!`);
         }
-
         closePage('checkout-info-page');
     });
+
+    document.addEventListener('DOMContentLoaded', init);
 });
