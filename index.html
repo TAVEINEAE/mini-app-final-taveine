@@ -117,9 +117,27 @@
             </div>
         </section>
 
-        <!-- 5. Explore All Bouquets -->
+        <!-- 5. Vases Collection -->
+        <section class="category-section">
+            <h2 class="section-title">Vases Collection</h2>
+            <div class="horizontal-slider-wrapper">
+                <div id="luxury-slider" class="horizontal-slider"></div>
+                <a href="#" class="view-all-end">VIEW ALL</a>
+            </div>
+        </section>
+
+        <!-- 6. Specialty Collection -->
+        <section class="category-section">
+            <h2 class="section-title">Specialty</h2>
+            <div class="horizontal-slider-wrapper">
+                <div id="luxury-slider" class="horizontal-slider"></div>
+                <a href="#" class="view-all-end">VIEW ALL</a>
+            </div>
+        </section>
+
+        <!-- 7. Explore All Bouquets -->
         <section class="all-products-section">
-            <h2 class="section-title">Explore All Bouquets</h2>
+            <h2 class="section-title">Shop All</h2>
             <div class="horizontal-slider-wrapper">
                 <div id="all-products-grid" class="horizontal-slider"></div>
                 <a href="#" class="view-all-end">VIEW ALL</a>
@@ -163,24 +181,24 @@
     <div id="checkout-info-page" class="full-screen-page" style="display:none;">
       <div class="page-header">
         <button class="back-btn" onclick="closePage('checkout-info-page')">←</button>
-        <div class="page-title">Оформление заказа</div>
+        <div class="page-title">Place an order</div>
         <button class="back-btn" onclick="closePage('checkout-info-page')" style="font-size:1.5rem;">✕</button>
       </div>
      
       <div style="padding:32px 24px; max-width:500px; margin:0 auto;">
         <form id="simple-checkout-form">
-          <label>Имя и Фамилия *</label>
-          <input type="text" id="customer-name" required placeholder="Иван Иванов">
+          <label>First & Last Name *</label>
+          <input type="text" id="customer-name" required placeholder="Your Name">
           <label>Email *</label>
-          <input type="email" id="customer-email" required placeholder="example@mail.com">
-          <label>Телефон *</label>
+          <input type="email" id="customer-email" required placeholder="example@gmail.com">
+          <label>Phone number *</label>
           <input type="tel" id="customer-phone" required placeholder="+971 50 123 4567">
-          <label>Адрес доставки *</label>
-          <textarea id="customer-address" required rows="4" placeholder="Улица, дом, квартира, район, Дубай..."></textarea>
-          <label>Комментарий (не обязательно)</label>
-          <textarea id="customer-comment" rows="3" placeholder="Например: без звонка, до 18:00..."></textarea>
+          <label>Delivery address *</label>
+          <textarea id="customer-address" required rows="4" placeholder="Street, Building, Apartment, Area, Dubai..."></textarea>
+          <label>Comment (optional)</label>
+          <textarea id="customer-comment" rows="3" placeholder="Please include my message on the card..."></textarea>
           <button type="submit" class="checkout-btn" style="margin-top:32px; width:100%;">
-            Подтвердить заказ
+            Submit order
           </button>
         </form>
       </div>
