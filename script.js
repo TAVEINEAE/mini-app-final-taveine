@@ -177,6 +177,8 @@ function renderMainPage() {
         { id: 'birthday-slider', tag: 'birthday' },
         { id: 'bestseller-slider', tag: 'bestseller' },
         { id: 'luxury-slider', tag: 'luxury' }
+        { id: 'vases-slider', tag: 'vases' }
+        { id: 'speciality-slider', tag: 'speciality' }
     ];
     categories.forEach(({ id, tag }) => {
         const container = document.getElementById(id);
