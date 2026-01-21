@@ -54,11 +54,23 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
     try {
         await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-        document.getElementById('login-error').textContent = 'Invalid email or password';
-        document.getElementById('login-error').style.display = 'block';
+   } catch (error) {
+    console.error("LOGIN FULL ERROR:", error.code, error.message);  // ← это покажет в консоли браузера
+    
+    let displayMsg = "Invalid email or password";
+    if (error.code === 'auth/invalid-credential') {
+        displayMsg = "Неверные данные (возможно защита Firebase включена или пользователь не существует)";
+    } else if (error.code === 'auth/user-not-found') {
+        displayMsg = "Пользователь с таким email не найден";
+    } else if (error.code === 'auth/wrong-password') {
+        displayMsg = "Неверный пароль";
+    } else if (error.code === 'auth/operation-not-allowed') {
+        displayMsg = "Метод Email/Password не включён в консоли";
     }
-});
+    
+    document.getElementById('login-error').textContent = displayMsg;
+    document.getElementById('login-error').style.display = 'block';
+}
 
 // Logout
 document.getElementById('logout-btn').addEventListener('click', async () => {
