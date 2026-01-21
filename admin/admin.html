@@ -10,14 +10,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  <!-- Favicon placeholder to avoid 404 -->
-  <link rel="icon" href="data:," />
   <!-- Your styles -->
   <link rel="stylesheet" href="admin.css">
   <!-- Firebase SDK -->
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script> <!-- Added for Auth -->
   <!-- Optional libraries (keep if you use them) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
@@ -26,9 +23,9 @@
 <body>
 <div class="layout">
   <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar" style="display:none;"> <!-- Hidden until logged in -->
+  <aside class="sidebar">
     <div class="logo">
-      <img src="https://via.placeholder.com/100?text=Logo" alt="Logo"> <!-- Placeholder to avoid 404 -->
+      <img src="logo-dark.png" alt="Logo">
       <span>TAVÉINE</span>
     </div>
     <nav>
@@ -38,12 +35,12 @@
       <a class="nav-link" data-page="calendar"><i class="fas fa-calendar-alt"></i> Calendar</a>
       <a class="nav-link" data-page="orders"><i class="fas fa-shopping-bag"></i> Orders</a>
       <a class="nav-link" data-page="maps"><i class="fas fa-map"></i> Maps</a>
-      <a class="nav-link logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      <a class="nav-link logout" onclick="alert('Logout functionality coming soon')"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </nav>
   </aside>
   <!-- Main Content -->
   <main class="main">
-    <header class="header" id="header" style="display:none;"> <!-- Hidden until logged in -->
+    <header class="header">
       <h1 id="page-title">Dashboard</h1>
       <div class="header-actions">
         <input type="text" placeholder="Search..." class="search-input">
@@ -51,26 +48,8 @@
         <i class="fas fa-user profile-icon"></i>
       </div>
     </header>
-    <!-- Login Page -->
-    <section id="login-page" class="page active" style="max-width:400px; margin:100px auto;">
-      <div class="card">
-        <h2>Admin Login</h2>
-        <form id="login-form">
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="email" required placeholder="admin@example.com">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="password" required placeholder="********">
-          </div>
-          <button type="submit" class="save-btn">Login</button>
-        </form>
-        <p id="login-error" style="color:red; display:none;">Invalid credentials</p>
-      </div>
-    </section>
     <!-- Dashboard Page -->
-    <section id="dashboard-page" class="page">
+    <section id="dashboard-page" class="page active">
       <div class="stats">
         <div class="stat-card">
           <div class="label">Products</div>
@@ -102,23 +81,23 @@
       
         <div class="category-section">
           <h3>New Arrivals</h3>
-          <div id="new-arrivals-list" class="products-grid"><p>Loading...</p></div>
+          <div id="new-arrivals-list" class="products-grid"></div>
         </div>
         <div class="category-section">
           <h3>Birthday Collection</h3>
-          <div id="birthday-list" class="products-grid"><p>Loading...</p></div>
+          <div id="birthday-list" class="products-grid"></div>
         </div>
         <div class="category-section">
           <h3>Bestsellers</h3>
-          <div id="bestsellers-list" class="products-grid"><p>Loading...</p></div>
+          <div id="bestsellers-list" class="products-grid"></div>
         </div>
         <div class="category-section">
           <h3>Luxury Collection</h3>
-          <div id="luxury-list" class="products-grid"><p>Loading...</p></div>
+          <div id="luxury-list" class="products-grid"></div>
         </div>
         <div class="category-section">
           <h3>Other Products</h3>
-          <div id="other-products-list" class="products-grid"><p>Loading...</p></div>
+          <div id="other-products-list" class="products-grid"></div>
         </div>
       </div>
       <!-- Add/Edit Modal -->
@@ -152,18 +131,18 @@
               <input type="text" id="tags" placeholder="new, luxury, bestseller">
             </div>
             <div class="form-actions">
-              <button type="submit" class="save-btn" id="save-product-btn">Save Product</button>
+              <button type="submit" class="save-btn">Save Product</button>
               <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
             </div>
           </form>
         </div>
       </div>
     </section>
-    <!-- Orders Page -->
+    <!-- Orders Page (была Email) -->
     <section id="orders-page" class="page">
       <div class="card">
         <h2>Orders from Telegram</h2>
-        <div id="orders-list"><p>Loading orders...</p></div>
+        <div id="orders-list"></div>
       </div>
     </section>
     <!-- Other pages (placeholders) -->
