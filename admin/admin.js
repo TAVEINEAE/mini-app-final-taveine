@@ -54,23 +54,22 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
     try {
         await signInWithEmailAndPassword(auth, email, password);
-   } catch (error) {
-    console.error("LOGIN FULL ERROR:", error.code, error.message);  // ← это покажет в консоли браузера
-    
-    let displayMsg = "Invalid email or password";
-    if (error.code === 'auth/invalid-credential') {
-        displayMsg = "Неверные данные (возможно защита Firebase включена или пользователь не существует)";
-    } else if (error.code === 'auth/user-not-found') {
-        displayMsg = "Пользователь с таким email не найден";
-    } else if (error.code === 'auth/wrong-password') {
-        displayMsg = "Неверный пароль";
-    } else if (error.code === 'auth/operation-not-allowed') {
-        displayMsg = "Метод Email/Password не включён в консоли";
+    } catch (error) {
+        console.error("LOGIN FULL ERROR:", error.code, error.message);  // Детальная ошибка в консоли
+        let displayMsg = "Invalid email or password";
+        if (error.code === 'auth/invalid-credential') {
+            displayMsg = "Неверные данные (возможно защита Firebase включена или пользователь не существует)";
+        } else if (error.code === 'auth/user-not-found') {
+            displayMsg = "Пользователь с таким email не найден";
+        } else if (error.code === 'auth/wrong-password') {
+            displayMsg = "Неверный пароль";
+        } else if (error.code === 'auth/operation-not-allowed') {
+            displayMsg = "Метод Email/Password не включён в консоли";
+        }
+        document.getElementById('login-error').textContent = displayMsg;
+        document.getElementById('login-error').style.display = 'block';
     }
-    
-    document.getElementById('login-error').textContent = displayMsg;
-    document.getElementById('login-error').style.display = 'block';
-}
+});
 
 // Logout
 document.getElementById('logout-btn').addEventListener('click', async () => {
@@ -342,9 +341,10 @@ async function loadOrders() {
                     <strong style="color:var(--gold);">Заказ ${escapeHtml(order.id)}</strong>
                     <span style="color:var(--gray-light);">${new Date(order.createdAt?.toDate?.() ?? new Date(order.createdAt)).toLocaleString('ru-RU')}</span>
                 </div>
-                <p><strong>Клиент:</strong> ${escapeHtml(order.customer.name)} (${escapeHtml(order.customer.phone)})</p>
-                <p><strong>Email:</strong> ${escapeHtml(order.customer.email)}</p>
-                <p><strong>Адрес:</strong> ${escapeHtml(order.customer.address)}</p>
+                <p><strong>Клиент:</strong> ${escapeHtml(order.customer.name)} (${escapeHtml(order.customer.phone || 'unknown')})</p>
+                <p><strong>Email:</strong> ${escapeHtml(order.customer.email || 'unknown')}</p>
+                <p><strong>Адрес:</strong> ${escapeHtml(order.customer.address || '—')}</p>
+                <p><strong>Telegram User:</strong> @${escapeHtml(order.telegram.username || 'unknown')} (ID: ${order.telegram.user_id})</p>
                 <p><strong>Сумма:</strong> ${order.total} AED</p>
                 <p><strong>Комментарий:</strong> ${escapeHtml(order.customer.comment || '—')}</p>
                 <div style="margin-top:12px;">
